@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter, JetBrains_Mono } from 'next/font/google'
+import { Header, Footer } from '@/components/layout'
 import './globals.css'
 
 const inter = Inter({
@@ -13,8 +14,22 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'SIP Protocol - Shielded Intents',
-  description: 'Privacy layer for cross-chain transactions',
+  title: 'SIP Protocol - Privacy for Cross-Chain Transactions',
+  description: 'Shielded Intents Protocol - One toggle to shield your sender, amount, and recipient. Built on NEAR Intents + Zcash.',
+  keywords: ['privacy', 'cross-chain', 'blockchain', 'stealth addresses', 'NEAR', 'Zcash', 'DeFi'],
+  authors: [{ name: 'SIP Protocol' }],
+  openGraph: {
+    title: 'SIP Protocol - Privacy for Cross-Chain Transactions',
+    description: 'One toggle to shield your sender, amount, and recipient.',
+    url: 'https://sip-protocol.org',
+    siteName: 'SIP Protocol',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'SIP Protocol - Privacy for Cross-Chain Transactions',
+    description: 'One toggle to shield your sender, amount, and recipient.',
+  },
 }
 
 export default function RootLayout({
@@ -27,7 +42,11 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} font-sans bg-gray-950 text-white antialiased`}
       >
-        {children}
+        <Header />
+        <main className="min-h-screen pt-16">
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   )
