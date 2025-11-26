@@ -3,6 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "description": "Marketing website for SIP Protocol - sip-protocol.org",
+  "pnpm": {
+    "overrides": {
+      "@sip-protocol/types": "file:../sip-protocol/packages/types"
+    }
+  },
   "scripts": {
     "dev": "next dev --port 3000",
     "build": "next build",
@@ -11,7 +16,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@sip-protocol/sdk": "^0.1.0",
+    "@sip-protocol/sdk": "file:../sip-protocol/packages/sdk",
+    "@sip-protocol/types": "file:../sip-protocol/packages/types",
     "framer-motion": "^11.0.0",
     "lucide-react": "^0.400.0",
     "next": "^14.2.0",
