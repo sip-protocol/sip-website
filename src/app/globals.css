@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 3%;
+  --foreground: 0 0% 98%;
+}
+
+body {
+  background: rgb(var(--background));
+  color: rgb(var(--foreground));
+}
+
+/* Gradient text effect */
+.gradient-text {
+  @apply bg-gradient-to-r from-purple-400 via-pink-500 to-purple-600 bg-clip-text text-transparent;
+}
+
+/* Glowing border effect */
+.glow-border {
+  @apply relative;
+}
+
+.glow-border::before {
+  content: '';
+  @apply absolute -inset-0.5 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 opacity-75 blur;
+}
+
+/* Card styles */
+.card {
+  @apply relative rounded-xl border border-gray-800 bg-gray-900/50 p-6 backdrop-blur-sm;
+}
+
+/* Privacy toggle styles */
+.privacy-toggle {
+  @apply relative inline-flex cursor-pointer items-center rounded-full p-1 transition-colors;
+}
+
+.privacy-toggle[data-state='transparent'] {
+  @apply bg-gray-700;
+}
+
+.privacy-toggle[data-state='shielded'] {
+  @apply bg-purple-600;
+}
+
+.privacy-toggle[data-state='compliant'] {
+  @apply bg-blue-600;
+}
+
+/* Animation for shield icon */
+@keyframes shield-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.shield-pulse {
+  animation: shield-pulse 2s ease-in-out infinite;
+}
