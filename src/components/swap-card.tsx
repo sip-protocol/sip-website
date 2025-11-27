@@ -1,7 +1,9 @@
 'use client'
 
-import { useState } from 'react'
-import { PrivacyLevel } from '@/types'
+import { useState, useMemo } from 'react'
+import { PrivacyLevel } from '@sip-protocol/sdk'
+import { useQuote } from '@/hooks'
+import type { NetworkId } from '@/lib'
 
 interface SwapCardProps {
   privacyLevel: PrivacyLevel
@@ -10,26 +12,41 @@ interface SwapCardProps {
 interface Token {
   symbol: string
   name: string
-  chain: string
+  chain: NetworkId
   icon: string
 }
 
 const tokens: Token[] = [
   { symbol: 'SOL', name: 'Solana', chain: 'solana', icon: '◎' },
   { symbol: 'ETH', name: 'Ethereum', chain: 'ethereum', icon: 'Ξ' },
-  { symbol: 'ZEC', name: 'Zcash', chain: 'zcash', icon: 'ⓩ' },
   { symbol: 'NEAR', name: 'NEAR', chain: 'near', icon: 'Ⓝ' },
 ]
 
 export function SwapCard({ privacyLevel }: SwapCardProps) {
   const [fromToken, setFromToken] = useState(tokens[0])
-  const [toToken, setToToken] = useState(tokens[2]) // ZEC
+  const [toToken, setToToken] = useState(tokens[1]) // ETH
   const [amount, setAmount] = useState('')
   const [isSwapping, setIsSwapping] = useState(false)
 
+  // Build quote params
+  const quoteParams = useMemo(() => {
+    if (!amount || parseFloat(amount) <= 0) return null
+    return {
+      fromChain: fromToken.chain,
+      toChain: toToken.chain,
+      fromToken: fromToken.symbol,
+      toToken: toToken.symbol,
+      amount,
+      privacyLevel,
+    }
+  }, [fromToken, toToken, amount, privacyLevel])
+
+  // Fetch quote
+  const { outputAmount, rate, feePercent, isLoading: isQuoteLoading, error: quoteError } = useQuote(quoteParams)
+
   const handleSwap = async () => {
     setIsSwapping(true)
-    // Simulate swap
+    // Simulate swap - real implementation in #59
     await new Promise((resolve) => setTimeout(resolve, 2000))
     setIsSwapping(false)
     setAmount('')
@@ -95,7 +112,7 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
       {/* To */}
       <div className="mb-6 mt-2 rounded-xl bg-gray-800/50 p-4">
         <div className="mb-2 flex items-center justify-between text-sm text-gray-400">
-          <span>To</span>
+          <span>To (estimated)</span>
           {isShielded && (
             <span className="flex items-center gap-1 text-purple-400">
               <ShieldIcon className="h-3 w-3" />
@@ -104,15 +121,26 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
           )}
         </div>
         <div className="flex items-center gap-3">
-          <span className="flex-1 text-2xl font-medium text-gray-400">
-            {amount ? (parseFloat(amount) * 0.15).toFixed(4) : '0.0'}
-          </span>
+          <div className="flex-1">
+            {isQuoteLoading ? (
+              <span className="flex items-center gap-2 text-2xl font-medium text-gray-500">
+                <LoadingSpinner />
+              </span>
+            ) : (
+              <span className="text-2xl font-medium text-gray-400">
+                {outputAmount || '0'}
+              </span>
+            )}
+          </div>
           <TokenSelector
             token={toToken}
             onSelect={setToToken}
             tokens={tokens}
           />
         </div>
+        {quoteError && (
+          <p className="mt-2 text-xs text-red-400">{quoteError}</p>
+        )}
       </div>
 
       {/* Privacy info */}
@@ -155,17 +183,17 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
       </button>
 
       {/* Transaction details */}
-      {amount && (
+      {amount && parseFloat(amount) > 0 && (
         <div className="mt-4 space-y-2 text-sm">
           <div className="flex justify-between text-gray-400">
             <span>Rate</span>
             <span>
-              1 {fromToken.symbol} = 0.15 {toToken.symbol}
+              1 {fromToken.symbol} ≈ {rate} {toToken.symbol}
             </span>
           </div>
           <div className="flex justify-between text-gray-400">
             <span>Solver Fee</span>
-            <span>0.3%</span>
+            <span>{feePercent}%</span>
           </div>
           <div className="flex justify-between text-gray-400">
             <span>Privacy</span>
@@ -175,6 +203,12 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
                 : privacyLevel === PrivacyLevel.COMPLIANT
                   ? 'With viewing key'
                   : 'Full shielding'}
+            </span>
+          </div>
+          <div className="flex justify-between text-gray-400">
+            <span>Route</span>
+            <span className="text-gray-500">
+              {fromToken.name} → {toToken.name}
             </span>
           </div>
         </div>
