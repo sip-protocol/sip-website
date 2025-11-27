@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f0f23"/>
+      <stop offset="100%" style="stop-color:#1a1a2e"/>
+    </linearGradient>
+    <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a855f7"/>
+      <stop offset="100%" style="stop-color:#ec4899"/>
+    </linearGradient>
+    <linearGradient id="grad-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7c3aed"/>
+      <stop offset="100%" style="stop-color:#db2777"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg-grad)"/>
+  <!-- Grid pattern -->
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+  </pattern>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <!-- Logo circle -->
+  <circle cx="600" cy="240" r="120" fill="url(#logo-grad)"/>
+  <!-- Shield -->
+  <path d="M600 144c-24 0-48 12-64 24v72c0 40 28 60 64 76 36-16 64-36 64-76v-72c-16-12-40-24-64-24z" fill="white" fill-opacity="0.95"/>
+  <!-- Inner shield -->
+  <path d="M600 160c-18 0-36 9-48 18v54c0 30 21 45 48 57 27-12 48-27 48-57v-54c-12-9-30-18-48-18z" fill="url(#logo-grad)" fill-opacity="0.2"/>
+  <!-- Lock -->
+  <rect x="584" y="228" width="32" height="28" rx="4" fill="url(#grad-dark)"/>
+  <path d="M592 228v-12c0-8.84 3.58-16 8-16s8 7.16 8 16v12" stroke="url(#grad-dark)" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <circle cx="600" cy="238" r="5" fill="white"/>
+  <rect x="598" y="240" width="4" height="8" rx="1" fill="white"/>
+  <!-- Text -->
+  <text x="600" y="440" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="bold" fill="white">SIP Protocol</text>
+  <text x="600" y="500" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="28" fill="#9ca3af">Privacy Layer for Cross-Chain Transactions</text>
+</svg>

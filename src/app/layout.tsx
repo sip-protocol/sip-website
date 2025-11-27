@@ -22,17 +22,34 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/',
   },
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: '32x32' },
+      { url: '/logo-64.png', sizes: '64x64', type: 'image/png' },
+      { url: '/logo-192.png', sizes: '192x192', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
   openGraph: {
     title: 'SIP Protocol - Privacy for Cross-Chain Transactions',
     description: 'One toggle to shield your sender, amount, and recipient.',
     url: 'https://sip-protocol.org',
     siteName: 'SIP Protocol',
     type: 'website',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'SIP Protocol - Privacy Layer for Cross-Chain Transactions',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'SIP Protocol - Privacy for Cross-Chain Transactions',
     description: 'One toggle to shield your sender, amount, and recipient.',
+    images: ['/og-image.png'],
   },
 }
 
