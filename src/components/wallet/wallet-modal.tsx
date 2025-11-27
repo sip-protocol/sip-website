@@ -13,10 +13,11 @@ import {
 } from '@sip-protocol/sdk'
 import {
   useWalletStore,
+  toast,
   type WalletType,
   type ChainType,
   WALLET_INFO,
-} from '@/stores/wallet-store'
+} from '@/stores'
 
 type TabType = 'solana' | 'ethereum'
 
@@ -54,6 +55,8 @@ export function WalletModal() {
     setError(null)
     setConnecting(true)
 
+    const walletName = WALLET_INFO[walletType].name
+
     try {
       if (chain === 'solana') {
         const adapter = createSolanaAdapter({
@@ -67,6 +70,7 @@ export function WalletModal() {
 
         if (hexAddress) {
           connect(walletType, chain, hexAddress as `0x${string}`)
+          toast.success('Wallet Connected', `Connected to ${walletName} on Solana Devnet`)
         }
       } else {
         const adapter = createEthereumAdapter({
@@ -79,13 +83,50 @@ export function WalletModal() {
 
         if (address) {
           connect(walletType, chain, address as `0x${string}`)
+          toast.success('Wallet Connected', `Connected to ${walletName} on Sepolia`)
         }
       }
     } catch (err) {
       console.error('Wallet connection failed:', err)
-      setError(err instanceof Error ? err.message : 'Failed to connect wallet')
+      const errorMessage = getWalletErrorMessage(err)
+      setError(errorMessage)
+      toast.error('Connection Failed', errorMessage)
       setConnecting(false)
     }
+  }
+
+  // Parse wallet-specific error messages
+  function getWalletErrorMessage(err: unknown): string {
+    if (!(err instanceof Error)) return 'Failed to connect wallet'
+
+    const message = err.message.toLowerCase()
+
+    // User rejected
+    if (message.includes('rejected') || message.includes('denied') || message.includes('cancelled')) {
+      return 'Connection request was rejected'
+    }
+
+    // Wallet locked
+    if (message.includes('locked')) {
+      return 'Wallet is locked. Please unlock and try again'
+    }
+
+    // Already processing
+    if (message.includes('pending') || message.includes('already')) {
+      return 'A connection request is already pending'
+    }
+
+    // Not installed (shouldn't happen but just in case)
+    if (message.includes('not found') || message.includes('not installed')) {
+      return 'Wallet extension not found'
+    }
+
+    // Network error
+    if (message.includes('network') || message.includes('timeout')) {
+      return 'Network error. Please check your connection'
+    }
+
+    return err.message || 'Failed to connect wallet'
   }
 
   const solanaWallets: WalletType[] = ['phantom', 'solflare']

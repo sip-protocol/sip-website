@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { PrivacyLevel, type Quote, type ChainId } from '@sip-protocol/sdk'
 import { useSIP } from '@/contexts'
+import { toast } from '@/stores'
 import { formatAmount, parseAmount, type NetworkId } from '@/lib'
 
 export interface QuoteParams {
@@ -136,12 +137,18 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
       if (quotes.length > 0) {
         setQuote(quotes[0])
       } else {
-        setError('No quotes available')
+        setError('No quotes available for this pair')
       }
     } catch (err) {
       console.error('Quote fetch error:', err)
-      setError(err instanceof Error ? err.message : 'Failed to fetch quote')
+      const errorMessage = getQuoteErrorMessage(err)
+      setError(errorMessage)
       setQuote(null)
+
+      // Only show toast for network/server errors, not for validation errors
+      if (isNetworkError(err)) {
+        toast.warning('Quote Unavailable', errorMessage)
+      }
     } finally {
       setIsLoading(false)
     }
@@ -198,4 +205,63 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
     error,
     refresh: fetchQuote,
   }
+}
+
+/**
+ * Parse quote-specific error messages
+ */
+function getQuoteErrorMessage(err: unknown): string {
+  if (!(err instanceof Error)) return 'Failed to fetch quote'
+
+  const message = err.message.toLowerCase()
+
+  // Quote expired
+  if (message.includes('expired') || message.includes('stale')) {
+    return 'Quote expired. Please refresh'
+  }
+
+  // Insufficient liquidity
+  if (message.includes('liquidity') || message.includes('insufficient')) {
+    return 'Insufficient liquidity for this amount'
+  }
+
+  // Rate limit
+  if (message.includes('rate limit') || message.includes('too many')) {
+    return 'Too many requests. Please wait a moment'
+  }
+
+  // Network/timeout
+  if (message.includes('network') || message.includes('timeout') || message.includes('fetch')) {
+    return 'Network error. Please check your connection'
+  }
+
+  // Invalid pair
+  if (message.includes('unsupported') || message.includes('invalid')) {
+    return 'This trading pair is not supported'
+  }
+
+  // Amount too small/large
+  if (message.includes('minimum') || message.includes('too small')) {
+    return 'Amount is below minimum'
+  }
+  if (message.includes('maximum') || message.includes('too large')) {
+    return 'Amount exceeds maximum'
+  }
+
+  return err.message || 'Failed to fetch quote'
+}
+
+/**
+ * Check if error is a network-related error (worth showing toast)
+ */
+function isNetworkError(err: unknown): boolean {
+  if (!(err instanceof Error)) return false
+  const message = err.message.toLowerCase()
+  return (
+    message.includes('network') ||
+    message.includes('timeout') ||
+    message.includes('fetch') ||
+    message.includes('connection') ||
+    message.includes('rate limit')
+  )
 }

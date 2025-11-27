@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react'
 import { PrivacyLevel, type Quote, type ChainId } from '@sip-protocol/sdk'
 import { useSIP } from '@/contexts'
-import { useWalletStore } from '@/stores'
+import { useWalletStore, toast } from '@/stores'
 import { parseAmount, getTransactionUrl, type NetworkId } from '@/lib'
 
 export type SwapStatus = 'idle' | 'confirming' | 'signing' | 'pending' | 'success' | 'error'
@@ -84,22 +84,29 @@ export function useSwap(): SwapResult {
   const execute = useCallback(async (params: SwapParams) => {
     // Validate wallet connection
     if (!isConnected || !address) {
-      setError('Please connect your wallet first')
+      const msg = 'Please connect your wallet first'
+      setError(msg)
       setStatus('error')
+      toast.warning('Wallet Required', msg)
       return
     }
 
     // Validate chain matches
     if (chain !== params.fromChain) {
-      setError(`Please switch to ${params.fromChain} network`)
+      const networkName = params.fromChain === 'solana' ? 'Solana' : 'Ethereum'
+      const msg = `Please switch to ${networkName} network`
+      setError(msg)
       setStatus('error')
+      toast.warning('Wrong Network', msg)
       return
     }
 
     // Validate quote
     if (!params.quote) {
-      setError('No quote available')
+      const msg = 'No quote available. Please refresh and try again'
+      setError(msg)
       setStatus('error')
+      toast.error('Quote Required', msg)
       return
     }
 
@@ -149,27 +156,20 @@ export function useSwap(): SwapResult {
       if (result.txHash) {
         setTxHash(result.txHash)
         setStatus('success')
+        toast.success('Swap Submitted', 'Your transaction has been submitted to the network')
       } else {
         // For demo purposes, generate a mock tx hash
         const mockTxHash = generateMockTxHash()
         setTxHash(mockTxHash)
         setStatus('success')
+        toast.success('Swap Submitted', 'Your transaction has been submitted to the network')
       }
     } catch (err) {
       console.error('Swap execution error:', err)
-
-      // Handle specific error types
-      const errorMessage = err instanceof Error ? err.message : 'Transaction failed'
-
-      if (errorMessage.includes('rejected') || errorMessage.includes('denied')) {
-        setError('Transaction was rejected')
-      } else if (errorMessage.includes('insufficient')) {
-        setError('Insufficient balance')
-      } else {
-        setError(errorMessage)
-      }
-
+      const { message, toastTitle } = getSwapErrorMessage(err)
+      setError(message)
       setStatus('error')
+      toast.error(toastTitle, message)
     }
   }, [client, isConnected, address, chain])
 
@@ -218,5 +218,86 @@ export function getStatusMessage(status: SwapStatus, isShielded: boolean): strin
       return 'Transaction failed'
     default:
       return ''
+  }
+}
+
+/**
+ * Parse swap error messages into user-friendly format
+ */
+function getSwapErrorMessage(err: unknown): { message: string; toastTitle: string } {
+  if (!(err instanceof Error)) {
+    return { message: 'Transaction failed', toastTitle: 'Transaction Failed' }
+  }
+
+  const message = err.message.toLowerCase()
+
+  // User rejected the transaction
+  if (message.includes('rejected') || message.includes('denied') || message.includes('cancelled')) {
+    return {
+      message: 'You rejected the transaction in your wallet',
+      toastTitle: 'Transaction Rejected',
+    }
+  }
+
+  // Insufficient balance
+  if (message.includes('insufficient') || message.includes('not enough')) {
+    return {
+      message: 'Insufficient balance for this transaction',
+      toastTitle: 'Insufficient Balance',
+    }
+  }
+
+  // Quote expired
+  if (message.includes('expired') || message.includes('stale')) {
+    return {
+      message: 'Quote has expired. Please get a new quote',
+      toastTitle: 'Quote Expired',
+    }
+  }
+
+  // Slippage too high
+  if (message.includes('slippage') || message.includes('price')) {
+    return {
+      message: 'Price moved too much. Try increasing slippage tolerance',
+      toastTitle: 'Price Changed',
+    }
+  }
+
+  // Network error
+  if (message.includes('network') || message.includes('timeout') || message.includes('connection')) {
+    return {
+      message: 'Network error. Please check your connection and try again',
+      toastTitle: 'Network Error',
+    }
+  }
+
+  // Transaction failed on-chain
+  if (message.includes('reverted') || message.includes('failed')) {
+    return {
+      message: 'Transaction failed on the network. Please try again',
+      toastTitle: 'Transaction Failed',
+    }
+  }
+
+  // Gas estimation failed
+  if (message.includes('gas')) {
+    return {
+      message: 'Failed to estimate gas. The transaction may fail',
+      toastTitle: 'Gas Error',
+    }
+  }
+
+  // Nonce error
+  if (message.includes('nonce')) {
+    return {
+      message: 'Transaction nonce error. Please refresh and try again',
+      toastTitle: 'Nonce Error',
+    }
+  }
+
+  // Default
+  return {
+    message: err.message || 'Transaction failed',
+    toastTitle: 'Transaction Failed',
   }
 }
