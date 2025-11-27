@@ -1,0 +1,547 @@
+'use client'
+
+import { motion } from 'framer-motion'
+import {
+  Shield,
+  Layers,
+  Zap,
+  Target,
+  Users,
+  Github,
+  ExternalLink,
+  Check,
+  ArrowRight,
+  BookOpen,
+  Package
+} from 'lucide-react'
+import Link from 'next/link'
+
+export default function AboutPage() {
+  return (
+    <>
+      <HeroSection />
+      <MissionSection />
+      <HowItWorksSection />
+      <RoadmapSection />
+      <CommunitySection />
+      <LinksSection />
+    </>
+  )
+}
+
+function HeroSection() {
+  return (
+    <section className="relative overflow-hidden">
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 via-transparent to-transparent" />
+        <div className="absolute top-1/3 left-1/3 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
+      </div>
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24">
+        <div className="text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
+              About SIP
+            </span>
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="mt-8 text-4xl sm:text-5xl font-bold tracking-tight"
+          >
+            Privacy as a{' '}
+            <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-purple-400 bg-clip-text text-transparent">
+              Feature
+            </span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="mt-6 text-lg text-gray-400 max-w-2xl mx-auto"
+          >
+            Building the privacy layer that cross-chain transactions deserve.
+            Open source, auditable, and designed for compliance.
+          </motion.p>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function MissionSection() {
+  const values = [
+    {
+      icon: Shield,
+      title: 'Privacy by Default',
+      description: 'Financial privacy is a fundamental right. SIP makes it accessible with a single toggle, not a complex setup.'
+    },
+    {
+      icon: Layers,
+      title: 'Application Layer',
+      description: 'We complement existing infrastructure, not compete with it. SIP works with NEAR Intents and Zcash, not against them.'
+    },
+    {
+      icon: Target,
+      title: 'Compliance Ready',
+      description: 'Privacy and compliance can coexist. Viewing keys enable selective disclosure for auditors and regulators.'
+    }
+  ]
+
+  return (
+    <section className="py-24 border-t border-gray-800/50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div>
+            <h2 className="text-3xl sm:text-4xl font-bold">
+              Why We Build SIP
+            </h2>
+            <p className="mt-6 text-lg text-gray-400">
+              In 2024, the ZachXBT incident exposed a critical vulnerability: transparent on-chain
+              activity enables coordinated attacks on traders. Market makers, DAOs, and individuals
+              all face risks when their transaction history is public.
+            </p>
+            <p className="mt-4 text-lg text-gray-400">
+              SIP Protocol addresses this by bringing Zcash-level privacy to cross-chain transactions.
+              Not as a separate chain, but as a privacy layer that works with the intent-based
+              infrastructure you already use.
+            </p>
+            <p className="mt-4 text-lg text-gray-400">
+              Our vision: privacy should be a toggle, not a tradeoff.
+            </p>
+          </div>
+
+          <div className="space-y-6">
+            {values.map((value, index) => (
+              <motion.div
+                key={value.title}
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="flex gap-4 p-6 rounded-2xl bg-gray-900/50 border border-gray-800"
+              >
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 text-purple-400 flex-shrink-0">
+                  <value.icon className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold">{value.title}</h3>
+                  <p className="mt-2 text-sm text-gray-400">{value.description}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function HowItWorksSection() {
+  return (
+    <section className="py-24 border-t border-gray-800/50 bg-gray-900/30">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl sm:text-4xl font-bold">
+            How SIP Works
+          </h2>
+          <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
+            A privacy layer built on proven cryptographic primitives
+          </p>
+        </div>
+
+        {/* Architecture Diagram */}
+        <div className="relative max-w-4xl mx-auto">
+          <div className="absolute -inset-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-3xl blur-xl" />
+          <div className="relative rounded-2xl bg-gray-900 border border-gray-800 p-8 overflow-hidden">
+            <div className="space-y-4 font-mono text-sm">
+              {/* User Intent */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="flex items-center gap-4"
+              >
+                <div className="w-32 text-right text-gray-500">User</div>
+                <div className="flex-1 p-4 rounded-lg bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30">
+                  <span className="text-purple-400">Intent</span>
+                  <span className="text-gray-400"> → Swap 1 ETH for SOL (shielded)</span>
+                </div>
+              </motion.div>
+
+              {/* Arrow */}
+              <div className="flex items-center gap-4">
+                <div className="w-32"></div>
+                <div className="flex-1 flex justify-center text-gray-600">↓</div>
+              </div>
+
+              {/* Privacy Layer */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+                className="flex items-center gap-4"
+              >
+                <div className="w-32 text-right text-purple-400">SIP Layer</div>
+                <div className="flex-1 p-4 rounded-lg bg-gray-800/50 border border-gray-700">
+                  <div className="grid grid-cols-3 gap-4 text-center">
+                    <div>
+                      <div className="text-purple-400 text-xs mb-1">Stealth Address</div>
+                      <div className="text-gray-500 text-xs">Hide recipient</div>
+                    </div>
+                    <div>
+                      <div className="text-purple-400 text-xs mb-1">Commitment</div>
+                      <div className="text-gray-500 text-xs">Hide amount</div>
+                    </div>
+                    <div>
+                      <div className="text-purple-400 text-xs mb-1">Viewing Key</div>
+                      <div className="text-gray-500 text-xs">Compliance</div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Arrow */}
+              <div className="flex items-center gap-4">
+                <div className="w-32"></div>
+                <div className="flex-1 flex justify-center text-gray-600">↓</div>
+              </div>
+
+              {/* NEAR Intents */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                className="flex items-center gap-4"
+              >
+                <div className="w-32 text-right text-[#00C08B]">NEAR Intents</div>
+                <div className="flex-1 p-4 rounded-lg bg-[#00C08B]/10 border border-[#00C08B]/30">
+                  <span className="text-[#00C08B]">Solver Network</span>
+                  <span className="text-gray-400"> → Best execution, no recipient knowledge</span>
+                </div>
+              </motion.div>
+
+              {/* Arrow */}
+              <div className="flex items-center gap-4">
+                <div className="w-32"></div>
+                <div className="flex-1 flex justify-center text-gray-600">↓</div>
+              </div>
+
+              {/* Settlement */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 }}
+                className="flex items-center gap-4"
+              >
+                <div className="w-32 text-right text-gray-500">Settlement</div>
+                <div className="flex-1 grid grid-cols-4 gap-2">
+                  {['ETH', 'SOL', 'NEAR', 'ZEC'].map((chain) => (
+                    <div key={chain} className="p-2 rounded bg-gray-800/50 border border-gray-700 text-center text-xs text-gray-400">
+                      {chain}
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </div>
+
+        {/* Key Technologies */}
+        <div className="mt-16 grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="p-6 rounded-2xl bg-gray-900/50 border border-gray-800"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-4 h-4 rounded-full bg-[#00C08B]" />
+              <h3 className="text-lg font-semibold">NEAR Intents</h3>
+            </div>
+            <p className="text-sm text-gray-400">
+              We leverage NEAR&apos;s intent-based architecture and solver network for cross-chain
+              execution. SIP adds privacy to intents without modifying the underlying infrastructure.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="p-6 rounded-2xl bg-gray-900/50 border border-gray-800"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-4 h-4 rounded-full bg-[#F4B728]" />
+              <h3 className="text-lg font-semibold">Zcash Cryptography</h3>
+            </div>
+            <p className="text-sm text-gray-400">
+              Battle-tested privacy primitives from Zcash: Pedersen commitments for hiding amounts,
+              and techniques adapted from the shielded pool for transaction privacy.
+            </p>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function RoadmapSection() {
+  const milestones = [
+    {
+      id: 'M1',
+      title: 'Architecture & Specification',
+      status: 'complete',
+      items: ['Protocol design', 'Threat modeling', 'Cryptographic specifications']
+    },
+    {
+      id: 'M2',
+      title: 'Cryptographic Core',
+      status: 'complete',
+      items: ['Pedersen commitments', 'Stealth addresses', 'Viewing key system']
+    },
+    {
+      id: 'M3',
+      title: 'SDK Production',
+      status: 'complete',
+      items: ['TypeScript SDK', 'Intent builder', 'Validation layer']
+    },
+    {
+      id: 'M4',
+      title: 'Network Integration',
+      status: 'complete',
+      items: ['NEAR Intents adapter', 'Wallet adapters', 'E2E test suite']
+    },
+    {
+      id: 'M5',
+      title: 'Documentation & Launch',
+      status: 'complete',
+      items: ['API documentation', 'Integration guides', 'Security audit prep']
+    },
+    {
+      id: 'M6',
+      title: 'ZK Circuits',
+      status: 'upcoming',
+      items: ['Noir circuit implementation', 'Proof generation', 'Verification contracts']
+    }
+  ]
+
+  return (
+    <section className="py-24 border-t border-gray-800/50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl sm:text-4xl font-bold">
+            Roadmap
+          </h2>
+          <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
+            Methodical progress toward production-ready privacy
+          </p>
+        </div>
+
+        <div className="relative max-w-3xl mx-auto">
+          {/* Timeline line */}
+          <div className="absolute left-8 top-0 bottom-0 w-px bg-gradient-to-b from-purple-500 via-purple-500/50 to-gray-800" />
+
+          <div className="space-y-8">
+            {milestones.map((milestone, index) => (
+              <motion.div
+                key={milestone.id}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="relative flex gap-6"
+              >
+                {/* Timeline dot */}
+                <div className={`relative z-10 flex h-16 w-16 items-center justify-center rounded-full border-2 ${
+                  milestone.status === 'complete'
+                    ? 'bg-purple-500/20 border-purple-500 text-purple-400'
+                    : 'bg-gray-900 border-gray-700 text-gray-500'
+                }`}>
+                  {milestone.status === 'complete' ? (
+                    <Check className="h-6 w-6" />
+                  ) : (
+                    <span className="text-sm font-bold">{milestone.id}</span>
+                  )}
+                </div>
+
+                {/* Content */}
+                <div className={`flex-1 pb-8 ${milestone.status === 'upcoming' ? 'opacity-60' : ''}`}>
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="text-sm font-medium text-purple-400">{milestone.id}</span>
+                    {milestone.status === 'complete' && (
+                      <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-green-500/10 text-green-400">
+                        Complete
+                      </span>
+                    )}
+                    {milestone.status === 'upcoming' && (
+                      <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-400">
+                        Upcoming
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="text-lg font-semibold">{milestone.title}</h3>
+                  <ul className="mt-2 space-y-1">
+                    {milestone.items.map((item) => (
+                      <li key={item} className="text-sm text-gray-400 flex items-center gap-2">
+                        <span className="w-1 h-1 rounded-full bg-gray-600" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function CommunitySection() {
+  return (
+    <section className="py-24 border-t border-gray-800/50 bg-gray-900/30">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center">
+          <div className="flex justify-center mb-6">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 text-purple-400">
+              <Users className="h-8 w-8" />
+            </div>
+          </div>
+
+          <h2 className="text-3xl sm:text-4xl font-bold">
+            Community Driven
+          </h2>
+          <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
+            SIP Protocol is open source and built in public. We believe privacy technology
+            should be transparent, auditable, and community-owned.
+          </p>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-4 text-sm text-gray-400">
+            <div className="flex items-center gap-2">
+              <Check className="h-4 w-4 text-green-500" />
+              <span>MIT Licensed</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Check className="h-4 w-4 text-green-500" />
+              <span>741 Tests</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Check className="h-4 w-4 text-green-500" />
+              <span>Security Audit Ready</span>
+            </div>
+          </div>
+
+          <div className="mt-8">
+            <a
+              href="https://github.com/sip-protocol"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 text-base font-medium text-white bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors border border-gray-700"
+            >
+              <Github className="h-5 w-5" />
+              View on GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function LinksSection() {
+  const links = [
+    {
+      icon: Github,
+      title: 'GitHub',
+      description: 'Source code, issues, and contributions',
+      href: 'https://github.com/sip-protocol/sip-protocol',
+      label: 'sip-protocol/sip-protocol'
+    },
+    {
+      icon: BookOpen,
+      title: 'Documentation',
+      description: 'Guides, API reference, and examples',
+      href: 'https://docs.sip-protocol.org',
+      label: 'docs.sip-protocol.org'
+    },
+    {
+      icon: Package,
+      title: 'npm Package',
+      description: 'Install the SDK in your project',
+      href: 'https://www.npmjs.com/package/@sip-protocol/sdk',
+      label: '@sip-protocol/sdk'
+    }
+  ]
+
+  return (
+    <section className="py-24 border-t border-gray-800/50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="text-2xl font-bold">Resources</h2>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          {links.map((link, index) => (
+            <motion.a
+              key={link.title}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="group p-6 rounded-2xl bg-gray-900/50 border border-gray-800 hover:border-purple-500/50 transition-colors"
+            >
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 text-purple-400 group-hover:from-purple-500/30 group-hover:to-pink-500/30 transition-colors mb-4">
+                <link.icon className="h-6 w-6" />
+              </div>
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                {link.title}
+                <ExternalLink className="h-4 w-4 text-gray-500 group-hover:text-purple-400 transition-colors" />
+              </h3>
+              <p className="mt-1 text-sm text-gray-400">{link.description}</p>
+              <p className="mt-2 text-sm text-purple-400 font-mono">{link.label}</p>
+            </motion.a>
+          ))}
+        </div>
+
+        {/* CTA */}
+        <div className="mt-16 text-center">
+          <p className="text-gray-400 mb-4">Ready to add privacy to your application?</p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              href="/demo"
+              className="flex items-center gap-2 px-6 py-3 text-base font-medium text-white bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all shadow-lg shadow-purple-500/25"
+            >
+              Try the Demo
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <a
+              href="https://docs.sip-protocol.org/getting-started"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-6 py-3 text-base font-medium text-gray-300 border border-gray-700 rounded-lg hover:border-gray-600 hover:text-white transition-colors"
+            >
+              Get Started
+              <ExternalLink className="h-4 w-4" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
