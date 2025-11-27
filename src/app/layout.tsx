@@ -14,10 +14,14 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://sip-protocol.org'),
   title: 'SIP Protocol - Privacy for Cross-Chain Transactions',
   description: 'Shielded Intents Protocol - One toggle to shield your sender, amount, and recipient. Built on NEAR Intents + Zcash.',
   keywords: ['privacy', 'cross-chain', 'blockchain', 'stealth addresses', 'NEAR', 'Zcash', 'DeFi'],
   authors: [{ name: 'SIP Protocol' }],
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     title: 'SIP Protocol - Privacy for Cross-Chain Transactions',
     description: 'One toggle to shield your sender, amount, and recipient.',
