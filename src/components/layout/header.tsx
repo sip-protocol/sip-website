@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
 import { Menu, X, Github, ExternalLink } from 'lucide-react'
+import { WalletButton } from '@/components/wallet'
 
 const navLinks = [
   { href: '/features', label: 'Features' },
@@ -101,14 +102,7 @@ export function Header() {
               <Github className="h-4 w-4" />
               <span>Star</span>
             </a>
-            <a
-              href="https://docs.sip-protocol.org/getting-started"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-4 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all"
-            >
-              Get Started
-            </a>
+            <WalletButton />
           </div>
 
           {/* Mobile Menu Button */}
@@ -173,14 +167,9 @@ export function Header() {
                   <Github className="h-4 w-4" />
                   <span>Star on GitHub</span>
                 </a>
-                <a
-                  href="https://docs.sip-protocol.org/getting-started"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all"
-                >
-                  Get Started
-                </a>
+                <div className="flex justify-center">
+                  <WalletButton />
+                </div>
               </div>
             </div>
           </div>

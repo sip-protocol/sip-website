@@ -11,6 +11,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@sip-protocol/sdk": "^0.1.0",
     "@sip-protocol/types": "^0.1.0",
     "framer-motion": "^11.0.0",
     "lucide-react": "^0.400.0",
