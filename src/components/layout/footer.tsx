@@ -130,19 +130,30 @@ export function Footer() {
             <p className="text-sm text-gray-400">
               &copy; {currentYear} SIP Protocol. MIT License.
             </p>
-            <p className="text-sm text-gray-400 flex items-center gap-1">
-              Built with
-              <span className="text-pink-500">&#9829;</span>
-              on
+            <div className="flex items-center gap-4">
+              <p className="text-sm text-gray-400 flex items-center gap-1">
+                Built with
+                <span className="text-pink-500">&#9829;</span>
+                on
+                <a
+                  href="https://near.org"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-400 hover:text-purple-300 transition-colors"
+                >
+                  NEAR
+                </a>
+              </p>
               <a
-                href="https://near.org"
+                href={`https://github.com/sip-protocol/sip-website/commit/${process.env.NEXT_PUBLIC_GIT_COMMIT}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-purple-400 hover:text-purple-300 transition-colors"
+                className="text-xs text-gray-500 hover:text-gray-400 transition-colors font-mono"
+                title="View commit on GitHub"
               >
-                NEAR
+                {process.env.NEXT_PUBLIC_GIT_BRANCH}/{process.env.NEXT_PUBLIC_GIT_COMMIT}
               </a>
-            </p>
+            </div>
           </div>
         </div>
       </div>

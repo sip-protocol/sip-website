@@ -29,9 +29,15 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# Build args for git info
+ARG GIT_COMMIT=dev
+ARG GIT_BRANCH=local
+
 # Set environment variables for build
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
+ENV GIT_COMMIT=$GIT_COMMIT
+ENV GIT_BRANCH=$GIT_BRANCH
 
 # Build the application
 RUN pnpm build
