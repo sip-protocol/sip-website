@@ -1,0 +1,2 @@
+# Active slot: GREEN
+set $sip_active sip_green;

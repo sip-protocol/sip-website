@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  # Blue slot - Production slot A
+  blue:
+    image: ghcr.io/sip-protocol/sip-website:${BLUE_TAG:-latest}
+    container_name: sip-website-blue
+    restart: unless-stopped
+    ports:
+      - "5000:3000"
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    networks:
+      - sip-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Green slot - Production slot B
+  green:
+    image: ghcr.io/sip-protocol/sip-website:${GREEN_TAG:-latest}
+    container_name: sip-website-green
+    restart: unless-stopped
+    ports:
+      - "5001:3000"
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    networks:
+      - sip-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Staging slot - dev branch deployments
+  staging:
+    image: ghcr.io/sip-protocol/sip-website:${STAGING_TAG:-dev}
+    container_name: sip-website-staging
+    restart: unless-stopped
+    ports:
+      - "5002:3000"
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    networks:
+      - sip-network
+    profiles:
+      - staging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  sip-network:
+    name: sip-network
+    driver: bridge

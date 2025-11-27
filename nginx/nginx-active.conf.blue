@@ -1,0 +1,2 @@
+# Active slot: BLUE
+set $sip_active sip_blue;

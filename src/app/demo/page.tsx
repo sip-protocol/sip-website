@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { PrivacyLevel } from '@sip-protocol/types'
+import { PrivacyLevel } from '@/types'
 import { SwapCard } from '@/components/swap-card'
 import { PrivacyToggle } from '@/components/privacy-toggle'
 import { ComparisonView } from '@/components/comparison-view'

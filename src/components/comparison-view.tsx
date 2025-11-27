@@ -1,6 +1,6 @@
 'use client'
 
-import { PrivacyLevel } from '@sip-protocol/types'
+import { PrivacyLevel } from '@/types'
 
 interface ComparisonViewProps {
   privacyLevel: PrivacyLevel

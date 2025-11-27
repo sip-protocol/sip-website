@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { PrivacyLevel } from '@sip-protocol/types'
+import { PrivacyLevel } from '@/types'
 
 interface SwapCardProps {
   privacyLevel: PrivacyLevel

@@ -1,0 +1,129 @@
+# SIP Protocol Website - Nginx Configuration
+# Blue-Green Deployment
+
+# Upstream definitions
+upstream sip_blue {
+    server 127.0.0.1:5000;
+    keepalive 32;
+}
+
+upstream sip_green {
+    server 127.0.0.1:5001;
+    keepalive 32;
+}
+
+upstream sip_staging {
+    server 127.0.0.1:5002;
+    keepalive 32;
+}
+
+# Active upstream - this file is updated by deploy.sh
+include /home/sip/app/nginx-active.conf;
+
+# Main production site - HTTP redirect
+server {
+    listen 80;
+    listen [::]:80;
+    server_name sip-protocol.org www.sip-protocol.org;
+    return 301 https://sip-protocol.org$request_uri;
+}
+
+# Main production site - HTTPS
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name sip-protocol.org;
+
+    # SSL configuration (managed by certbot)
+    ssl_certificate /etc/letsencrypt/live/sip-protocol.org/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/sip-protocol.org/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    # Security headers
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+
+    # Gzip
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml text/javascript;
+
+    location / {
+        proxy_pass http://$sip_active;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
+    }
+
+    # Static assets caching
+    location /_next/static {
+        proxy_pass http://$sip_active;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        add_header Cache-Control "public, max-age=31536000, immutable";
+    }
+
+    location /health {
+        return 200 'OK';
+        add_header Content-Type text/plain;
+    }
+}
+
+# WWW redirect
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name www.sip-protocol.org;
+
+    ssl_certificate /etc/letsencrypt/live/sip-protocol.org/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/sip-protocol.org/privkey.pem;
+
+    return 301 https://sip-protocol.org$request_uri;
+}
+
+# Staging site - HTTP redirect
+server {
+    listen 80;
+    listen [::]:80;
+    server_name staging.sip-protocol.org;
+    return 301 https://staging.sip-protocol.org$request_uri;
+}
+
+# Staging site - HTTPS
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name staging.sip-protocol.org;
+
+    ssl_certificate /etc/letsencrypt/live/sip-protocol.org/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/sip-protocol.org/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    add_header X-Robots-Tag "noindex, nofollow" always;
+
+    location / {
+        proxy_pass http://sip_staging;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
