@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X, Shield, Github, ExternalLink } from 'lucide-react'
+import Image from 'next/image'
+import { Menu, X, Github, ExternalLink } from 'lucide-react'
 
 const navLinks = [
   { href: '/features', label: 'Features' },
@@ -42,9 +43,13 @@ export function Header() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 transition-transform group-hover:scale-105">
-              <Shield className="h-5 w-5 text-white" />
-            </div>
+            <Image
+              src="/logo-64.png"
+              alt="SIP Protocol"
+              width={36}
+              height={36}
+              className="rounded-lg transition-transform group-hover:scale-105"
+            />
             <span className="text-lg font-bold text-white">SIP Protocol</span>
           </Link>
 

@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { Shield, Github, Twitter, ExternalLink } from 'lucide-react'
+import Image from 'next/image'
+import { Github, Twitter, ExternalLink } from 'lucide-react'
 
 interface FooterLink {
   href: string
@@ -58,9 +59,13 @@ export function Footer() {
             {/* Brand Column */}
             <div className="col-span-2 md:col-span-4 lg:col-span-1 mb-8 lg:mb-0">
               <Link href="/" className="flex items-center gap-3 group">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500 to-pink-500">
-                  <Shield className="h-5 w-5 text-white" />
-                </div>
+                <Image
+                  src="/logo-64.png"
+                  alt="SIP Protocol"
+                  width={36}
+                  height={36}
+                  className="rounded-lg"
+                />
                 <span className="text-lg font-bold text-white">SIP Protocol</span>
               </Link>
               <p className="mt-4 text-sm text-gray-400 max-w-xs">
