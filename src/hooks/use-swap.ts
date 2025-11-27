@@ -23,6 +23,8 @@ export interface SwapResult {
   txHash: string | null
   /** Explorer URL for the transaction */
   explorerUrl: string | null
+  /** Chain the transaction was submitted on */
+  txChain: NetworkId | null
   /** Current swap status */
   status: SwapStatus
   /** Error message if any */
@@ -70,11 +72,13 @@ export function useSwap(): SwapResult {
   const [status, setStatus] = useState<SwapStatus>('idle')
   const [txHash, setTxHash] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [txChain, setTxChain] = useState<NetworkId | null>(null)
 
   const reset = useCallback(() => {
     setStatus('idle')
     setTxHash(null)
     setError(null)
+    setTxChain(null)
   }, [])
 
   const execute = useCallback(async (params: SwapParams) => {
@@ -103,6 +107,7 @@ export function useSwap(): SwapResult {
       setStatus('confirming')
       setError(null)
       setTxHash(null)
+      setTxChain(params.fromChain)
 
       const fromDecimals = TOKEN_DECIMALS[params.fromToken] ?? 18
       const toDecimals = TOKEN_DECIMALS[params.toToken] ?? 18
@@ -168,14 +173,15 @@ export function useSwap(): SwapResult {
     }
   }, [client, isConnected, address, chain])
 
-  // Generate explorer URL based on the chain
-  const explorerUrl = txHash
-    ? getTransactionUrl('solana', txHash) // Default to solana for demo
+  // Generate explorer URL based on the transaction chain
+  const explorerUrl = txHash && txChain
+    ? getTransactionUrl(txChain, txHash)
     : null
 
   return {
     txHash,
     explorerUrl,
+    txChain,
     status,
     error,
     execute,
