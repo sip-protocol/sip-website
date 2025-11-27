@@ -2,7 +2,8 @@
 
 import { useState, useMemo } from 'react'
 import { PrivacyLevel } from '@sip-protocol/sdk'
-import { useQuote } from '@/hooks'
+import { useQuote, useSwap, getStatusMessage } from '@/hooks'
+import { useWalletStore } from '@/stores'
 import type { NetworkId } from '@/lib'
 
 interface SwapCardProps {
@@ -26,7 +27,9 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
   const [fromToken, setFromToken] = useState(tokens[0])
   const [toToken, setToToken] = useState(tokens[1]) // ETH
   const [amount, setAmount] = useState('')
-  const [isSwapping, setIsSwapping] = useState(false)
+
+  // Wallet state
+  const { isConnected, openModal } = useWalletStore()
 
   // Build quote params
   const quoteParams = useMemo(() => {
@@ -42,17 +45,34 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
   }, [fromToken, toToken, amount, privacyLevel])
 
   // Fetch quote
-  const { outputAmount, rate, feePercent, isLoading: isQuoteLoading, error: quoteError } = useQuote(quoteParams)
+  const { quote, outputAmount, rate, feePercent, isLoading: isQuoteLoading, error: quoteError } = useQuote(quoteParams)
 
-  const handleSwap = async () => {
-    setIsSwapping(true)
-    // Simulate swap - real implementation in #59
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    setIsSwapping(false)
-    setAmount('')
-  }
+  // Swap execution
+  const { status, txHash, explorerUrl, error: swapError, execute, reset } = useSwap()
 
   const isShielded = privacyLevel !== PrivacyLevel.TRANSPARENT
+  const isSwapping = status === 'confirming' || status === 'signing' || status === 'pending'
+  const isSuccess = status === 'success'
+  const isError = status === 'error'
+
+  const handleSwap = async () => {
+    if (!isConnected) {
+      openModal()
+      return
+    }
+
+    if (!quoteParams || !quote) return
+
+    await execute({
+      ...quoteParams,
+      quote,
+    })
+  }
+
+  const handleReset = () => {
+    reset()
+    setAmount('')
+  }
 
   return (
     <div className="card overflow-hidden">
@@ -160,27 +180,88 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
         </div>
       )}
 
+      {/* Success State */}
+      {isSuccess && txHash && (
+        <div className="mb-4 rounded-xl border border-green-500/30 bg-green-500/10 p-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500/20">
+              <CheckIcon className="h-5 w-5 text-green-400" />
+            </div>
+            <div className="flex-1">
+              <p className="font-medium text-green-300">Transaction Submitted!</p>
+              <p className="text-sm text-green-400/80">
+                Your {isShielded ? 'shielded ' : ''}swap is being processed
+              </p>
+            </div>
+          </div>
+          {explorerUrl && (
+            <a
+              href={explorerUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 flex items-center justify-center gap-2 rounded-lg bg-green-500/20 px-4 py-2 text-sm font-medium text-green-300 hover:bg-green-500/30 transition-colors"
+            >
+              View on Explorer
+              <ExternalLinkIcon className="h-4 w-4" />
+            </a>
+          )}
+          <button
+            onClick={handleReset}
+            className="mt-2 w-full rounded-lg border border-green-500/30 px-4 py-2 text-sm font-medium text-green-300 hover:bg-green-500/10 transition-colors"
+          >
+            New Swap
+          </button>
+        </div>
+      )}
+
+      {/* Error State */}
+      {isError && swapError && (
+        <div className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 p-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500/20">
+              <XIcon className="h-5 w-5 text-red-400" />
+            </div>
+            <div className="flex-1">
+              <p className="font-medium text-red-300">Transaction Failed</p>
+              <p className="text-sm text-red-400/80">{swapError}</p>
+            </div>
+          </div>
+          <button
+            onClick={reset}
+            className="mt-3 w-full rounded-lg border border-red-500/30 px-4 py-2 text-sm font-medium text-red-300 hover:bg-red-500/10 transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      )}
+
       {/* Swap button */}
-      <button
-        onClick={handleSwap}
-        disabled={!amount || isSwapping}
-        className={`w-full rounded-xl py-4 text-lg font-semibold transition-all ${
-          !amount
-            ? 'cursor-not-allowed bg-gray-800 text-gray-500'
-            : isSwapping
-              ? 'cursor-wait bg-purple-600/50 text-white'
-              : 'bg-purple-600 text-white hover:bg-purple-700'
-        }`}
-      >
-        {isSwapping ? (
-          <span className="flex items-center justify-center gap-2">
-            <LoadingSpinner />
-            {isShielded ? 'Shielding Transaction...' : 'Swapping...'}
-          </span>
-        ) : (
-          <span>{isShielded ? 'Shielded Swap' : 'Swap'}</span>
-        )}
-      </button>
+      {!isSuccess && (
+        <button
+          onClick={handleSwap}
+          disabled={(!amount || isSwapping) && isConnected}
+          className={`w-full rounded-xl py-4 text-lg font-semibold transition-all ${
+            !isConnected
+              ? 'bg-purple-600 text-white hover:bg-purple-700'
+              : !amount
+                ? 'cursor-not-allowed bg-gray-800 text-gray-500'
+                : isSwapping
+                  ? 'cursor-wait bg-purple-600/50 text-white'
+                  : 'bg-purple-600 text-white hover:bg-purple-700'
+          }`}
+        >
+          {!isConnected ? (
+            <span>Connect Wallet</span>
+          ) : isSwapping ? (
+            <span className="flex items-center justify-center gap-2">
+              <LoadingSpinner />
+              {getStatusMessage(status, isShielded)}
+            </span>
+          ) : (
+            <span>{isShielded ? 'Shielded Swap' : 'Swap'}</span>
+          )}
+        </button>
+      )}
 
       {/* Transaction details */}
       {amount && parseFloat(amount) > 0 && (
@@ -332,6 +413,30 @@ function LoadingSpinner() {
         fill="currentColor"
         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
       />
+    </svg>
+  )
+}
+
+function CheckIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+    </svg>
+  )
+}
+
+function XIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  )
+}
+
+function ExternalLinkIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
     </svg>
   )
 }
