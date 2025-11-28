@@ -13,10 +13,14 @@ vi.mock('@/contexts', () => ({
 }))
 
 // Mock wallet store
-const mockWalletState = {
+const mockWalletState: {
+  isConnected: boolean
+  address: string | null
+  chain: 'solana' | 'ethereum' | null
+} = {
   isConnected: true,
   address: '0x1234567890abcdef1234567890abcdef12345678',
-  chain: 'solana' as const,
+  chain: 'solana',
 }
 
 vi.mock('@/stores', () => ({
@@ -54,12 +58,13 @@ describe('useSwap', () => {
     amount: '1.5',
     privacyLevel: PrivacyLevel.SHIELDED,
     quote: {
-      id: 'quote-1',
+      quoteId: 'quote-1',
+      intentId: 'intent-1',
+      solverId: 'mock-solver',
       outputAmount: 100000000n,
       fee: 1000000n,
       estimatedTime: 30,
-      solver: 'mock-solver',
-      expiresAt: Date.now() + 60000,
+      expiry: Date.now() + 60000,
     },
   }
 
