@@ -136,17 +136,35 @@ describe('useSwap', () => {
       expect(toast.success).toHaveBeenCalled()
     })
 
-    it('should generate mock tx hash when execute returns no hash', async () => {
+    it('should handle shielded mode with no txHash', async () => {
       mockClient.execute.mockResolvedValue({})
 
       const { result } = renderHook(() => useSwap())
 
       await act(async () => {
-        await result.current.execute(defaultParams)
+        await result.current.execute(defaultParams) // defaultParams uses SHIELDED
       })
 
+      // Shielded mode: success without txHash is expected (privacy protection)
       expect(result.current.status).toBe('success')
-      expect(result.current.txHash).toMatch(/^0x[a-f0-9]{64}$/)
+      expect(result.current.txHash).toBeNull()
+      expect(toast.success).toHaveBeenCalledWith('Shielded Swap Complete', expect.any(String))
+    })
+
+    it('should handle transparent mode with no txHash', async () => {
+      mockClient.execute.mockResolvedValue({})
+
+      const transparentParams = { ...defaultParams, privacyLevel: PrivacyLevel.TRANSPARENT }
+      const { result } = renderHook(() => useSwap())
+
+      await act(async () => {
+        await result.current.execute(transparentParams)
+      })
+
+      // Transparent mode: success but no explorer link
+      expect(result.current.status).toBe('success')
+      expect(result.current.txHash).toBeNull()
+      expect(toast.success).toHaveBeenCalledWith('Swap Complete', expect.any(String))
     })
 
     it('should call createIntent with correct parameters', async () => {

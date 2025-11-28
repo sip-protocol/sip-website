@@ -86,7 +86,7 @@ export function TransactionStatus({
         </div>
       )}
 
-      {/* Success State */}
+      {/* Success State - with txHash */}
       {isSuccess && txHash && (
         <div className="rounded-xl border border-green-500/30 bg-green-500/10 p-4">
           <div className="flex items-center gap-3">
@@ -125,6 +125,62 @@ export function TransactionStatus({
           <button
             onClick={onReset}
             className="mt-2 w-full rounded-lg border border-green-500/30 px-4 py-2 text-sm font-medium text-green-300 transition-colors hover:bg-green-500/10"
+          >
+            New Swap
+          </button>
+        </div>
+      )}
+
+      {/* Success State - shielded without txHash (privacy protected) */}
+      {isSuccess && !txHash && isShielded && (
+        <div className="rounded-xl border border-purple-500/30 bg-purple-500/10 p-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-500/20">
+              <ShieldCheckIcon className="h-5 w-5 text-purple-400" />
+            </div>
+            <div className="flex-1">
+              <p className="font-medium text-purple-300">Shielded Swap Complete!</p>
+              <p className="text-sm text-purple-400/80">
+                Your private transaction has been processed. No public record exists.
+              </p>
+            </div>
+          </div>
+
+          {/* Privacy notice */}
+          <div className="mt-3 rounded-lg bg-purple-500/10 px-3 py-2">
+            <p className="text-xs text-purple-400/60">Privacy Status</p>
+            <p className="text-sm text-purple-300">
+              Sender, amount, and recipient are hidden
+            </p>
+          </div>
+
+          <button
+            onClick={onReset}
+            className="mt-3 w-full rounded-lg border border-purple-500/30 px-4 py-2 text-sm font-medium text-purple-300 transition-colors hover:bg-purple-500/10"
+          >
+            New Swap
+          </button>
+        </div>
+      )}
+
+      {/* Success State - transparent without txHash (processed but no hash) */}
+      {isSuccess && !txHash && !isShielded && (
+        <div className="rounded-xl border border-green-500/30 bg-green-500/10 p-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500/20">
+              <CheckIcon className="h-5 w-5 text-green-400" />
+            </div>
+            <div className="flex-1">
+              <p className="font-medium text-green-300">Swap Complete!</p>
+              <p className="text-sm text-green-400/80">
+                Your transaction has been processed
+                {networkName && ` on ${networkName}`}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onReset}
+            className="mt-3 w-full rounded-lg border border-green-500/30 px-4 py-2 text-sm font-medium text-green-300 transition-colors hover:bg-green-500/10"
           >
             New Swap
           </button>
@@ -280,6 +336,18 @@ function CheckIcon({ className }: { className?: string }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+    </svg>
+  )
+}
+
+function ShieldCheckIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"
+      />
     </svg>
   )
 }

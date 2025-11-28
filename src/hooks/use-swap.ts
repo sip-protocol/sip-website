@@ -157,12 +157,16 @@ export function useSwap(): SwapResult {
         setTxHash(result.txHash)
         setStatus('success')
         toast.success('Swap Submitted', 'Your transaction has been submitted to the network')
-      } else {
-        // For demo purposes, generate a mock tx hash
-        const mockTxHash = generateMockTxHash()
-        setTxHash(mockTxHash)
+      } else if (params.privacyLevel !== PrivacyLevel.TRANSPARENT) {
+        // Shielded mode: no public txHash is expected (privacy protection)
+        setTxHash(null)
         setStatus('success')
-        toast.success('Swap Submitted', 'Your transaction has been submitted to the network')
+        toast.success('Shielded Swap Complete', 'Your private transaction has been processed')
+      } else {
+        // Transparent mode without txHash: transaction may still be processing
+        setTxHash(null)
+        setStatus('success')
+        toast.success('Swap Complete', 'Your transaction has been processed')
       }
     } catch (err) {
       console.error('Swap execution error:', err)
@@ -187,18 +191,6 @@ export function useSwap(): SwapResult {
     execute,
     reset,
   }
-}
-
-/**
- * Generate a mock transaction hash for demo purposes
- */
-function generateMockTxHash(): string {
-  const chars = '0123456789abcdef'
-  let hash = '0x'
-  for (let i = 0; i < 64; i++) {
-    hash += chars[Math.floor(Math.random() * chars.length)]
-  }
-  return hash
 }
 
 /**
