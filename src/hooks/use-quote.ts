@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { PrivacyLevel, type Quote, type ChainId } from '@sip-protocol/sdk'
 import { useSIP } from '@/contexts'
 import { toast } from '@/stores'
-import { formatAmount, parseAmount, type NetworkId } from '@/lib'
+import { formatAmount, parseAmount, getExchangeRateSync, getUSDPrices, type NetworkId } from '@/lib'
 
 export interface QuoteParams {
   fromChain: NetworkId
@@ -44,26 +44,6 @@ const TOKEN_DECIMALS: Record<string, number> = {
   WETH: 18,
 }
 
-/**
- * Get mock exchange rate for demo purposes
- * Real rates would come from the 1Click API
- */
-function getMockRate(fromToken: string, toToken: string): number {
-  // Mock rates based on approximate market values
-  const usdPrices: Record<string, number> = {
-    SOL: 100,
-    ETH: 3500,
-    NEAR: 5,
-    ZEC: 50,
-    USDC: 1,
-    WETH: 3500,
-  }
-
-  const fromPrice = usdPrices[fromToken] ?? 1
-  const toPrice = usdPrices[toToken] ?? 1
-
-  return fromPrice / toPrice
-}
 
 /**
  * Hook for fetching swap quotes
@@ -101,9 +81,9 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
       const toDecimals = TOKEN_DECIMALS[params.toToken] ?? 18
       const amountBigInt = parseAmount(params.amount, fromDecimals)
 
-      // Calculate minimum output amount based on mock rate (with 1% slippage)
-      const mockRate = getMockRate(params.fromToken, params.toToken)
-      const expectedOutput = parseFloat(params.amount) * mockRate
+      // Calculate minimum output amount based on exchange rate (with 1% slippage)
+      const exchangeRate = getExchangeRateSync(params.fromToken, params.toToken)
+      const expectedOutput = parseFloat(params.amount) * exchangeRate
       const minOutput = expectedOutput * 0.99 // 1% slippage
       const minOutputBigInt = parseAmount(minOutput.toString(), toDecimals)
 
@@ -154,6 +134,13 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
     }
   }, [client, params])
 
+  // Prefetch prices on mount for accurate rate display
+  useEffect(() => {
+    getUSDPrices().catch(() => {
+      // Silent fail - will use fallback prices
+    })
+  }, [])
+
   // Fetch quote when params change (debounced)
   useEffect(() => {
     const timeoutId = setTimeout(fetchQuote, 500) // 500ms debounce
@@ -171,17 +158,17 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
       return formatAmount(quote.outputAmount, toDecimals)
     }
 
-    // Fallback: estimate based on mock rates
-    const mockRate = getMockRate(params.fromToken, params.toToken)
-    const estimated = parseFloat(params.amount) * mockRate
+    // Fallback: estimate based on exchange rates
+    const exchangeRate = getExchangeRateSync(params.fromToken, params.toToken)
+    const estimated = parseFloat(params.amount) * exchangeRate
     return estimated.toFixed(6).replace(/\.?0+$/, '')
   }, [params, quote])
 
   const rate = useMemo(() => {
     if (!params) return '0'
-    // Always use mock rate for display (real rate would come from quote)
-    const mockRate = getMockRate(params.fromToken, params.toToken)
-    return mockRate.toFixed(6).replace(/\.?0+$/, '')
+    // Use cached exchange rate (real-time from CoinGecko with fallback)
+    const exchangeRate = getExchangeRateSync(params.fromToken, params.toToken)
+    return exchangeRate.toFixed(6).replace(/\.?0+$/, '')
   }, [params])
 
   // Calculate fee percent from quote fee and output amount

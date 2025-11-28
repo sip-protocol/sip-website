@@ -20,3 +20,12 @@ export {
   type NetworkConfig,
   type TokenConfig,
 } from './networks'
+
+export {
+  getUSDPrices,
+  getExchangeRate,
+  getExchangeRateSync,
+  isCacheFresh,
+  refreshPrices,
+  clearPriceCache,
+} from './prices'
