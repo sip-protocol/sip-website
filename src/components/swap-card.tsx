@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import { PrivacyLevel } from '@sip-protocol/sdk'
-import { useQuote, useSwap, getStatusMessage } from '@/hooks'
+import { useQuote, useSwap, useBalance, getStatusMessage } from '@/hooks'
 import { useWalletStore } from '@/stores'
 import { TransactionStatus } from '@/components/transaction-status'
 import type { NetworkId } from '@/lib'
@@ -31,6 +31,9 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
 
   // Wallet state
   const { isConnected, openModal } = useWalletStore()
+
+  // Balance fetching
+  const { formatted: balance, symbol: balanceSymbol, isLoading: isBalanceLoading } = useBalance()
 
   // Build quote params
   const quoteParams = useMemo(() => {
@@ -105,7 +108,18 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
       <div className="mb-2 rounded-xl bg-gray-800/50 p-4">
         <div className="mb-2 flex items-center justify-between text-sm text-gray-400">
           <span>From</span>
-          <span>Balance: 12.5</span>
+          <span>
+            Balance:{' '}
+            {isConnected ? (
+              isBalanceLoading ? (
+                <span className="inline-block h-4 w-12 animate-pulse rounded bg-gray-700" />
+              ) : (
+                `${balance} ${balanceSymbol}`
+              )
+            ) : (
+              '—'
+            )}
+          </span>
         </div>
         <div className="flex items-center gap-3">
           <input

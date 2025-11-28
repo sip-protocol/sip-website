@@ -6,3 +6,4 @@ export {
   type SwapResult,
   type SwapStatus,
 } from './use-swap'
+export { useBalance } from './use-balance'
