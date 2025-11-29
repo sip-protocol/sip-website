@@ -42,7 +42,7 @@ const footerLinks: Record<string, FooterSection> = {
     title: 'Community',
     links: [
       { href: 'https://github.com/sip-protocol/sip-protocol', label: 'GitHub', external: true },
-      { href: 'https://twitter.com/sip_protocol', label: 'Twitter', external: true },
+      { href: 'https://x.com/rz1989sol', label: 'Twitter', external: true },
     ],
   },
 }
@@ -83,7 +83,7 @@ export function Footer() {
                   <Github className="h-5 w-5" />
                 </a>
                 <a
-                  href="https://twitter.com/sip_protocol"
+                  href="https://x.com/rz1989sol"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-white transition-colors"
