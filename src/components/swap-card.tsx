@@ -79,11 +79,12 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
   }
 
   return (
-    <div className="card overflow-hidden">
+    <div className="card overflow-hidden" data-testid="swap-card">
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <h3 className="text-lg font-semibold">Swap</h3>
         <div
+          data-testid="privacy-badge"
           className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${
             isShielded
               ? 'bg-purple-600/20 text-purple-400'
@@ -127,12 +128,14 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             placeholder="0.0"
+            data-testid="from-amount"
             className="flex-1 bg-transparent text-2xl font-medium outline-none placeholder:text-gray-600"
           />
           <TokenSelector
             token={fromToken}
             onSelect={setFromToken}
             tokens={tokens}
+            testId="from-token"
           />
         </div>
       </div>
@@ -158,11 +161,11 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
         <div className="flex items-center gap-3">
           <div className="flex-1">
             {isQuoteLoading ? (
-              <span className="flex items-center gap-2 text-2xl font-medium text-gray-500">
+              <span className="flex items-center gap-2 text-2xl font-medium text-gray-500" data-testid="quote-loading">
                 <LoadingSpinner />
               </span>
             ) : (
-              <span className="text-2xl font-medium text-gray-400">
+              <span className="text-2xl font-medium text-gray-400" data-testid="to-output">
                 {outputAmount || '0'}
               </span>
             )}
@@ -171,6 +174,7 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
             token={toToken}
             onSelect={setToToken}
             tokens={tokens}
+            testId="to-token"
           />
         </div>
         {quoteError && (
@@ -180,7 +184,7 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
 
       {/* Privacy info */}
       {isShielded && (
-        <div className="mb-4 rounded-lg border border-purple-500/30 bg-purple-500/10 p-3">
+        <div className="mb-4 rounded-lg border border-purple-500/30 bg-purple-500/10 p-3" data-testid="privacy-info">
           <div className="flex items-start gap-2">
             <ShieldIcon className="mt-0.5 h-4 w-4 flex-shrink-0 text-purple-400" />
             <div className="text-sm">
@@ -212,6 +216,7 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
         <button
           onClick={handleSwap}
           disabled={(!amount || isSwapping) && isConnected}
+          data-testid="swap-button"
           className={`w-full rounded-xl py-4 text-lg font-semibold transition-all ${
             !isConnected
               ? 'bg-purple-600 text-white hover:bg-purple-700'
@@ -274,10 +279,12 @@ function TokenSelector({
   token,
   onSelect,
   tokens,
+  testId,
 }: {
   token: Token
   onSelect: (token: Token) => void
   tokens: Token[]
+  testId?: string
 }) {
   const [open, setOpen] = useState(false)
 
@@ -285,6 +292,7 @@ function TokenSelector({
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
+        data-testid={testId}
         className="flex items-center gap-2 rounded-xl bg-gray-700/50 px-3 py-2 font-medium transition-colors hover:bg-gray-700"
       >
         <span className="text-lg">{token.icon}</span>

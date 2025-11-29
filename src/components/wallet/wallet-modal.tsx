@@ -65,11 +65,11 @@ export function WalletModal() {
         })
 
         await adapter.connect()
-        // Use publicKey (hex) for consistency across chains
-        const hexAddress = adapter.publicKey
+        // Use address (Base58 for Solana) for display and RPC calls
+        const solanaAddress = adapter.address
 
-        if (hexAddress) {
-          connect(walletType, chain, hexAddress as `0x${string}`)
+        if (solanaAddress) {
+          connect(walletType, chain, solanaAddress)
           toast.success('Wallet Connected', `Connected to ${walletName} on Solana Devnet`)
         }
       } else {
@@ -82,7 +82,7 @@ export function WalletModal() {
         const address = adapter.address
 
         if (address) {
-          connect(walletType, chain, address as `0x${string}`)
+          connect(walletType, chain, address)
           toast.success('Wallet Connected', `Connected to ${walletName} on Sepolia`)
         }
       }

@@ -32,3 +32,8 @@ npm-debug.log*
 
 # Turbo
 .turbo/
+
+# Playwright
+playwright-report/
+playwright/.cache/
+test-results/

@@ -39,6 +39,7 @@ export function WalletButton() {
     return (
       <button
         disabled
+        data-testid="wallet-connecting"
         className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-400 bg-gray-800 rounded-lg cursor-not-allowed"
       >
         <div className="h-4 w-4 border-2 border-gray-500 border-t-purple-500 rounded-full animate-spin" />
@@ -54,6 +55,7 @@ export function WalletButton() {
       <div className="relative">
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          data-testid="wallet-connected"
           className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 rounded-lg border border-gray-700 hover:border-gray-600 transition-colors"
         >
           <div className="h-5 w-5 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xs">
@@ -68,8 +70,9 @@ export function WalletButton() {
             <div
               className="fixed inset-0 z-40"
               onClick={() => setIsDropdownOpen(false)}
+              data-testid="wallet-backdrop"
             />
-            <div className="absolute right-0 top-full mt-2 w-64 bg-gray-900 border border-gray-800 rounded-xl shadow-xl z-50 overflow-hidden">
+            <div className="absolute right-0 top-full mt-2 w-64 bg-gray-900 border border-gray-800 rounded-xl shadow-xl z-50 overflow-hidden" data-testid="wallet-dropdown">
               {/* Wallet Info */}
               <div className="p-4 border-b border-gray-800">
                 <div className="flex items-center gap-3">
@@ -91,6 +94,7 @@ export function WalletButton() {
               <div className="p-2">
                 <button
                   onClick={handleCopyAddress}
+                  data-testid="copy-address"
                   className="flex items-center gap-3 w-full px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
                 >
                   {copied ? (
@@ -105,6 +109,7 @@ export function WalletButton() {
                   href={explorerUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-testid="view-explorer"
                   className="flex items-center gap-3 w-full px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
                 >
                   <ExternalLink className="h-4 w-4" />
@@ -113,6 +118,7 @@ export function WalletButton() {
 
                 <button
                   onClick={handleDisconnect}
+                  data-testid="disconnect-wallet"
                   className="flex items-center gap-3 w-full px-3 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-gray-800 rounded-lg transition-colors"
                 >
                   <LogOut className="h-4 w-4" />
@@ -129,6 +135,7 @@ export function WalletButton() {
   return (
     <button
       onClick={openModal}
+      data-testid="wallet-connect"
       className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all"
     >
       <Wallet className="h-4 w-4" />

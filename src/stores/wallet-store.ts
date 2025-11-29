@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { ChainId, HexString } from '@sip-protocol/types'
+import type { ChainId } from '@sip-protocol/types'
 
 export type WalletType = 'phantom' | 'solflare' | 'metamask' | 'walletconnect'
 export type ChainType = 'solana' | 'ethereum'
@@ -8,7 +8,8 @@ export interface WalletState {
   // Connection state
   isConnected: boolean
   isConnecting: boolean
-  address: HexString | null
+  // Address format varies by chain: Base58 for Solana, 0x hex for Ethereum
+  address: string | null
   chain: ChainType | null
   walletType: WalletType | null
 
@@ -23,7 +24,7 @@ export interface WalletState {
 
   // Actions
   setConnecting: (connecting: boolean) => void
-  connect: (walletType: WalletType, chain: ChainType, address: HexString) => void
+  connect: (walletType: WalletType, chain: ChainType, address: string) => void
   disconnect: () => void
   openModal: () => void
   closeModal: () => void
