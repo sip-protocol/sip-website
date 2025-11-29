@@ -1,7 +1,15 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { PrivacyLevel, type Quote, type ChainId, generateViewingKey, type ProductionQuote } from '@sip-protocol/sdk'
+import { PrivacyLevel, type Quote, type ChainId } from '@sip-protocol/types'
+
+// ProductionQuote extends Quote with depositAddress for production mode
+interface ProductionQuote extends Quote {
+  depositAddress?: string
+}
+
+// Dynamically import SDK functions to avoid SSR issues with WASM
+const loadSDK = () => import('@sip-protocol/sdk')
 import { useSIP } from '@/contexts'
 import { useWalletStore, toast } from '@/stores'
 import { parseAmount, getTransactionUrl, type NetworkId } from '@/lib'
@@ -128,12 +136,17 @@ export function useSwap(): SwapResult {
       const toDecimals = TOKEN_DECIMALS[params.toToken] ?? 18
       const amountBigInt = parseAmount(params.amount, fromDecimals)
 
-      // Generate viewing key for compliant mode
-      const viewingKeyObj = params.privacyLevel === PrivacyLevel.COMPLIANT
-        ? generateViewingKey(`swap/${Date.now()}`)
-        : undefined
+      // Generate viewing key for compliant mode (dynamically load SDK)
+      let viewingKeyObj: { key: string; path: string; hash: string } | undefined
+      if (params.privacyLevel === PrivacyLevel.COMPLIANT) {
+        const sdk = await loadSDK()
+        viewingKeyObj = sdk.generateViewingKey(`swap/${Date.now()}`)
+      }
 
       // Create the shielded intent
+      if (!client) {
+        throw new Error('SIP client not ready')
+      }
       const intent = await client.createIntent({
         input: {
           asset: {
@@ -155,7 +168,7 @@ export function useSwap(): SwapResult {
           maxSlippage: 0.01,
         },
         privacy: params.privacyLevel,
-        viewingKey: viewingKeyObj?.key,
+        viewingKey: viewingKeyObj?.key as `0x${string}` | undefined,
       })
 
       setStatus('signing')

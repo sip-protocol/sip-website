@@ -3,18 +3,19 @@
 import {
   createContext,
   useContext,
-  useMemo,
+  useState,
+  useEffect,
   type ReactNode,
 } from 'react'
 import type { SIP } from '@sip-protocol/sdk'
-import { getSIPClient, isRealSwapsEnabled } from '@/lib/sip-client'
+import { getSIPClientAsync, isRealSwapsEnabled } from '@/lib/sip-client'
 
 /**
  * SIP Context value type
  */
 interface SIPContextValue {
-  /** The SIP SDK client instance */
-  client: SIP
+  /** The SIP SDK client instance (null while loading) */
+  client: SIP | null
   /** Whether the SDK is ready for use */
   isReady: boolean
   /** Network the SDK is configured for */
@@ -36,6 +37,7 @@ interface SIPProviderProps {
  * SIP Provider Component
  *
  * Provides the SIP SDK client to all child components via React context.
+ * Handles async initialization of the SDK.
  *
  * @example
  * ```tsx
@@ -45,21 +47,30 @@ interface SIPProviderProps {
  * </SIPProvider>
  *
  * // In any component
- * const { client } = useSIP()
- * const intent = await client.createIntent({...})
+ * const { client, isReady } = useSIP()
+ * if (isReady && client) {
+ *   const intent = await client.createIntent({...})
+ * }
  * ```
  */
 export function SIPProvider({ children }: SIPProviderProps) {
-  const value = useMemo<SIPContextValue>(() => {
-    const client = getSIPClient()
-    const isProductionMode = isRealSwapsEnabled()
-    return {
-      client,
-      isReady: true,
-      network: 'testnet',
-      isProductionMode,
-    }
+  const [client, setClient] = useState<SIP | null>(null)
+  const [isReady, setIsReady] = useState(false)
+  const isProductionMode = isRealSwapsEnabled()
+
+  useEffect(() => {
+    getSIPClientAsync().then((sipClient) => {
+      setClient(sipClient)
+      setIsReady(true)
+    })
   }, [])
+
+  const value: SIPContextValue = {
+    client,
+    isReady,
+    network: 'testnet',
+    isProductionMode,
+  }
 
   return (
     <SIPContext.Provider value={value}>

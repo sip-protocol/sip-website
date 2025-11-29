@@ -3,14 +3,11 @@
 import { useEffect, useState } from 'react'
 import { X, ExternalLink, AlertCircle } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import {
-  detectSolanaWallets,
-  detectEthereumWallets,
-  createSolanaAdapter,
-  createEthereumAdapter,
-  type SolanaWalletName,
-  type EthereumWalletName,
-} from '@sip-protocol/sdk'
+// Types only - no runtime SDK import at module level to avoid WASM issues
+import type { SolanaWalletName, EthereumWalletName } from '@sip-protocol/sdk'
+
+// Dynamic SDK import to avoid WASM loading during SSG
+const loadSDK = () => import('@sip-protocol/sdk')
 import {
   useWalletStore,
   toast,
@@ -37,17 +34,19 @@ export function WalletModal() {
   }>({ solana: [], ethereum: [] })
   const [error, setError] = useState<string | null>(null)
 
-  // Detect wallets on mount
+  // Detect wallets on mount (using dynamic SDK import)
   useEffect(() => {
     if (isModalOpen) {
-      const solanaWallets = detectSolanaWallets()
-      const ethereumWallets = detectEthereumWallets()
-      setDetectedWallets({ solana: solanaWallets, ethereum: ethereumWallets })
-      setAvailableWallets({
-        solana: solanaWallets as WalletType[],
-        ethereum: ethereumWallets as WalletType[],
+      loadSDK().then((sdk) => {
+        const solanaWallets = sdk.detectSolanaWallets()
+        const ethereumWallets = sdk.detectEthereumWallets()
+        setDetectedWallets({ solana: solanaWallets, ethereum: ethereumWallets })
+        setAvailableWallets({
+          solana: solanaWallets as WalletType[],
+          ethereum: ethereumWallets as WalletType[],
+        })
+        setError(null)
       })
-      setError(null)
     }
   }, [isModalOpen, setAvailableWallets])
 
@@ -56,10 +55,11 @@ export function WalletModal() {
     setConnecting(true)
 
     const walletName = WALLET_INFO[walletType].name
+    const sdk = await loadSDK()
 
     try {
       if (chain === 'solana') {
-        const adapter = createSolanaAdapter({
+        const adapter = sdk.createSolanaAdapter({
           wallet: walletType as SolanaWalletName,
           cluster: 'devnet',
         })
@@ -73,7 +73,7 @@ export function WalletModal() {
           toast.success('Wallet Connected', `Connected to ${walletName} on Solana Devnet`)
         }
       } else {
-        const adapter = createEthereumAdapter({
+        const adapter = sdk.createEthereumAdapter({
           wallet: walletType as EthereumWalletName,
           chainId: 11155111, // Sepolia testnet
         })

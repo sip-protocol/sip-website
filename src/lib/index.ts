@@ -1,8 +1,11 @@
 export {
-  createSIPClient,
-  getSIPClient,
+  createSIPClientAsync,
+  getSIPClientAsync,
+  getInitializedSIPClient,
+  getProofProvider,
   resetSIPClient,
-  SIP_CONFIG,
+  isRealSwapsEnabled,
+  getNearIntentsJwt,
 } from './sip-client'
 
 export {

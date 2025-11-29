@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { PrivacyLevel } from '@sip-protocol/sdk'
+import { PrivacyLevel } from '@sip-protocol/types'
 import { useQuote, useSwap, useBalance, getStatusMessage } from '@/hooks'
 import { useWalletStore } from '@/stores'
 import { TransactionStatus } from '@/components/transaction-status'

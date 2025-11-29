@@ -1,7 +1,15 @@
 'use client'
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { PrivacyLevel, type Quote, type ChainId, generateViewingKey, type ProductionQuote } from '@sip-protocol/sdk'
+import { PrivacyLevel, type Quote, type ChainId } from '@sip-protocol/types'
+
+// ProductionQuote extends Quote with depositAddress for production mode
+interface ProductionQuote extends Quote {
+  depositAddress?: string
+}
+
+// Dynamically import SDK functions to avoid SSR issues with WASM
+const loadSDK = () => import('@sip-protocol/sdk')
 import { useSIP } from '@/contexts'
 import { toast } from '@/stores'
 import { formatAmount, parseAmount, getExchangeRateSync, getUSDPrices, type NetworkId } from '@/lib'
@@ -89,10 +97,12 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
       const minOutput = expectedOutput * 0.99 // 1% slippage
       const minOutputBigInt = parseAmount(minOutput.toString(), toDecimals)
 
-      // Generate viewing key for compliant mode
-      const viewingKeyObj = params.privacyLevel === PrivacyLevel.COMPLIANT
-        ? generateViewingKey(`quote/${Date.now()}`)
-        : undefined
+      // Generate viewing key for compliant mode (dynamically load SDK)
+      let viewingKeyObj: { key: string; path: string; hash: string } | undefined
+      if (params.privacyLevel === PrivacyLevel.COMPLIANT) {
+        const sdk = await loadSDK()
+        viewingKeyObj = sdk.generateViewingKey(`quote/${Date.now()}`)
+      }
 
       // Build CreateIntentParams (needed for both demo and production modes)
       const intentParams = {
@@ -116,12 +126,16 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
           maxSlippage: 0.01, // 1%
         },
         privacy: params.privacyLevel,
-        viewingKey: viewingKeyObj?.key,
+        viewingKey: viewingKeyObj?.key as `0x${string}` | undefined,
       }
 
       // Get quotes from SDK
       // In production mode, this fetches from NEAR 1Click API
       // In demo mode, this returns mock quotes
+      if (!client) {
+        setError('SIP client not ready')
+        return
+      }
       const quotes = await client.getQuotes(intentParams)
 
       if (quotes.length > 0) {

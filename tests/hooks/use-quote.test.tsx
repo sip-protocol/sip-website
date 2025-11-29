@@ -64,7 +64,7 @@ describe('useQuote', () => {
     }, { timeout: 2000 })
 
     expect(result.current.quote?.outputAmount).toBe(100000000n)
-    expect(mockClient.createIntent).toHaveBeenCalled()
+    expect(mockClient.getQuotes).toHaveBeenCalled()
   })
 
   it('should set error when no quotes available', async () => {

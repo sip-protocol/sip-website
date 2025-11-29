@@ -2,20 +2,18 @@
  * SIP SDK Client Configuration
  *
  * Initializes the SIP client with appropriate configuration for demo/testnet use.
- * Uses NoirProofProvider for real ZK proofs (with MockProofProvider fallback).
+ * Uses dynamic imports to avoid SSR/WASM issues with Barretenberg.
  *
  * Production mode (real NEAR 1Click API):
  * - Set NEXT_PUBLIC_REAL_SWAPS=true in .env.local
  * - Optionally set NEXT_PUBLIC_NEAR_INTENTS_JWT for authenticated API access
  */
 
-import {
-  SIP,
-  NoirProofProvider,
-  MockProofProvider,
-  type SIPConfig,
-  type ProofProvider,
-} from '@sip-protocol/sdk'
+// Type-only imports (no runtime dependency)
+import type { SIP, SIPConfig, ProofProvider } from '@sip-protocol/sdk'
+
+// Dynamic SDK import to avoid WASM loading during SSG
+const loadSDK = () => import('@sip-protocol/sdk')
 
 /**
  * Check if real swaps are enabled via environment variable
@@ -32,6 +30,27 @@ export const getNearIntentsJwt = (): string | undefined => {
 }
 
 /**
+ * Lazy SDK module cache
+ */
+let sdkModule: typeof import('@sip-protocol/sdk') | null = null
+let sdkLoadPromise: Promise<typeof import('@sip-protocol/sdk')> | null = null
+
+/**
+ * Load SDK module (cached)
+ */
+async function getSDK(): Promise<typeof import('@sip-protocol/sdk')> {
+  if (sdkModule) return sdkModule
+  if (sdkLoadPromise) return sdkLoadPromise
+
+  sdkLoadPromise = loadSDK().then((mod) => {
+    sdkModule = mod
+    return mod
+  })
+
+  return sdkLoadPromise
+}
+
+/**
  * Proof provider instance (lazy-initialized)
  */
 let proofProvider: ProofProvider | null = null
@@ -39,22 +58,24 @@ let providerInitPromise: Promise<ProofProvider> | null = null
 
 /**
  * Initialize the proof provider
- * Uses NoirProofProvider if WASM is available, falls back to MockProofProvider
+ * Uses MockProofProvider (NoirProofProvider requires WASM which causes SSR issues)
  */
 async function initializeProofProvider(): Promise<ProofProvider> {
   if (proofProvider) {
     return proofProvider
   }
 
+  const sdk = await getSDK()
+
   try {
-    const noirProvider = new NoirProofProvider({ verbose: false })
+    const noirProvider = new sdk.NoirProofProvider({ verbose: false })
     await noirProvider.initialize()
     proofProvider = noirProvider
     console.log('[SIP] NoirProofProvider initialized successfully')
   } catch (error) {
     // Fallback to mock provider if Noir fails (e.g., WASM not available)
     console.warn('[SIP] NoirProofProvider failed, using MockProofProvider:', error)
-    proofProvider = new MockProofProvider()
+    proofProvider = new sdk.MockProofProvider()
   }
 
   return proofProvider
@@ -72,12 +93,11 @@ export function getProofProvider(): Promise<ProofProvider> {
 
 /**
  * Get base configuration for demo/testnet environment
- * Note: proofProvider is set dynamically after initialization
  */
-export function getSIPConfig(): SIPConfig {
+async function getSIPConfigAsync(sdk: typeof import('@sip-protocol/sdk')): Promise<SIPConfig> {
   const baseConfig: SIPConfig = {
     network: 'testnet',
-    proofProvider: new MockProofProvider(), // Default, replaced after init
+    proofProvider: new sdk.MockProofProvider(),
   }
 
   // Enable production mode for real NEAR 1Click swaps
@@ -93,16 +113,13 @@ export function getSIPConfig(): SIPConfig {
 }
 
 /**
- * Default configuration (computed at load time)
- */
-export const SIP_CONFIG: SIPConfig = getSIPConfig()
-
-/**
  * Create a configured SIP client instance
  */
-export function createSIPClient(config?: Partial<SIPConfig>): SIP {
-  return new SIP({
-    ...getSIPConfig(),
+export async function createSIPClientAsync(config?: Partial<SIPConfig>): Promise<SIP> {
+  const sdk = await getSDK()
+  const baseConfig = await getSIPConfigAsync(sdk)
+  return new sdk.SIP({
+    ...baseConfig,
     ...config,
   })
 }
@@ -112,12 +129,21 @@ export function createSIPClient(config?: Partial<SIPConfig>): SIP {
  * Lazy-initialized to avoid SSR issues
  */
 let sipInstance: SIP | null = null
+let clientInitPromise: Promise<SIP> | null = null
 
-export function getSIPClient(): SIP {
-  if (!sipInstance) {
-    sipInstance = createSIPClient()
-  }
-  return sipInstance
+/**
+ * Get or create the singleton SIP client (async)
+ */
+export async function getSIPClientAsync(): Promise<SIP> {
+  if (sipInstance) return sipInstance
+  if (clientInitPromise) return clientInitPromise
+
+  clientInitPromise = createSIPClientAsync().then((client) => {
+    sipInstance = client
+    return client
+  })
+
+  return clientInitPromise
 }
 
 /**
@@ -133,7 +159,7 @@ export async function getInitializedSIPClient(): Promise<SIP> {
   const provider = await getProofProvider()
 
   if (!sipInstance || !clientInitialized) {
-    sipInstance = createSIPClient({ proofProvider: provider })
+    sipInstance = await createSIPClientAsync({ proofProvider: provider })
     clientInitialized = true
   }
 
@@ -147,5 +173,6 @@ export function resetSIPClient(): void {
   sipInstance = null
   proofProvider = null
   providerInitPromise = null
+  clientInitPromise = null
   clientInitialized = false
 }
