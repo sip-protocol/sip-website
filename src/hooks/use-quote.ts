@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { PrivacyLevel, type Quote, type ChainId } from '@sip-protocol/sdk'
+import { PrivacyLevel, type Quote, type ChainId, generateViewingKey } from '@sip-protocol/sdk'
 import { useSIP } from '@/contexts'
 import { toast } from '@/stores'
 import { formatAmount, parseAmount, getExchangeRateSync, getUSDPrices, type NetworkId } from '@/lib'
@@ -87,6 +87,11 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
       const minOutput = expectedOutput * 0.99 // 1% slippage
       const minOutputBigInt = parseAmount(minOutput.toString(), toDecimals)
 
+      // Generate viewing key for compliant mode
+      const viewingKeyObj = params.privacyLevel === PrivacyLevel.COMPLIANT
+        ? generateViewingKey(`quote/${Date.now()}`)
+        : undefined
+
       // Create intent for quote
       const intent = await client.createIntent({
         input: {
@@ -109,6 +114,7 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
           maxSlippage: 0.01, // 1%
         },
         privacy: params.privacyLevel,
+        viewingKey: viewingKeyObj?.key,
       })
 
       // Get quotes from SDK
