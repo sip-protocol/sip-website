@@ -11,6 +11,7 @@ interface TransactionStatusProps {
   chain: NetworkId | null
   error: string | null
   isShielded: boolean
+  isCompliant?: boolean
   onReset: () => void
   onRetry: () => void
 }
@@ -26,6 +27,7 @@ export function TransactionStatus({
   chain,
   error,
   isShielded,
+  isCompliant = false,
   onReset,
   onRetry,
 }: TransactionStatusProps) {
@@ -131,17 +133,25 @@ export function TransactionStatus({
         </div>
       )}
 
-      {/* Success State - shielded without txHash (privacy protected) */}
+      {/* Success State - shielded/compliant without txHash (privacy protected) */}
       {isSuccess && !txHash && isShielded && (
         <div className="rounded-xl border border-purple-500/30 bg-purple-500/10 p-4">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-500/20">
-              <ShieldCheckIcon className="h-5 w-5 text-purple-400" />
+              {isCompliant ? (
+                <KeyCheckIcon className="h-5 w-5 text-purple-400" />
+              ) : (
+                <ShieldCheckIcon className="h-5 w-5 text-purple-400" />
+              )}
             </div>
             <div className="flex-1">
-              <p className="font-medium text-purple-300">Shielded Swap Complete!</p>
+              <p className="font-medium text-purple-300">
+                {isCompliant ? 'Compliant Swap Complete!' : 'Shielded Swap Complete!'}
+              </p>
               <p className="text-sm text-purple-400/80">
-                Your private transaction has been processed. No public record exists.
+                {isCompliant
+                  ? 'Your private transaction has been processed with viewing key for auditors.'
+                  : 'Your private transaction has been processed. No public record exists.'}
               </p>
             </div>
           </div>
@@ -150,7 +160,9 @@ export function TransactionStatus({
           <div className="mt-3 rounded-lg bg-purple-500/10 px-3 py-2">
             <p className="text-xs text-purple-400/60">Privacy Status</p>
             <p className="text-sm text-purple-300">
-              Sender, amount, and recipient are hidden
+              {isCompliant
+                ? 'Transaction hidden, auditors can decrypt with viewing key'
+                : 'Sender, amount, and recipient are hidden'}
             </p>
           </div>
 
@@ -348,6 +360,19 @@ function ShieldCheckIcon({ className }: { className?: string }) {
         strokeLinejoin="round"
         d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"
       />
+    </svg>
+  )
+}
+
+function KeyCheckIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"
+      />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 15l2 2" />
     </svg>
   )
 }

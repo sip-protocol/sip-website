@@ -54,7 +54,10 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
   // Swap execution
   const { status, txHash, explorerUrl, txChain, error: swapError, execute, reset } = useSwap()
 
-  const isShielded = privacyLevel !== PrivacyLevel.TRANSPARENT
+  const isTransparent = privacyLevel === PrivacyLevel.TRANSPARENT
+  const isShielded = privacyLevel === PrivacyLevel.SHIELDED
+  const isCompliant = privacyLevel === PrivacyLevel.COMPLIANT
+  const hasPrivacy = !isTransparent // Either shielded or compliant
   const isSwapping = status === 'confirming' || status === 'signing' || status === 'pending'
   const isSuccess = status === 'success'
   const isError = status === 'error'
@@ -86,7 +89,7 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
         <div
           data-testid="privacy-badge"
           className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${
-            isShielded
+            hasPrivacy
               ? 'bg-purple-600/20 text-purple-400'
               : 'bg-gray-700/50 text-gray-400'
           }`}
@@ -95,6 +98,11 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
             <>
               <ShieldIcon className="h-3 w-3" />
               Shielded
+            </>
+          ) : isCompliant ? (
+            <>
+              <KeyIcon className="h-3 w-3" />
+              Compliant
             </>
           ) : (
             <>
@@ -151,7 +159,7 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
       <div className="mb-6 mt-2 rounded-xl bg-gray-800/50 p-4">
         <div className="mb-2 flex items-center justify-between text-sm text-gray-400">
           <span>To (estimated)</span>
-          {isShielded && (
+          {hasPrivacy && (
             <span className="flex items-center gap-1 text-purple-400">
               <ShieldIcon className="h-3 w-3" />
               Stealth Address
@@ -183,14 +191,18 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
       </div>
 
       {/* Privacy info */}
-      {isShielded && (
+      {hasPrivacy && (
         <div className="mb-4 rounded-lg border border-purple-500/30 bg-purple-500/10 p-3" data-testid="privacy-info">
           <div className="flex items-start gap-2">
-            <ShieldIcon className="mt-0.5 h-4 w-4 flex-shrink-0 text-purple-400" />
+            {isCompliant ? (
+              <KeyIcon className="mt-0.5 h-4 w-4 flex-shrink-0 text-purple-400" />
+            ) : (
+              <ShieldIcon className="mt-0.5 h-4 w-4 flex-shrink-0 text-purple-400" />
+            )}
             <div className="text-sm">
               <p className="font-medium text-purple-300">Privacy Protected</p>
               <p className="text-purple-400/80">
-                {privacyLevel === PrivacyLevel.COMPLIANT
+                {isCompliant
                   ? 'Transaction hidden with viewing key for auditors'
                   : 'Sender, amount, and recipient are hidden'}
               </p>
@@ -206,7 +218,8 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
         explorerUrl={explorerUrl}
         chain={txChain}
         error={swapError}
-        isShielded={isShielded}
+        isShielded={hasPrivacy}
+        isCompliant={isCompliant}
         onReset={handleReset}
         onRetry={reset}
       />
@@ -232,10 +245,12 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
           ) : isSwapping ? (
             <span className="flex items-center justify-center gap-2">
               <LoadingSpinner />
-              {getStatusMessage(status, isShielded)}
+              {getStatusMessage(status, hasPrivacy)}
             </span>
           ) : (
-            <span>{isShielded ? 'Shielded Swap' : 'Swap'}</span>
+            <span>
+              {isShielded ? 'Shielded Swap' : isCompliant ? 'Compliant Swap' : 'Swap'}
+            </span>
           )}
         </button>
       )}
@@ -353,6 +368,18 @@ function EyeIcon({ className }: { className?: string }) {
         d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
       />
       <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+  )
+}
+
+function KeyIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"
+      />
     </svg>
   )
 }

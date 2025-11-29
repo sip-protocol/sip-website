@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { PrivacyLevel, type Quote, type ChainId } from '@sip-protocol/sdk'
+import { PrivacyLevel, type Quote, type ChainId, generateViewingKey } from '@sip-protocol/sdk'
 import { useSIP } from '@/contexts'
 import { useWalletStore, toast } from '@/stores'
 import { parseAmount, getTransactionUrl, type NetworkId } from '@/lib'
@@ -120,6 +120,11 @@ export function useSwap(): SwapResult {
       const toDecimals = TOKEN_DECIMALS[params.toToken] ?? 18
       const amountBigInt = parseAmount(params.amount, fromDecimals)
 
+      // Generate viewing key for compliant mode
+      const viewingKeyObj = params.privacyLevel === PrivacyLevel.COMPLIANT
+        ? generateViewingKey(`swap/${Date.now()}`)
+        : undefined
+
       // Create the shielded intent
       const intent = await client.createIntent({
         input: {
@@ -142,6 +147,7 @@ export function useSwap(): SwapResult {
           maxSlippage: 0.01,
         },
         privacy: params.privacyLevel,
+        viewingKey: viewingKeyObj?.key,
       })
 
       setStatus('signing')
@@ -157,11 +163,16 @@ export function useSwap(): SwapResult {
         setTxHash(result.txHash)
         setStatus('success')
         toast.success('Swap Submitted', 'Your transaction has been submitted to the network')
-      } else if (params.privacyLevel !== PrivacyLevel.TRANSPARENT) {
+      } else if (params.privacyLevel === PrivacyLevel.SHIELDED) {
         // Shielded mode: no public txHash is expected (privacy protection)
         setTxHash(null)
         setStatus('success')
         toast.success('Shielded Swap Complete', 'Your private transaction has been processed')
+      } else if (params.privacyLevel === PrivacyLevel.COMPLIANT) {
+        // Compliant mode: private with viewing key
+        setTxHash(null)
+        setStatus('success')
+        toast.success('Compliant Swap Complete', 'Your private transaction has been processed with viewing key')
       } else {
         // Transparent mode without txHash: transaction may still be processing
         setTxHash(null)
