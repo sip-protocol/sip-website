@@ -4,8 +4,14 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
+import dynamic from 'next/dynamic'
 import { Menu, X, Github, ExternalLink } from 'lucide-react'
-import { WalletButton } from '@/components/wallet'
+
+// Dynamic import to avoid SSR issues with SDK's Barretenberg WASM
+const WalletButton = dynamic(
+  () => import('@/components/wallet/wallet-button').then((mod) => mod.WalletButton),
+  { ssr: false }
+)
 
 const navLinks = [
   { href: '/features', label: 'Features' },

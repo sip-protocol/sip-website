@@ -11,11 +11,13 @@
 
 import {
   SIP,
-  NoirProofProvider,
   MockProofProvider,
   type SIPConfig,
   type ProofProvider,
 } from '@sip-protocol/sdk'
+
+// NoirProofProvider is lazy-loaded to avoid WASM/SSR issues
+// It imports @aztec/bb.js which has top-level await that breaks SSR
 
 /**
  * Check if real swaps are enabled via environment variable
@@ -47,6 +49,8 @@ async function initializeProofProvider(): Promise<ProofProvider> {
   }
 
   try {
+    // Dynamic import to avoid SSR issues with WASM
+    const { NoirProofProvider } = await import('@sip-protocol/sdk')
     const noirProvider = new NoirProofProvider({ verbose: false })
     await noirProvider.initialize()
     proofProvider = noirProvider
