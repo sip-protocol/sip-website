@@ -18,8 +18,8 @@
     "test:e2e:chromium": "playwright test --project=chromium"
   },
   "dependencies": {
-    "@sip-protocol/sdk": "^0.1.1",
-    "@sip-protocol/types": "^0.1.1",
+    "@sip-protocol/sdk": "^0.1.0",
+    "@sip-protocol/types": "^0.1.0",
     "framer-motion": "^11.0.0",
     "lucide-react": "^0.400.0",
     "next": "^14.2.0",
@@ -28,8 +28,6 @@
     "zustand": "^4.5.0"
   },
   "devDependencies": {
-    "@ledgerhq/hw-app-eth": "^6.47.1",
-    "@ledgerhq/hw-app-solana": "^7.6.0",
     "@ledgerhq/hw-transport-webhid": "^6.30.9",
     "@ledgerhq/hw-transport-webusb": "^6.29.13",
     "@playwright/test": "^1.57.0",
