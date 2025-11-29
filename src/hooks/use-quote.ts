@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { PrivacyLevel, type Quote, type ChainId, generateViewingKey } from '@sip-protocol/sdk'
+import { PrivacyLevel, type Quote, type ChainId, generateViewingKey, type ProductionQuote } from '@sip-protocol/sdk'
 import { useSIP } from '@/contexts'
 import { toast } from '@/stores'
 import { formatAmount, parseAmount, getExchangeRateSync, getUSDPrices, type NetworkId } from '@/lib'
@@ -16,8 +16,8 @@ export interface QuoteParams {
 }
 
 export interface QuoteResult {
-  /** The quote from the SDK */
-  quote: Quote | null
+  /** The quote from the SDK (may include deposit address in production mode) */
+  quote: Quote | ProductionQuote | null
   /** Formatted output amount */
   outputAmount: string
   /** Exchange rate (1 fromToken = X toToken) */
@@ -30,6 +30,8 @@ export interface QuoteResult {
   isLoading: boolean
   /** Error message if any */
   error: string | null
+  /** Deposit address (production mode only) */
+  depositAddress: string | null
   /** Refresh the quote */
   refresh: () => Promise<void>
 }
@@ -61,8 +63,8 @@ const TOKEN_DECIMALS: Record<string, number> = {
  * ```
  */
 export function useQuote(params: QuoteParams | null): QuoteResult {
-  const { client } = useSIP()
-  const [quote, setQuote] = useState<Quote | null>(null)
+  const { client, isProductionMode } = useSIP()
+  const [quote, setQuote] = useState<Quote | ProductionQuote | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -92,8 +94,8 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
         ? generateViewingKey(`quote/${Date.now()}`)
         : undefined
 
-      // Create intent for quote
-      const intent = await client.createIntent({
+      // Build CreateIntentParams (needed for both demo and production modes)
+      const intentParams = {
         input: {
           asset: {
             chain: params.fromChain as ChainId,
@@ -115,13 +117,18 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
         },
         privacy: params.privacyLevel,
         viewingKey: viewingKeyObj?.key,
-      })
+      }
 
       // Get quotes from SDK
-      const quotes = await client.getQuotes(intent)
+      // In production mode, this fetches from NEAR 1Click API
+      // In demo mode, this returns mock quotes
+      const quotes = await client.getQuotes(intentParams)
 
       if (quotes.length > 0) {
         setQuote(quotes[0])
+        if (isProductionMode && 'depositAddress' in quotes[0]) {
+          console.log('[Quote] Production quote received with deposit address:', quotes[0].depositAddress)
+        }
       } else {
         setError('No quotes available for this pair')
       }
@@ -138,7 +145,7 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
     } finally {
       setIsLoading(false)
     }
-  }, [client, params])
+  }, [client, isProductionMode, params])
 
   // Prefetch prices on mount for accurate rate display
   useEffect(() => {
@@ -188,6 +195,11 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
 
   const estimatedTime = quote?.estimatedTime ?? 60
 
+  // Extract deposit address from production quotes
+  const depositAddress = quote && 'depositAddress' in quote
+    ? (quote as ProductionQuote).depositAddress ?? null
+    : null
+
   return {
     quote,
     outputAmount,
@@ -196,6 +208,7 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
     estimatedTime,
     isLoading,
     error,
+    depositAddress,
     refresh: fetchQuote,
   }
 }

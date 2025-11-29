@@ -3,6 +3,10 @@
  *
  * Initializes the SIP client with appropriate configuration for demo/testnet use.
  * Uses NoirProofProvider for real ZK proofs (with MockProofProvider fallback).
+ *
+ * Production mode (real NEAR 1Click API):
+ * - Set NEXT_PUBLIC_REAL_SWAPS=true in .env.local
+ * - Optionally set NEXT_PUBLIC_NEAR_INTENTS_JWT for authenticated API access
  */
 
 import {
@@ -12,6 +16,20 @@ import {
   type SIPConfig,
   type ProofProvider,
 } from '@sip-protocol/sdk'
+
+/**
+ * Check if real swaps are enabled via environment variable
+ */
+export const isRealSwapsEnabled = (): boolean => {
+  return process.env.NEXT_PUBLIC_REAL_SWAPS === 'true'
+}
+
+/**
+ * Get NEAR Intents JWT token from environment (optional)
+ */
+export const getNearIntentsJwt = (): string | undefined => {
+  return process.env.NEXT_PUBLIC_NEAR_INTENTS_JWT
+}
 
 /**
  * Proof provider instance (lazy-initialized)
@@ -53,20 +71,38 @@ export function getProofProvider(): Promise<ProofProvider> {
 }
 
 /**
- * Default configuration for demo/testnet environment
+ * Get base configuration for demo/testnet environment
  * Note: proofProvider is set dynamically after initialization
  */
-export const SIP_CONFIG: SIPConfig = {
-  network: 'testnet',
-  proofProvider: new MockProofProvider(), // Default, replaced after init
+export function getSIPConfig(): SIPConfig {
+  const baseConfig: SIPConfig = {
+    network: 'testnet',
+    proofProvider: new MockProofProvider(), // Default, replaced after init
+  }
+
+  // Enable production mode for real NEAR 1Click swaps
+  if (isRealSwapsEnabled()) {
+    baseConfig.mode = 'production'
+    baseConfig.intentsAdapter = {
+      jwtToken: getNearIntentsJwt(),
+    }
+    console.log('[SIP] Production mode enabled - using real NEAR 1Click API')
+  }
+
+  return baseConfig
 }
+
+/**
+ * Default configuration (computed at load time)
+ */
+export const SIP_CONFIG: SIPConfig = getSIPConfig()
 
 /**
  * Create a configured SIP client instance
  */
 export function createSIPClient(config?: Partial<SIPConfig>): SIP {
   return new SIP({
-    ...SIP_CONFIG,
+    ...getSIPConfig(),
     ...config,
   })
 }

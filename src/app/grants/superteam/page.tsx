@@ -115,7 +115,7 @@ function HeroSection() {
           >
             <span className="text-gray-400">Requesting</span>
             <span className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-              $8,000
+              $9,500
             </span>
           </motion.div>
 
@@ -364,10 +364,10 @@ function TractionSection() {
 
 function BudgetSection() {
   const budget = [
-    { category: 'Community Building', amount: '$3,000', percent: 37.5, icon: Users },
-    { category: 'Documentation', amount: '$2,000', percent: 25, icon: FileText },
-    { category: 'Hackathon Participation', amount: '$2,000', percent: 25, icon: Trophy },
-    { category: 'Marketing & Awareness', amount: '$1,000', percent: 12.5, icon: Megaphone },
+    { category: 'Community Building', amount: '$3,500', percent: 36.8, icon: Users },
+    { category: 'Documentation', amount: '$2,500', percent: 26.3, icon: FileText },
+    { category: 'Hackathon Participation', amount: '$2,500', percent: 26.3, icon: Trophy },
+    { category: 'Marketing & Awareness', amount: '$1,000', percent: 10.5, icon: Megaphone },
   ]
 
   return (
@@ -390,7 +390,7 @@ function BudgetSection() {
             transition={{ delay: 0.1 }}
             className="mt-6 text-3xl sm:text-4xl font-bold"
           >
-            The Ask: $8,000
+            The Ask: $9,500
           </motion.h2>
         </div>
 
@@ -436,7 +436,7 @@ function BudgetSection() {
         >
           <div className="inline-flex items-center gap-4 px-8 py-4 rounded-2xl bg-blue-500/10 border border-blue-500/20">
             <span className="text-gray-400">Total Request</span>
-            <span className="text-3xl font-bold text-white">$8,000</span>
+            <span className="text-3xl font-bold text-white">$9,500</span>
           </div>
         </motion.div>
       </div>

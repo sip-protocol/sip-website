@@ -7,7 +7,7 @@ import {
   type ReactNode,
 } from 'react'
 import type { SIP } from '@sip-protocol/sdk'
-import { getSIPClient } from '@/lib/sip-client'
+import { getSIPClient, isRealSwapsEnabled } from '@/lib/sip-client'
 
 /**
  * SIP Context value type
@@ -19,6 +19,8 @@ interface SIPContextValue {
   isReady: boolean
   /** Network the SDK is configured for */
   network: 'mainnet' | 'testnet'
+  /** Whether real swaps (production mode) are enabled */
+  isProductionMode: boolean
 }
 
 const SIPContext = createContext<SIPContextValue | null>(null)
@@ -50,10 +52,12 @@ interface SIPProviderProps {
 export function SIPProvider({ children }: SIPProviderProps) {
   const value = useMemo<SIPContextValue>(() => {
     const client = getSIPClient()
+    const isProductionMode = isRealSwapsEnabled()
     return {
       client,
       isReady: true,
       network: 'testnet',
+      isProductionMode,
     }
   }, [])
 

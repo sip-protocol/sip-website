@@ -1,12 +1,12 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { PrivacyLevel, type Quote, type ChainId, generateViewingKey } from '@sip-protocol/sdk'
+import { PrivacyLevel, type Quote, type ChainId, generateViewingKey, type ProductionQuote } from '@sip-protocol/sdk'
 import { useSIP } from '@/contexts'
 import { useWalletStore, toast } from '@/stores'
 import { parseAmount, getTransactionUrl, type NetworkId } from '@/lib'
 
-export type SwapStatus = 'idle' | 'confirming' | 'signing' | 'pending' | 'success' | 'error'
+export type SwapStatus = 'idle' | 'confirming' | 'signing' | 'pending' | 'awaiting_deposit' | 'processing' | 'success' | 'error'
 
 export interface SwapParams {
   fromChain: NetworkId
@@ -29,6 +29,10 @@ export interface SwapResult {
   status: SwapStatus
   /** Error message if any */
   error: string | null
+  /** Deposit address for production mode (send tokens here) */
+  depositAddress: string | null
+  /** Amount to deposit (human readable) */
+  depositAmount: string | null
   /** Execute the swap */
   execute: (params: SwapParams) => Promise<void>
   /** Reset the swap state */
@@ -66,19 +70,23 @@ const TOKEN_DECIMALS: Record<string, number> = {
  * ```
  */
 export function useSwap(): SwapResult {
-  const { client } = useSIP()
+  const { client, isProductionMode } = useSIP()
   const { isConnected, address, chain } = useWalletStore()
 
   const [status, setStatus] = useState<SwapStatus>('idle')
   const [txHash, setTxHash] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [txChain, setTxChain] = useState<NetworkId | null>(null)
+  const [depositAddress, setDepositAddress] = useState<string | null>(null)
+  const [depositAmount, setDepositAmount] = useState<string | null>(null)
 
   const reset = useCallback(() => {
     setStatus('idle')
     setTxHash(null)
     setError(null)
     setTxChain(null)
+    setDepositAddress(null)
+    setDepositAmount(null)
   }, [])
 
   const execute = useCallback(async (params: SwapParams) => {
@@ -199,6 +207,8 @@ export function useSwap(): SwapResult {
     txChain,
     status,
     error,
+    depositAddress,
+    depositAmount,
     execute,
     reset,
   }
@@ -215,6 +225,10 @@ export function getStatusMessage(status: SwapStatus, isShielded: boolean): strin
       return 'Please sign in your wallet...'
     case 'pending':
       return isShielded ? 'Shielding transaction...' : 'Processing...'
+    case 'awaiting_deposit':
+      return 'Awaiting deposit to swap address...'
+    case 'processing':
+      return 'Processing swap on NEAR...'
     case 'success':
       return 'Transaction complete!'
     case 'error':
