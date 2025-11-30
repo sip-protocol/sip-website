@@ -25,8 +25,9 @@ const tokens: Token[] = [
 ]
 
 export function SwapCard({ privacyLevel }: SwapCardProps) {
-  const [fromToken, setFromToken] = useState(tokens[0])
-  const [toToken, setToToken] = useState(tokens[1]) // ETH
+  // Default to ETH→SOL: EVM input allows stealth refund addresses without wallet
+  const [fromToken, setFromToken] = useState(tokens[1]) // ETH (EVM)
+  const [toToken, setToToken] = useState(tokens[0]) // SOL
   const [amount, setAmount] = useState('')
 
   // Wallet state
