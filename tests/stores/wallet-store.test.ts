@@ -19,6 +19,7 @@ describe('Wallet Store', () => {
       availableWallets: {
         solana: [],
         ethereum: [],
+        near: [],
       },
       isModalOpen: false,
     })
@@ -137,26 +138,30 @@ describe('Wallet Store', () => {
   })
 
   describe('setAvailableWallets', () => {
-    it('should set available wallets for both chains', () => {
+    it('should set available wallets for all chains', () => {
       useWalletStore.getState().setAvailableWallets({
         solana: ['phantom', 'solflare'],
         ethereum: ['metamask'],
+        near: ['meteor', 'mynearwallet'],
       })
 
       const state = useWalletStore.getState()
       expect(state.availableWallets.solana).toEqual(['phantom', 'solflare'])
       expect(state.availableWallets.ethereum).toEqual(['metamask'])
+      expect(state.availableWallets.near).toEqual(['meteor', 'mynearwallet'])
     })
 
     it('should handle empty wallet arrays', () => {
       useWalletStore.getState().setAvailableWallets({
         solana: [],
         ethereum: [],
+        near: [],
       })
 
       const state = useWalletStore.getState()
       expect(state.availableWallets.solana).toEqual([])
       expect(state.availableWallets.ethereum).toEqual([])
+      expect(state.availableWallets.near).toEqual([])
     })
   })
 })
@@ -208,8 +213,20 @@ describe('WALLET_INFO', () => {
     expect(WALLET_INFO.walletconnect.chain).toBe('ethereum')
   })
 
+  it('should have correct info for Meteor (NEAR)', () => {
+    expect(WALLET_INFO.meteor).toEqual({
+      name: 'Meteor Wallet',
+      icon: '/wallets/meteor.svg',
+      chain: 'near',
+      downloadUrl: 'https://meteorwallet.app/',
+    })
+  })
+
   it('should have all required wallet types', () => {
-    const expectedWallets: WalletType[] = ['phantom', 'solflare', 'metamask', 'walletconnect']
+    const expectedWallets: WalletType[] = [
+      'phantom', 'solflare', 'metamask', 'walletconnect',
+      'meteor', 'mynearwallet', 'here', 'sender'
+    ]
     expectedWallets.forEach(wallet => {
       expect(WALLET_INFO[wallet]).toBeDefined()
     })

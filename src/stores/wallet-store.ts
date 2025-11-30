@@ -1,8 +1,8 @@
 import { create } from 'zustand'
 import type { ChainId } from '@sip-protocol/types'
 
-export type WalletType = 'phantom' | 'solflare' | 'metamask' | 'walletconnect'
-export type ChainType = 'solana' | 'ethereum'
+export type WalletType = 'phantom' | 'solflare' | 'metamask' | 'walletconnect' | 'meteor' | 'mynearwallet' | 'here' | 'sender'
+export type ChainType = 'solana' | 'ethereum' | 'near'
 
 export interface WalletState {
   // Connection state
@@ -17,6 +17,7 @@ export interface WalletState {
   availableWallets: {
     solana: WalletType[]
     ethereum: WalletType[]
+    near: WalletType[]
   }
 
   // Modal state
@@ -28,7 +29,7 @@ export interface WalletState {
   disconnect: () => void
   openModal: () => void
   closeModal: () => void
-  setAvailableWallets: (wallets: { solana: WalletType[]; ethereum: WalletType[] }) => void
+  setAvailableWallets: (wallets: { solana: WalletType[]; ethereum: WalletType[]; near: WalletType[] }) => void
 }
 
 export const useWalletStore = create<WalletState>((set) => ({
@@ -41,6 +42,7 @@ export const useWalletStore = create<WalletState>((set) => ({
   availableWallets: {
     solana: [],
     ethereum: [],
+    near: [],
   },
   isModalOpen: false,
 
@@ -107,5 +109,30 @@ export const WALLET_INFO: Record<WalletType, {
     icon: '/wallets/walletconnect.svg',
     chain: 'ethereum',
     downloadUrl: 'https://walletconnect.com/',
+  },
+  // NEAR wallets
+  meteor: {
+    name: 'Meteor Wallet',
+    icon: '/wallets/meteor.svg',
+    chain: 'near',
+    downloadUrl: 'https://meteorwallet.app/',
+  },
+  mynearwallet: {
+    name: 'MyNearWallet',
+    icon: '/wallets/mynearwallet.svg',
+    chain: 'near',
+    downloadUrl: 'https://mynearwallet.com/',
+  },
+  here: {
+    name: 'HERE Wallet',
+    icon: '/wallets/here.svg',
+    chain: 'near',
+    downloadUrl: 'https://herewallet.app/',
+  },
+  sender: {
+    name: 'Sender',
+    icon: '/wallets/sender.svg',
+    chain: 'near',
+    downloadUrl: 'https://sender.org/',
   },
 }

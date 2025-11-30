@@ -15,8 +15,9 @@ import {
   type ChainType,
   WALLET_INFO,
 } from '@/stores'
+import { useNearWallet } from '@/hooks/use-near-wallet'
 
-type TabType = 'solana' | 'ethereum'
+type TabType = 'solana' | 'ethereum' | 'near'
 
 export function WalletModal() {
   const {
@@ -27,11 +28,15 @@ export function WalletModal() {
     setAvailableWallets,
   } = useWalletStore()
 
+  // NEAR wallet hook
+  const nearWallet = useNearWallet('testnet')
+
   const [activeTab, setActiveTab] = useState<TabType>('solana')
   const [detectedWallets, setDetectedWallets] = useState<{
     solana: SolanaWalletName[]
     ethereum: EthereumWalletName[]
-  }>({ solana: [], ethereum: [] })
+    near: WalletType[]
+  }>({ solana: [], ethereum: [], near: [] })
   const [error, setError] = useState<string | null>(null)
 
   // Detect wallets on mount (using dynamic SDK import)
@@ -40,15 +45,18 @@ export function WalletModal() {
       loadSDK().then((sdk) => {
         const solanaWallets = sdk.detectSolanaWallets()
         const ethereumWallets = sdk.detectEthereumWallets()
-        setDetectedWallets({ solana: solanaWallets, ethereum: ethereumWallets })
+        // NEAR wallets are detected via wallet selector when ready
+        const nearWallets = nearWallet.isReady ? nearWallet.detectWallets() : []
+        setDetectedWallets({ solana: solanaWallets, ethereum: ethereumWallets, near: nearWallets })
         setAvailableWallets({
           solana: solanaWallets as WalletType[],
           ethereum: ethereumWallets as WalletType[],
+          near: nearWallets,
         })
         setError(null)
       })
     }
-  }, [isModalOpen, setAvailableWallets])
+  }, [isModalOpen, setAvailableWallets, nearWallet.isReady, nearWallet.detectWallets])
 
   const handleConnect = async (walletType: WalletType, chain: ChainType) => {
     setError(null)
@@ -72,7 +80,7 @@ export function WalletModal() {
           connect(walletType, chain, solanaAddress)
           toast.success('Wallet Connected', `Connected to ${walletName} on Solana Devnet`)
         }
-      } else {
+      } else if (chain === 'ethereum') {
         const adapter = sdk.createEthereumAdapter({
           wallet: walletType as EthereumWalletName,
           chainId: 11155111, // Sepolia testnet
@@ -84,6 +92,16 @@ export function WalletModal() {
         if (address) {
           connect(walletType, chain, address)
           toast.success('Wallet Connected', `Connected to ${walletName} on Sepolia`)
+        }
+      } else if (chain === 'near') {
+        // Use NEAR wallet hook for connection
+        const accountId = await nearWallet.connect(walletType)
+
+        if (accountId) {
+          connect(walletType, chain, accountId)
+          toast.success('Wallet Connected', `Connected to ${walletName} on NEAR Testnet`)
+        } else if (nearWallet.error) {
+          throw new Error(nearWallet.error)
         }
       }
     } catch (err) {
@@ -131,9 +149,14 @@ export function WalletModal() {
 
   const solanaWallets: WalletType[] = ['phantom', 'solflare']
   const ethereumWallets: WalletType[] = ['metamask', 'walletconnect']
+  const nearWallets: WalletType[] = ['meteor', 'mynearwallet', 'here', 'sender']
 
   const renderWalletList = (wallets: WalletType[], chain: ChainType) => {
-    const detected = chain === 'solana' ? detectedWallets.solana : detectedWallets.ethereum
+    const detected = chain === 'solana'
+      ? detectedWallets.solana
+      : chain === 'ethereum'
+        ? detectedWallets.ethereum
+        : detectedWallets.near
 
     return (
       <div className="space-y-2">
@@ -230,6 +253,16 @@ export function WalletModal() {
                 >
                   Ethereum
                 </button>
+                <button
+                  onClick={() => setActiveTab('near')}
+                  className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
+                    activeTab === 'near'
+                      ? 'text-white border-b-2 border-purple-500'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  NEAR
+                </button>
               </div>
 
               {/* Content */}
@@ -243,6 +276,7 @@ export function WalletModal() {
 
                 {activeTab === 'solana' && renderWalletList(solanaWallets, 'solana')}
                 {activeTab === 'ethereum' && renderWalletList(ethereumWallets, 'ethereum')}
+                {activeTab === 'near' && renderWalletList(nearWallets, 'near')}
 
                 {/* Info */}
                 <p className="mt-4 text-xs text-center text-gray-500">
