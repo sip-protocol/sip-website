@@ -9,10 +9,13 @@ const mockClient = {
 }
 
 vi.mock('@/contexts', () => ({
-  useSIP: () => ({ client: mockClient }),
+  useSIP: () => ({ client: mockClient, isProductionMode: false }),
 }))
 
 vi.mock('@/stores', () => ({
+  useWalletStore: () => ({
+    address: '0x1234567890abcdef1234567890abcdef12345678',
+  }),
   toast: {
     warning: vi.fn(),
   },

@@ -136,11 +136,20 @@ export function useSwap(): SwapResult {
       const toDecimals = TOKEN_DECIMALS[params.toToken] ?? 18
       const amountBigInt = parseAmount(params.amount, fromDecimals)
 
-      // Generate viewing key for compliant mode (dynamically load SDK)
+      // Load SDK for privacy-related functions
+      const sdk = await loadSDK()
+
+      // Generate viewing key for compliant mode
       let viewingKeyObj: { key: string; path: string; hash: string } | undefined
       if (params.privacyLevel === PrivacyLevel.COMPLIANT) {
-        const sdk = await loadSDK()
         viewingKeyObj = sdk.generateViewingKey(`swap/${Date.now()}`)
+      }
+
+      // Generate stealth meta-address for shielded/compliant modes
+      let recipientMetaAddress: string | undefined
+      if (params.privacyLevel !== PrivacyLevel.TRANSPARENT) {
+        const stealth = sdk.generateStealthMetaAddress(params.toChain as ChainId)
+        recipientMetaAddress = stealth.metaAddress as unknown as string
       }
 
       // Create the shielded intent
@@ -168,6 +177,8 @@ export function useSwap(): SwapResult {
           maxSlippage: 0.01,
         },
         privacy: params.privacyLevel,
+        // For private modes, provide stealth meta-address
+        recipientMetaAddress,
         viewingKey: viewingKeyObj?.key as `0x${string}` | undefined,
       })
 

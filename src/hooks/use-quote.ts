@@ -11,7 +11,7 @@ interface ProductionQuote extends Quote {
 // Dynamically import SDK functions to avoid SSR issues with WASM
 const loadSDK = () => import('@sip-protocol/sdk')
 import { useSIP } from '@/contexts'
-import { toast } from '@/stores'
+import { useWalletStore, toast } from '@/stores'
 import { formatAmount, parseAmount, getExchangeRateSync, getUSDPrices, type NetworkId } from '@/lib'
 
 export interface QuoteParams {
@@ -72,6 +72,7 @@ const TOKEN_DECIMALS: Record<string, number> = {
  */
 export function useQuote(params: QuoteParams | null): QuoteResult {
   const { client, isProductionMode } = useSIP()
+  const { address } = useWalletStore()
   const [quote, setQuote] = useState<Quote | ProductionQuote | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -97,11 +98,21 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
       const minOutput = expectedOutput * 0.99 // 1% slippage
       const minOutputBigInt = parseAmount(minOutput.toString(), toDecimals)
 
-      // Generate viewing key for compliant mode (dynamically load SDK)
+      // Load SDK for privacy-related functions
+      const sdk = await loadSDK()
+
+      // Generate viewing key for compliant mode
       let viewingKeyObj: { key: string; path: string; hash: string } | undefined
       if (params.privacyLevel === PrivacyLevel.COMPLIANT) {
-        const sdk = await loadSDK()
         viewingKeyObj = sdk.generateViewingKey(`quote/${Date.now()}`)
+      }
+
+      // Generate stealth meta-address for shielded/compliant modes
+      let recipientMetaAddress: string | undefined
+      if (params.privacyLevel !== PrivacyLevel.TRANSPARENT) {
+        const stealth = sdk.generateStealthMetaAddress(params.toChain as ChainId)
+        recipientMetaAddress = stealth.metaAddress as unknown as string
+        console.log('[useQuote] Generated stealth address:', recipientMetaAddress)
       }
 
       // Build CreateIntentParams (needed for both demo and production modes)
@@ -136,7 +147,9 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
         setError('SIP client not ready')
         return
       }
-      const quotes = await client.getQuotes(intentParams)
+      console.log('[useQuote] Getting quotes with params:', intentParams, 'recipientMetaAddress:', recipientMetaAddress)
+      // Note: recipientMetaAddress is passed as second argument, not inside intentParams
+      const quotes = await client.getQuotes(intentParams, recipientMetaAddress)
 
       if (quotes.length > 0) {
         setQuote(quotes[0])
@@ -159,7 +172,7 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
     } finally {
       setIsLoading(false)
     }
-  }, [client, isProductionMode, params])
+  }, [client, isProductionMode, params, address])
 
   // Prefetch prices on mount for accurate rate display
   useEffect(() => {
