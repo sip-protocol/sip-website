@@ -173,9 +173,9 @@ function HeroSection() {
             <h3 className="text-lg font-semibold mb-6 text-gray-400">Key Metrics</h3>
             <div className="space-y-6">
               {[
-                { label: 'Tests Passing', value: '1,004', detail: '99.5% pass rate' },
+                { label: 'Tests Passing', value: '837', detail: '745 SDK + 92 demo' },
                 { label: 'npm Package', value: 'Published', detail: '@sip-protocol/sdk v0.1.0' },
-                { label: 'Milestones', value: 'M1-M9', detail: 'All complete' },
+                { label: 'Milestones', value: 'M1-M7', detail: 'M8 in progress' },
                 { label: 'Demo', value: 'Live', detail: 'sip-protocol.org' },
               ].map((item) => (
                 <div key={item.label} className="flex items-center justify-between">
@@ -488,10 +488,10 @@ function TractionSection() {
             <h3 className="text-xl font-semibold mb-6">Key Metrics</h3>
             <div className="grid grid-cols-2 gap-6">
               {[
-                { value: '1,004', label: 'Tests Passing' },
-                { value: '99.5%', label: 'Pass Rate' },
+                { value: '837', label: 'Tests Passing' },
+                { value: '100%', label: 'Pass Rate' },
                 { value: 'v0.1.0', label: 'npm Published' },
-                { value: 'M9', label: 'Milestones Done' },
+                { value: 'M7', label: 'Milestones Done' },
               ].map((metric) => (
                 <div key={metric.label} className="text-center p-4 rounded-xl bg-gray-800/50">
                   <div className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
@@ -518,10 +518,10 @@ function TractionSection() {
                 'Viewing keys for compliance',
                 'NEAR Intents adapter',
                 'Solana wallet adapter',
+                'Ethereum wallet adapter',
                 'Zcash RPC client',
-                'Noir ZK circuits (stubs)',
-                'Hardware wallet support',
-                'DAO treasury operations',
+                'ZK proof interface (Noir stubs)',
+                'E2E test coverage (128 tests)',
               ].map((feature) => (
                 <li key={feature} className="flex items-center gap-3 text-gray-400">
                   <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
@@ -540,7 +540,8 @@ function CompetitorSection() {
   const competitors = [
     { name: 'Elusiv', status: 'Sunset', statusColor: 'text-red-400', advantage: 'We\'re shipping' },
     { name: 'Light Protocol', status: 'Pivoted', statusColor: 'text-yellow-400', advantage: 'We\'re privacy-focused' },
-    { name: 'Arcium', status: 'MPC Infra', statusColor: 'text-blue-400', advantage: 'We\'re application layer' },
+    { name: 'Arcium', status: 'Testnet only', statusColor: 'text-blue-400', advantage: 'We\'re live, they\'re Q4 2025' },
+    { name: 'Wormhole/deBridge', status: 'No privacy', statusColor: 'text-gray-400', advantage: 'Only private cross-chain' },
     { name: 'Confidential Balances', status: 'Single-chain', statusColor: 'text-purple-400', advantage: 'We\'re cross-chain' },
   ]
 
@@ -927,7 +928,7 @@ function CTASection() {
             <div className="mt-12 pt-8 border-t border-purple-500/20">
               <div className="flex flex-wrap justify-center gap-8">
                 {[
-                  { value: '1,004', label: 'Tests' },
+                  { value: '837', label: 'Tests' },
                   { value: 'Published', label: 'npm' },
                   { value: 'Live', label: 'Demo' },
                   { value: 'MIT', label: 'License' },

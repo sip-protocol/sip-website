@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@sip-protocol/sdk':
-        specifier: ^0.1.6
-        version: 0.1.6
+        specifier: ^0.1.7
+        version: 0.1.7
       '@sip-protocol/types':
         specifier: ^0.1.1
         version: 0.1.1
@@ -860,8 +860,8 @@ packages:
   '@sinclair/typebox@0.33.22':
     resolution: {integrity: sha512-auUj4k+f4pyrIVf4GW5UKquSZFHJWri06QgARy9C0t9ZTjJLIuNIrr1yl9bWcJWJ1Gz1vOvYN1D+QPaIlNMVkQ==}
 
-  '@sip-protocol/sdk@0.1.6':
-    resolution: {integrity: sha512-WPSq2bsRmk7EvhO8+QpXyLTgsvbxSjEfZpuRm8esM6VuqoBhAebXuNJnHHudFW1VNK51DR4K138lFHQe/blgRA==}
+  '@sip-protocol/sdk@0.1.7':
+    resolution: {integrity: sha512-NDDd75pnCAvjlTpw3vsNHmAnupZ9Qzq/CqFpmQ7XNhmpEPCRCKXtRnBmWmg2NkNPIKH2je9GV2fLswwetXwYTg==}
 
   '@sip-protocol/types@0.1.1':
     resolution: {integrity: sha512-f/Npx0RjQ296tafSEPtYK5TiHiWWtyvEP+nQME8BhwR992IZXPdUpGHfg1DhpUuMBx5uHWCnNLdBTMEB25hPsQ==}
@@ -4549,7 +4549,7 @@ snapshots:
 
   '@sinclair/typebox@0.33.22': {}
 
-  '@sip-protocol/sdk@0.1.6':
+  '@sip-protocol/sdk@0.1.7':
     dependencies:
       '@aztec/bb.js': 0.63.1
       '@noble/ciphers': 2.0.1

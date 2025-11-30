@@ -171,7 +171,7 @@ function ProblemSection() {
     {
       icon: Eye,
       title: 'Cross-Chain Privacy Gap',
-      description: 'NEAR Intents processes $6B+ but Zolana bridge offers NO privacy - just wrapped tokens.',
+      description: 'NEAR Intents, Wormhole, deBridge - all transparent. No private cross-chain solution exists today.',
     },
   ]
 
@@ -295,10 +295,10 @@ function SolutionSection() {
 
 function TractionSection() {
   const metrics = [
-    { value: '1,004', label: 'Tests Passing', detail: '99.5% pass rate' },
+    { value: '837', label: 'Tests Passing', detail: '745 SDK + 92 demo tests' },
     { value: 'Published', label: 'npm Package', detail: '@sip-protocol/sdk v0.1.0' },
     { value: 'Live', label: 'Demo Deployed', detail: 'sip-protocol.org' },
-    { value: 'M9', label: 'Milestones Done', detail: 'Production ready' },
+    { value: 'M7', label: 'Milestones Done', detail: 'M8 in progress' },
   ]
 
   return (
