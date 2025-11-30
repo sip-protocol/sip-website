@@ -26,7 +26,7 @@ const footerLinks: Record<string, FooterSection> = {
     title: 'Developers',
     links: [
       { href: 'https://docs.sip-protocol.org', label: 'Documentation', external: true },
-      { href: 'https://docs.sip-protocol.org/api', label: 'API Reference', external: true },
+      { href: 'https://docs.sip-protocol.org/getting-started', label: 'SDK Guide', external: true },
       { href: 'https://github.com/sip-protocol', label: 'GitHub', external: true },
       { href: 'https://www.npmjs.com/package/@sip-protocol/sdk', label: 'npm Package', external: true },
     ],
