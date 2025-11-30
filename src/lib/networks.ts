@@ -4,7 +4,7 @@
  * Testnet configurations for Solana Devnet, Ethereum Sepolia, and NEAR Testnet.
  */
 
-export type NetworkId = 'solana' | 'ethereum' | 'near'
+export type NetworkId = 'solana' | 'ethereum' | 'near' | 'arbitrum'
 
 export interface NetworkConfig {
   /** Network identifier */
@@ -85,6 +85,18 @@ export const NETWORKS: Record<NetworkId, NetworkConfig> = {
     nativeToken: 'NEAR',
     decimals: 24,
     icon: '/networks/near.svg',
+  },
+  arbitrum: {
+    id: 'arbitrum',
+    name: 'Arbitrum',
+    testnet: 'Sepolia',
+    chainId: 421614,
+    rpcEndpoint: 'https://sepolia-rollup.arbitrum.io/rpc',
+    explorerUrl: 'https://sepolia.arbiscan.io',
+    faucetUrl: 'https://faucet.quicknode.com/arbitrum/sepolia',
+    nativeToken: 'ETH',
+    decimals: 18,
+    icon: '/networks/arbitrum.svg',
   },
 }
 

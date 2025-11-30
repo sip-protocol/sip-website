@@ -298,7 +298,7 @@ function TractionSection() {
     { value: '837', label: 'Tests Passing', detail: '745 SDK + 92 demo tests' },
     { value: 'Published', label: 'npm Package', detail: '@sip-protocol/sdk v0.1.0' },
     { value: 'Live', label: 'Demo Deployed', detail: 'sip-protocol.org' },
-    { value: 'M7', label: 'Milestones Done', detail: 'M8 in progress' },
+    { value: 'M8', label: 'Milestones Done', detail: 'Audit pending' },
   ]
 
   return (

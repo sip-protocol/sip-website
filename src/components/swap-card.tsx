@@ -19,15 +19,16 @@ interface Token {
 }
 
 const tokens: Token[] = [
-  { symbol: 'SOL', name: 'Solana', chain: 'solana', icon: '◎' },
   { symbol: 'ETH', name: 'Ethereum', chain: 'ethereum', icon: 'Ξ' },
+  { symbol: 'ARB', name: 'Arbitrum', chain: 'arbitrum', icon: '🔵' },
+  { symbol: 'SOL', name: 'Solana', chain: 'solana', icon: '◎' },
   { symbol: 'NEAR', name: 'NEAR', chain: 'near', icon: 'Ⓝ' },
 ]
 
 export function SwapCard({ privacyLevel }: SwapCardProps) {
-  // Default to ETH→SOL: EVM input allows stealth refund addresses without wallet
-  const [fromToken, setFromToken] = useState(tokens[1]) // ETH (EVM)
-  const [toToken, setToToken] = useState(tokens[0]) // SOL
+  // Default to ETH→ARB: Both EVM chains support stealth addresses without wallet
+  const [fromToken, setFromToken] = useState(tokens[0]) // ETH
+  const [toToken, setToToken] = useState(tokens[1]) // ARB (Arbitrum)
   const [amount, setAmount] = useState('')
 
   // Wallet state

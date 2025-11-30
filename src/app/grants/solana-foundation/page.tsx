@@ -82,8 +82,8 @@ function HeroSection() {
               transition={{ duration: 0.5 }}
             >
               <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
-                <Award className="w-4 h-4" />
-                Milestone Grant Application
+                <ShieldCheck className="w-4 h-4" />
+                Security Audit Grant Application
               </span>
             </motion.div>
 
@@ -104,7 +104,7 @@ function HeroSection() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="mt-4 text-xl sm:text-2xl text-gray-400"
             >
-              Privacy Layer for Cross-Chain Intents
+              Security Audit for Production Readiness
             </motion.p>
 
             {/* Description */}
@@ -114,8 +114,8 @@ function HeroSection() {
               transition={{ duration: 0.5, delay: 0.3 }}
               className="mt-6 text-gray-500 max-w-lg"
             >
-              Application-layer privacy for blockchain intents. Stealth addresses,
-              Pedersen commitments, and viewing keys for institutional compliance.
+              M1-M8 complete. 837 tests passing. SDK published. Now we need a professional
+              security audit to verify our ZK circuits and cryptographic primitives before mainnet.
             </motion.p>
 
             {/* Amount */}
@@ -128,13 +128,13 @@ function HeroSection() {
               <div>
                 <div className="text-sm text-gray-400">Requesting</div>
                 <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
-                  $100,000
+                  $50,000
                 </div>
               </div>
               <div className="h-12 w-px bg-purple-500/20" />
               <div>
                 <div className="text-sm text-gray-400">Timeline</div>
-                <div className="text-xl font-semibold text-white">5 Months</div>
+                <div className="text-xl font-semibold text-white">3 Months</div>
               </div>
             </motion.div>
 
@@ -175,7 +175,7 @@ function HeroSection() {
               {[
                 { label: 'Tests Passing', value: '837', detail: '745 SDK + 92 demo' },
                 { label: 'npm Package', value: 'Published', detail: '@sip-protocol/sdk v0.1.0' },
-                { label: 'Milestones', value: 'M1-M7', detail: 'M8 in progress' },
+                { label: 'Milestones', value: 'M1-M8', detail: 'Audit pending' },
                 { label: 'Demo', value: 'Live', detail: 'sip-protocol.org' },
               ].map((item) => (
                 <div key={item.label} className="flex items-center justify-between">
@@ -491,7 +491,7 @@ function TractionSection() {
                 { value: '837', label: 'Tests Passing' },
                 { value: '100%', label: 'Pass Rate' },
                 { value: 'v0.1.0', label: 'npm Published' },
-                { value: 'M7', label: 'Milestones Done' },
+                { value: 'M8', label: 'Milestones Done' },
               ].map((metric) => (
                 <div key={metric.label} className="text-center p-4 rounded-xl bg-gray-800/50">
                   <div className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
@@ -520,8 +520,9 @@ function TractionSection() {
                 'Solana wallet adapter',
                 'Ethereum wallet adapter',
                 'Zcash RPC client',
-                'ZK proof interface (Noir stubs)',
+                'Noir ZK circuits (compiled, integrated)',
                 'E2E test coverage (128 tests)',
+                'Secure memory handling (zeroization)',
               ].map((feature) => (
                 <li key={feature} className="flex items-center gap-3 text-gray-400">
                   <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
@@ -673,43 +674,35 @@ function MilestonesSection() {
   const milestones = [
     {
       id: 'M1',
-      title: 'Jupiter DEX Integration',
-      description: 'Private swap routing through Jupiter aggregator',
+      title: 'Security Audit - ZK Circuits',
+      description: 'Professional audit of Noir circuits (Funding, Validity, Fulfillment proofs) by ZK-specialized firm',
       budget: '$25,000',
       timeline: 'Month 1-2',
-      icon: Zap,
+      icon: ShieldCheck,
     },
     {
       id: 'M2',
-      title: 'Mobile Wallet SDK',
-      description: 'React Native SDK for iOS/Android wallets',
-      budget: '$20,000',
-      timeline: 'Month 2-3',
-      icon: Smartphone,
+      title: 'Security Audit - Cryptographic SDK',
+      description: 'Audit of stealth addresses, Pedersen commitments, viewing keys, and encryption primitives',
+      budget: '$15,000',
+      timeline: 'Month 2',
+      icon: Lock,
     },
     {
       id: 'M3',
-      title: 'Noir Circuits Mainnet',
-      description: 'Deploy ZK circuits to production',
-      budget: '$30,000',
-      timeline: 'Month 3-4',
+      title: 'Audit Remediation & Fixes',
+      description: 'Address all findings, implement fixes, and obtain final audit report',
+      budget: '$5,000',
+      timeline: 'Month 3',
       icon: Code,
     },
     {
       id: 'M4',
-      title: 'Developer Docs & Tutorials',
-      description: 'Comprehensive documentation and video tutorials',
-      budget: '$10,000',
-      timeline: 'Month 4',
+      title: 'Documentation & Publication',
+      description: 'Publish audit report, update security docs, and announce mainnet readiness',
+      budget: '$5,000',
+      timeline: 'Month 3',
       icon: FileText,
-    },
-    {
-      id: 'M5',
-      title: 'Security Audit',
-      description: 'Third-party security audit by reputable firm',
-      budget: '$15,000',
-      timeline: 'Month 5',
-      icon: ShieldCheck,
     },
   ]
 
@@ -723,8 +716,8 @@ function MilestonesSection() {
             viewport={{ once: true }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-green-500/10 text-green-400 border border-green-500/20"
           >
-            <Calendar className="w-4 h-4" />
-            Proposed Milestones
+            <ShieldCheck className="w-4 h-4" />
+            Audit Milestones
           </motion.span>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -733,7 +726,7 @@ function MilestonesSection() {
             transition={{ delay: 0.1 }}
             className="mt-6 text-3xl sm:text-4xl font-bold"
           >
-            Roadmap to Delivery
+            Path to Mainnet Security
           </motion.h2>
         </div>
 
@@ -783,11 +776,10 @@ function MilestonesSection() {
 
 function BudgetSection() {
   const budget = [
-    { category: 'Jupiter Integration', amount: 25000, color: 'bg-purple-500' },
-    { category: 'Mobile SDK', amount: 20000, color: 'bg-blue-500' },
-    { category: 'Noir Circuits', amount: 30000, color: 'bg-green-500' },
-    { category: 'Documentation', amount: 10000, color: 'bg-yellow-500' },
-    { category: 'Security Audit', amount: 15000, color: 'bg-red-500' },
+    { category: 'ZK Circuit Audit', amount: 25000, color: 'bg-purple-500' },
+    { category: 'Crypto SDK Audit', amount: 15000, color: 'bg-blue-500' },
+    { category: 'Remediation & Fixes', amount: 5000, color: 'bg-green-500' },
+    { category: 'Docs & Publication', amount: 5000, color: 'bg-yellow-500' },
   ]
 
   const total = budget.reduce((sum, item) => sum + item.amount, 0)
@@ -812,7 +804,7 @@ function BudgetSection() {
             transition={{ delay: 0.1 }}
             className="mt-6 text-3xl sm:text-4xl font-bold"
           >
-            Total Request: $100,000
+            Total Request: $50,000
           </motion.h2>
         </div>
 
@@ -869,9 +861,9 @@ function BudgetSection() {
           >
             <div className="text-gray-400">Total Grant Request</div>
             <div className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
-              $100,000
+              $50,000
             </div>
-            <div className="text-sm text-gray-500 mt-2">Milestone-based payments over 5 months</div>
+            <div className="text-sm text-gray-500 mt-2">Milestone-based payments over 3 months</div>
           </motion.div>
         </div>
       </div>
@@ -891,10 +883,10 @@ function CTASection() {
           </div>
 
           <div className="px-8 py-16 sm:px-16 text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold">Ready to Fund Privacy on Solana?</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold">Help Us Ship Secure Privacy to Solana</h2>
             <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
-              SIP Protocol fills the gap left by failed privacy projects. We&apos;ve shipped
-              a production-ready SDK. Help us take it to the next level.
+              M1-M8 complete. 837 tests passing. SDK published. We&apos;re one security audit
+              away from mainnet. Help us verify our ZK circuits and cryptographic primitives.
             </p>
 
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
