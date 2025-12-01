@@ -23,8 +23,14 @@ const mockWalletState: {
   chain: 'solana',
 }
 
+// Mock swap mode store
+const mockSwapModeState = {
+  mode: 'execute' as 'preview' | 'execute',
+}
+
 vi.mock('@/stores', () => ({
   useWalletStore: () => mockWalletState,
+  useSwapModeStore: () => mockSwapModeState,
   toast: {
     success: vi.fn(),
     error: vi.fn(),
@@ -44,6 +50,9 @@ describe('useSwap', () => {
     mockWalletState.isConnected = true
     mockWalletState.address = '0x1234567890abcdef1234567890abcdef12345678'
     mockWalletState.chain = 'solana'
+
+    // Reset swap mode state
+    mockSwapModeState.mode = 'execute'
 
     // Default mock implementations
     mockClient.createIntent.mockResolvedValue({ id: 'test-intent' })
@@ -81,6 +90,21 @@ describe('useSwap', () => {
   })
 
   describe('execute', () => {
+    it('should block execution in preview mode', async () => {
+      mockSwapModeState.mode = 'preview'
+
+      const { result } = renderHook(() => useSwap())
+
+      await act(async () => {
+        await result.current.execute(defaultParams)
+      })
+
+      // Preview mode should not change status or call client
+      expect(result.current.status).toBe('idle')
+      expect(mockClient.createIntent).not.toHaveBeenCalled()
+      expect(toast.info).toHaveBeenCalledWith('Preview Mode', expect.any(String))
+    })
+
     it('should require wallet connection', async () => {
       mockWalletState.isConnected = false
       mockWalletState.address = null

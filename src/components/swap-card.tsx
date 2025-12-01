@@ -3,8 +3,9 @@
 import { useState, useMemo } from 'react'
 import { PrivacyLevel } from '@sip-protocol/types'
 import { useQuote, useSwap, useBalance, getStatusMessage } from '@/hooks'
-import { useWalletStore } from '@/stores'
+import { useWalletStore, useSwapModeStore } from '@/stores'
 import { TransactionStatus } from '@/components/transaction-status'
+import { SwapModeToggle } from '@/components/swap-mode-toggle'
 import type { NetworkId } from '@/lib'
 
 interface SwapCardProps {
@@ -40,6 +41,10 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
 
   // Wallet state
   const { isConnected, openModal } = useWalletStore()
+
+  // Swap mode (preview vs execute)
+  const { mode: swapMode } = useSwapModeStore()
+  const isPreviewMode = swapMode === 'preview'
 
   // Balance fetching
   const { formatted: balance, symbol: balanceSymbol, isLoading: isBalanceLoading } = useBalance()
@@ -93,7 +98,7 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
   return (
     <div className="card overflow-hidden" data-testid="swap-card">
       {/* Header */}
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-4 flex items-center justify-between">
         <h3 className="text-lg font-semibold">Swap</h3>
         <div
           data-testid="privacy-badge"
@@ -121,6 +126,22 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
           )}
         </div>
       </div>
+
+      {/* Swap Mode Toggle */}
+      <div className="mb-4">
+        <SwapModeToggle />
+      </div>
+
+      {/* Preview Mode Banner */}
+      {isPreviewMode && (
+        <div className="mb-4 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3" data-testid="preview-mode-banner">
+          <div className="flex items-center gap-2 text-sm text-amber-400">
+            <PreviewIcon className="h-4 w-4" />
+            <span className="font-medium">Preview Mode</span>
+            <span className="text-amber-400/70">— Explore quotes safely, no real transactions</span>
+          </div>
+        </div>
+      )}
 
       {/* From */}
       <div className="mb-2 rounded-xl bg-gray-800/50 p-4">
@@ -246,7 +267,9 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
                 ? 'cursor-not-allowed bg-gray-800 text-gray-500'
                 : isSwapping
                   ? 'cursor-wait bg-purple-600/50 text-white'
-                  : 'bg-purple-600 text-white hover:bg-purple-700'
+                  : isPreviewMode
+                    ? 'bg-amber-600 text-white hover:bg-amber-700'
+                    : 'bg-purple-600 text-white hover:bg-purple-700'
           }`}
         >
           {!isConnected ? (
@@ -255,6 +278,11 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
             <span className="flex items-center justify-center gap-2">
               <LoadingSpinner />
               {getStatusMessage(status, hasPrivacy)}
+            </span>
+          ) : isPreviewMode ? (
+            <span className="flex items-center justify-center gap-2">
+              <PreviewIcon className="h-5 w-5" />
+              Preview Quote
             </span>
           ) : (
             <span>
@@ -406,6 +434,19 @@ function ChevronDownIcon({ className }: { className?: string }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+    </svg>
+  )
+}
+
+function PreviewIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+      />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
     </svg>
   )
 }

@@ -11,7 +11,7 @@ interface ProductionQuote extends Quote {
 // Dynamically import SDK functions to avoid SSR issues with WASM
 const loadSDK = () => import('@sip-protocol/sdk')
 import { useSIP } from '@/contexts'
-import { useWalletStore, toast } from '@/stores'
+import { useWalletStore, useSwapModeStore, toast } from '@/stores'
 import { parseAmount, getTransactionUrl, createDepositCallback, type NetworkId } from '@/lib'
 import { OneClickSwapStatus } from '@sip-protocol/types'
 
@@ -83,6 +83,7 @@ const TOKEN_DECIMALS: Record<string, number> = {
 export function useSwap(): SwapResult {
   const { client, isProductionMode } = useSIP()
   const { isConnected, address, chain, walletType } = useWalletStore()
+  const { mode: swapMode } = useSwapModeStore()
 
   const [status, setStatus] = useState<SwapStatus>('idle')
   const [txHash, setTxHash] = useState<string | null>(null)
@@ -103,6 +104,12 @@ export function useSwap(): SwapResult {
   }, [])
 
   const execute = useCallback(async (params: SwapParams) => {
+    // Block execution in preview mode
+    if (swapMode === 'preview') {
+      toast.info('Preview Mode', 'Switch to Execute mode to perform real swaps')
+      return
+    }
+
     // Validate wallet connection
     if (!isConnected || !address) {
       const msg = 'Please connect your wallet first'
@@ -250,7 +257,7 @@ export function useSwap(): SwapResult {
       setStatus('error')
       toast.error(toastTitle, message)
     }
-  }, [client, isConnected, address, chain, walletType, isProductionMode])
+  }, [client, isConnected, address, chain, walletType, isProductionMode, swapMode])
 
   // Generate explorer URL based on the transaction chain
   const explorerUrl = txHash && txChain
