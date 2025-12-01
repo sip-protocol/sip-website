@@ -7,6 +7,7 @@ import { useWalletStore, useSwapModeStore } from '@/stores'
 import { TransactionStatus } from '@/components/transaction-status'
 import { SwapModeToggle } from '@/components/swap-mode-toggle'
 import { StealthAddressDisplay } from '@/components/stealth-address-display'
+import { ViewingKeyDisplay } from '@/components/viewing-key-display'
 import type { NetworkId } from '@/lib'
 
 interface SwapCardProps {
@@ -276,6 +277,13 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
             toChain={toToken.chain}
             privacyLevel={privacyLevel}
           />
+        </div>
+      )}
+
+      {/* Viewing Key Export (Compliant Mode Only) */}
+      {isCompliant && amount && parseFloat(amount) > 0 && (
+        <div className="mb-4">
+          <ViewingKeyDisplay privacyLevel={privacyLevel} />
         </div>
       )}
 
