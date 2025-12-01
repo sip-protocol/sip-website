@@ -26,11 +26,12 @@ const fromTokens: Token[] = [
   { symbol: 'NEAR', name: 'NEAR', chain: 'near', icon: 'Ⓝ' },
 ]
 
-// Tokens available as DESTINATION (includes NEAR - deposit not required for destination)
+// Tokens available as DESTINATION (includes NEAR, ZEC - deposit not required for destination)
 const toTokens: Token[] = [
   { symbol: 'ETH', name: 'Ethereum', chain: 'ethereum', icon: 'Ξ' },
   { symbol: 'SOL', name: 'Solana', chain: 'solana', icon: '◎' },
   { symbol: 'NEAR', name: 'NEAR', chain: 'near', icon: 'Ⓝ' },
+  { symbol: 'ZEC', name: 'Zcash', chain: 'zcash', icon: '🛡️' },
 ]
 
 export function SwapCard({ privacyLevel }: SwapCardProps) {
@@ -38,6 +39,7 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
   const [fromToken, setFromToken] = useState(fromTokens[0]) // ETH
   const [toToken, setToToken] = useState(toTokens[1]) // SOL
   const [amount, setAmount] = useState('')
+  const [zecRecipient, setZecRecipient] = useState('') // ZEC recipient address (z-addr or t-addr)
 
   // Wallet state
   const { isConnected, openModal } = useWalletStore()
@@ -75,6 +77,7 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
   const isSwapping = status === 'confirming' || status === 'signing' || status === 'pending'
   const isSuccess = status === 'success'
   const isError = status === 'error'
+  const isZecDestination = toToken.symbol === 'ZEC'
 
   const handleSwap = async () => {
     if (!isConnected) {
@@ -219,6 +222,30 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
           <p className="mt-2 text-xs text-red-400">{quoteError}</p>
         )}
       </div>
+
+      {/* ZEC Recipient Address Input */}
+      {isZecDestination && (
+        <div className="mb-4 rounded-xl bg-gray-800/50 p-4" data-testid="zec-recipient-section">
+          <div className="mb-2 flex items-center justify-between text-sm text-gray-400">
+            <span className="flex items-center gap-1">
+              <ZcashIcon className="h-4 w-4 text-yellow-500" />
+              Zcash Recipient Address
+            </span>
+            <span className="text-xs text-yellow-500">Required for ZEC</span>
+          </div>
+          <input
+            type="text"
+            value={zecRecipient}
+            onChange={(e) => setZecRecipient(e.target.value)}
+            placeholder="Enter z-address (zs1...) or t-address (t1...)"
+            data-testid="zec-recipient-input"
+            className="w-full rounded-lg bg-gray-700/50 px-3 py-2 text-sm outline-none placeholder:text-gray-500 focus:ring-1 focus:ring-yellow-500/50"
+          />
+          <p className="mt-2 text-xs text-gray-500">
+            Use a <span className="text-yellow-500">z-address</span> for full privacy or <span className="text-gray-400">t-address</span> for transparent
+          </p>
+        </div>
+      )}
 
       {/* Privacy info */}
       {hasPrivacy && (
@@ -447,6 +474,14 @@ function PreviewIcon({ className }: { className?: string }) {
         d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
       />
       <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+  )
+}
+
+function ZcashIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v2h3v2h-5.5l5.5 4v2h-2v2H9v-2H6v-2h5.5L6 11V9h2V7z" />
     </svg>
   )
 }
