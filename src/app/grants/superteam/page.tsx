@@ -295,10 +295,10 @@ function SolutionSection() {
 
 function TractionSection() {
   const metrics = [
-    { value: '1,004+', label: 'Tests Passing', detail: '99.5% pass rate' },
-    { value: 'Published', label: 'npm Package', detail: '@sip-protocol/sdk v0.1.0' },
+    { value: '867+', label: 'Tests Passing', detail: '745 SDK + 122 website' },
+    { value: 'Published', label: 'npm Package', detail: '@sip-protocol/sdk v0.1.9' },
     { value: 'Live', label: 'Demo Deployed', detail: 'sip-protocol.org' },
-    { value: 'M9', label: 'Milestones Done', detail: 'Ready for production' },
+    { value: 'M8', label: 'Current Milestone', detail: 'Phase 1: 95% complete' },
   ]
 
   return (

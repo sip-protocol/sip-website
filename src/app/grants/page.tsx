@@ -84,9 +84,9 @@ function HeroSection() {
             className="mt-10 flex flex-wrap justify-center gap-8"
           >
             {[
-              { value: '1,004+', label: 'Tests Passing' },
-              { value: 'v0.1.0', label: 'npm Published' },
-              { value: 'M9', label: 'Milestones Complete' },
+              { value: '867+', label: 'Tests Passing' },
+              { value: 'v0.1.9', label: 'npm Published' },
+              { value: 'M8', label: 'Phase 1: 95%' },
               { value: '100%', label: 'Open Source' },
             ].map((stat) => (
               <div key={stat.label} className="text-center">
