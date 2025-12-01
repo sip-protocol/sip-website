@@ -335,27 +335,27 @@ function Phase2Section() {
   const milestones = [
     {
       id: 'M9',
-      title: 'Multi-curve Stealth',
-      description: 'ed25519 stealth addresses for Solana/NEAR native support',
-      icon: Lock,
+      title: 'Horizontal Expansion',
+      description: 'Private payments, DAO treasury ops, enterprise compliance, hardware wallets',
+      icon: Layers,
     },
     {
       id: 'M10',
-      title: 'Wallet Integrations',
-      description: 'Phantom, Solflare, Backpack with native privacy toggle',
-      icon: Wallet,
+      title: 'Multi-Foundation Grants',
+      description: 'NEAR, Zcash, Mina, Ethereum Foundation partnerships',
+      icon: Users,
     },
     {
       id: 'M11',
-      title: 'DEX Exploration',
-      description: 'Jupiter, Raydium partnership discussions and technical research',
-      icon: TrendingUp,
+      title: 'Settlement Abstraction',
+      description: 'Settlement router, Mina Protocol research, direct chain options',
+      icon: Network,
     },
     {
       id: 'M12',
-      title: 'Multi-chain Settlement',
-      description: 'Mina Protocol integration, direct chain settlement options',
-      icon: Network,
+      title: 'Partnership & Distribution',
+      description: 'Phantom, Solflare, Jupiter integrations, solver partnerships',
+      icon: Wallet,
     },
   ]
 
@@ -541,7 +541,7 @@ function VisionSection() {
               </div>
               <div className="text-gray-600">↓</div>
               <div className="p-3 rounded-lg bg-gray-800/50 text-gray-400">
-                Blockchains (Solana, ETH, NEAR, BTC)
+                Blockchains (Solana, ETH, NEAR, BTC, Aptos, Sui, L2s)
               </div>
             </div>
           </div>

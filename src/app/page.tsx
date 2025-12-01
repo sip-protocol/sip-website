@@ -193,6 +193,8 @@ function ChainSection() {
     { name: 'NEAR', color: 'from-[#00C08B] to-[#00C08B]' },
     { name: 'Ethereum', color: 'from-[#627EEA] to-[#627EEA]' },
     { name: 'Solana', color: 'from-[#9945FF] to-[#14F195]' },
+    { name: 'Arbitrum', color: 'from-[#28A0F0] to-[#28A0F0]' },
+    { name: 'Aptos', color: 'from-[#4CC9F0] to-[#4CC9F0]' },
     { name: 'Zcash', color: 'from-[#F4B728] to-[#F4B728]' },
     { name: 'Bitcoin', color: 'from-[#F7931A] to-[#F7931A]' },
   ]
