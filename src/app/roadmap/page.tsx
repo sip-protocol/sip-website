@@ -145,7 +145,7 @@ function CurrentPhaseSection() {
               </div>
               <div className="h-12 w-px bg-gray-700" />
               <div className="text-center">
-                <div className="text-3xl font-bold text-white">1,004+</div>
+                <div className="text-3xl font-bold text-white">867+</div>
                 <div className="text-xs text-gray-500">Tests</div>
               </div>
               <div className="h-12 w-px bg-gray-700" />
@@ -214,7 +214,7 @@ function Phase1Section() {
       id: 'M6',
       title: 'npm Publish',
       status: 'complete',
-      description: '@sip-protocol/sdk v0.1.0 on npm registry',
+      description: '@sip-protocol/sdk v0.1.9 on npm registry',
       icon: Zap,
     },
     {
