@@ -34,8 +34,9 @@ export function TransactionStatus({
   const isSuccess = status === 'success'
   const isError = status === 'error'
   const isPending = status === 'confirming' || status === 'signing' || status === 'pending'
+  const isProduction = status === 'awaiting_deposit' || status === 'processing'
 
-  if (!isPending && !isSuccess && !isError) {
+  if (!isPending && !isProduction && !isSuccess && !isError) {
     return null
   }
 
@@ -84,6 +85,64 @@ export function TransactionStatus({
               isActive={status === 'pending'}
               isComplete={false}
             />
+          </div>
+        </div>
+      )}
+
+      {/* Production Mode - Awaiting Deposit */}
+      {status === 'awaiting_deposit' && (
+        <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4">
+          <div className="flex items-center gap-3">
+            <div className="relative flex h-10 w-10 items-center justify-center">
+              <SpinnerIcon className="h-10 w-10 animate-spin text-amber-400" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="h-4 w-4 rounded-full bg-amber-500/20" />
+              </div>
+            </div>
+            <div className="flex-1">
+              <p className="font-medium text-amber-300">Awaiting Deposit</p>
+              <p className="text-sm text-amber-400/80">
+                Send tokens to the deposit address to complete swap
+              </p>
+            </div>
+          </div>
+
+          {/* Production progress steps */}
+          <div className="mt-4 flex items-center justify-between text-xs">
+            <StatusStep label="Intent" isActive={false} isComplete={true} />
+            <StatusDivider isComplete={true} />
+            <StatusStep label="Deposit" isActive={true} isComplete={false} />
+            <StatusDivider isComplete={false} />
+            <StatusStep label="Settle" isActive={false} isComplete={false} />
+          </div>
+        </div>
+      )}
+
+      {/* Production Mode - Processing */}
+      {status === 'processing' && (
+        <div className="rounded-xl border border-blue-500/30 bg-blue-500/10 p-4">
+          <div className="flex items-center gap-3">
+            <div className="relative flex h-10 w-10 items-center justify-center">
+              <SpinnerIcon className="h-10 w-10 animate-spin text-blue-400" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="h-4 w-4 rounded-full bg-blue-500/20" />
+              </div>
+            </div>
+            <div className="flex-1">
+              <p className="font-medium text-blue-300">Processing Swap</p>
+              <p className="text-sm text-blue-400/80">
+                Your swap is being processed on NEAR
+              </p>
+            </div>
+          </div>
+
+          {/* Production progress steps */}
+          <div className="mt-4 flex items-center justify-between text-xs">
+            <StatusStep label="Intent" isActive={false} isComplete={true} />
+            <StatusDivider isComplete={true} />
+            <StatusStep label="Deposit" isActive={false} isComplete={true} />
+            <StatusDivider isComplete={true} />
+            <StatusStep label="Settle" isActive={true} isComplete={false} />
           </div>
         </div>
       )}
@@ -272,6 +331,10 @@ function getStatusTitle(status: SwapStatus, isShielded: boolean): string {
       return 'Awaiting Signature'
     case 'pending':
       return isShielded ? 'Shielding Transaction' : 'Processing Transaction'
+    case 'awaiting_deposit':
+      return 'Awaiting Deposit'
+    case 'processing':
+      return 'Processing Swap'
     default:
       return ''
   }
@@ -287,6 +350,10 @@ function getStatusDescription(status: SwapStatus, isShielded: boolean): string {
       return isShielded
         ? 'Applying privacy protections to your transaction...'
         : 'Submitting to the network...'
+    case 'awaiting_deposit':
+      return 'Send tokens to the deposit address to complete swap'
+    case 'processing':
+      return 'Your swap is being processed on NEAR'
     default:
       return ''
   }
@@ -298,8 +365,12 @@ function getExplorerName(chain: NetworkId): string {
       return 'Solscan'
     case 'ethereum':
       return 'Etherscan'
+    case 'arbitrum':
+      return 'Arbiscan'
     case 'near':
       return 'NEARBlocks'
+    case 'zcash':
+      return 'Zcash Explorer'
     default:
       return 'Explorer'
   }
@@ -317,8 +388,12 @@ function ExplorerIcon({ chain, className }: { chain: NetworkId; className?: stri
       return <span className={className}>◎</span>
     case 'ethereum':
       return <span className={className}>Ξ</span>
+    case 'arbitrum':
+      return <span className={className}>⬡</span>
     case 'near':
       return <span className={className}>Ⓝ</span>
+    case 'zcash':
+      return <span className={className}>ⓩ</span>
     default:
       return null
   }
