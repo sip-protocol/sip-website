@@ -6,6 +6,7 @@ import { useQuote, useSwap, useBalance, getStatusMessage } from '@/hooks'
 import { useWalletStore, useSwapModeStore } from '@/stores'
 import { TransactionStatus } from '@/components/transaction-status'
 import { SwapModeToggle } from '@/components/swap-mode-toggle'
+import { StealthAddressDisplay } from '@/components/stealth-address-display'
 import type { NetworkId } from '@/lib'
 
 interface SwapCardProps {
@@ -265,6 +266,16 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
               </p>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Stealth Address Visualization */}
+      {hasPrivacy && amount && parseFloat(amount) > 0 && (
+        <div className="mb-4">
+          <StealthAddressDisplay
+            toChain={toToken.chain}
+            privacyLevel={privacyLevel}
+          />
         </div>
       )}
 
