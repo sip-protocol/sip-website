@@ -22,7 +22,7 @@ export default function DemoPage() {
                 Interactive Demo
               </span>
               <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                Testnet Only
+                Real Quotes • Mainnet Execution
               </span>
             </div>
             <h1 className="text-3xl sm:text-4xl font-bold">
@@ -31,6 +31,9 @@ export default function DemoPage() {
             <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
               Experience the difference between transparent and shielded transactions.
               Toggle privacy modes and see how your data is protected.
+            </p>
+            <p className="mt-3 text-sm text-gray-500 max-w-xl mx-auto">
+              Quotes are fetched from NEAR Intents (mainnet). Swap execution requires real tokens.
             </p>
           </div>
         </div>

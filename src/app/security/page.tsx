@@ -154,7 +154,8 @@ export default function SecurityPage() {
                   (800+ tests) and documented security assumptions.
                 </p>
                 <p className="text-sm text-gray-400">
-                  We recommend using SIP Protocol on testnets only until a formal audit is completed.
+                  We recommend using small amounts ($5-10) for testing until a formal audit is completed.
+                  Note: NEAR Intents operates on mainnet only—there is no testnet deployment.
                   A security audit is planned for Milestone 8 (Production Hardening).
                 </p>
               </div>
