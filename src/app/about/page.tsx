@@ -300,40 +300,34 @@ function HowItWorksSection() {
 function RoadmapSection() {
   const milestones = [
     {
-      id: 'M1',
-      title: 'Architecture & Specification',
+      id: 'M1-M3',
+      title: 'Core Cryptography',
       status: 'complete',
-      items: ['Protocol design', 'Threat modeling', 'Cryptographic specifications']
+      items: ['Protocol design', 'Pedersen commitments', 'Stealth addresses', 'TypeScript SDK']
     },
     {
-      id: 'M2',
-      title: 'Cryptographic Core',
+      id: 'M4-M5',
+      title: 'Network & Launch',
       status: 'complete',
-      items: ['Pedersen commitments', 'Stealth addresses', 'Viewing key system']
+      items: ['NEAR Intents adapter', 'Wallet adapters', 'Documentation site', 'npm publish']
     },
     {
-      id: 'M3',
-      title: 'SDK Production',
+      id: 'M6-M7',
+      title: 'Demo Integration',
       status: 'complete',
-      items: ['TypeScript SDK', 'Intent builder', 'Validation layer']
+      items: ['Live demo with real wallets', 'NEAR wallet support', '800+ tests passing']
     },
     {
-      id: 'M4',
-      title: 'Network Integration',
-      status: 'complete',
-      items: ['NEAR Intents adapter', 'Wallet adapters', 'E2E test suite']
-    },
-    {
-      id: 'M5',
-      title: 'Documentation & Launch',
-      status: 'complete',
-      items: ['API documentation', 'Integration guides', 'Security audit prep']
-    },
-    {
-      id: 'M6',
-      title: 'ZK Circuits',
+      id: 'M8',
+      title: 'Production Hardening',
       status: 'upcoming',
-      items: ['Noir circuit implementation', 'Proof generation', 'Verification contracts']
+      items: ['Noir ZK circuits', 'Security audit', 'Performance optimization']
+    },
+    {
+      id: 'M9',
+      title: 'Horizontal Expansion',
+      status: 'upcoming',
+      items: ['Additional chains', 'Treasury use cases', 'Enterprise features']
     }
   ]
 
@@ -436,7 +430,7 @@ function CommunitySection() {
             </div>
             <div className="flex items-center gap-2">
               <Check className="h-4 w-4 text-green-500" />
-              <span>741 Tests</span>
+              <span>800+ Tests</span>
             </div>
             <div className="flex items-center gap-2">
               <Check className="h-4 w-4 text-green-500" />

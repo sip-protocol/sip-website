@@ -119,10 +119,10 @@ export function useNearWallet(networkId: NearNetworkId = 'testnet'): UseNearWall
     const modules = selector.store.getState().modules
     const detected: WalletType[] = []
 
-    for (const module of modules) {
+    for (const walletModule of modules) {
       // Map module ID back to our WalletType
       const walletType = Object.entries(WALLET_MODULE_MAP).find(
-        ([, moduleId]) => moduleId === module.id
+        ([, moduleId]) => moduleId === walletModule.id
       )?.[0] as WalletType | undefined
 
       if (walletType) {

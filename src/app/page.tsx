@@ -112,7 +112,7 @@ function HeroSection() {
           >
             <div className="flex items-center gap-2">
               <Check className="h-4 w-4 text-green-500" />
-              <span>741 Tests Passing</span>
+              <span>800+ Tests Passing</span>
             </div>
             <div className="flex items-center gap-2">
               <Check className="h-4 w-4 text-green-500" />
