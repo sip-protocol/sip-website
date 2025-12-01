@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import type { SwapStatus } from '@/hooks'
 import type { NetworkId } from '@/lib'
 import { NETWORKS } from '@/lib'
@@ -12,6 +13,7 @@ interface TransactionStatusProps {
   error: string | null
   isShielded: boolean
   isCompliant?: boolean
+  viewingKey?: string | null
   onReset: () => void
   onRetry: () => void
 }
@@ -28,6 +30,7 @@ export function TransactionStatus({
   error,
   isShielded,
   isCompliant = false,
+  viewingKey,
   onReset,
   onRetry,
 }: TransactionStatusProps) {
@@ -35,6 +38,15 @@ export function TransactionStatus({
   const isError = status === 'error'
   const isPending = status === 'confirming' || status === 'signing' || status === 'pending'
   const isProduction = status === 'awaiting_deposit' || status === 'processing'
+  const [copied, setCopied] = useState(false)
+
+  const copyViewingKey = async () => {
+    if (viewingKey) {
+      await navigator.clipboard.writeText(viewingKey)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    }
+  }
 
   if (!isPending && !isProduction && !isSuccess && !isError) {
     return null
@@ -224,6 +236,34 @@ export function TransactionStatus({
                 : 'Sender, amount, and recipient are hidden'}
             </p>
           </div>
+
+          {/* Viewing Key for Compliant Mode */}
+          {isCompliant && viewingKey && (
+            <div className="mt-3 rounded-lg bg-purple-500/10 px-3 py-2">
+              <div className="flex items-center justify-between">
+                <p className="text-xs text-purple-400/60">Viewing Key (for auditors)</p>
+                <button
+                  onClick={copyViewingKey}
+                  className="flex items-center gap-1 text-xs text-purple-400 hover:text-purple-300 transition-colors"
+                >
+                  {copied ? (
+                    <>
+                      <CheckIcon className="h-3 w-3" />
+                      Copied!
+                    </>
+                  ) : (
+                    <>
+                      <CopyIcon className="h-3 w-3" />
+                      Copy
+                    </>
+                  )}
+                </button>
+              </div>
+              <p className="font-mono text-xs text-purple-300 break-all mt-1">
+                {truncateHash(viewingKey)}
+              </p>
+            </div>
+          )}
 
           <button
             onClick={onReset}
@@ -464,6 +504,14 @@ function ExternalLinkIcon({ className }: { className?: string }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+    </svg>
+  )
+}
+
+function CopyIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
     </svg>
   )
 }

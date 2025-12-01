@@ -42,6 +42,8 @@ export interface SwapResult {
   depositAddress: string | null
   /** Amount to deposit (human readable) */
   depositAmount: string | null
+  /** Viewing key for compliant mode swaps (auditor access) */
+  viewingKey: string | null
   /** Execute the swap */
   execute: (params: SwapParams) => Promise<void>
   /** Reset the swap state */
@@ -88,6 +90,7 @@ export function useSwap(): SwapResult {
   const [txChain, setTxChain] = useState<NetworkId | null>(null)
   const [depositAddress, setDepositAddress] = useState<string | null>(null)
   const [depositAmount, setDepositAmount] = useState<string | null>(null)
+  const [viewingKey, setViewingKey] = useState<string | null>(null)
 
   const reset = useCallback(() => {
     setStatus('idle')
@@ -96,6 +99,7 @@ export function useSwap(): SwapResult {
     setTxChain(null)
     setDepositAddress(null)
     setDepositAmount(null)
+    setViewingKey(null)
   }, [])
 
   const execute = useCallback(async (params: SwapParams) => {
@@ -144,6 +148,7 @@ export function useSwap(): SwapResult {
       let viewingKeyObj: { key: string; path: string; hash: string } | undefined
       if (params.privacyLevel === PrivacyLevel.COMPLIANT) {
         viewingKeyObj = sdk.generateViewingKey(`swap/${Date.now()}`)
+        setViewingKey(viewingKeyObj.key) // Store for UI display
       }
 
       // Generate stealth meta-address for shielded/compliant modes
@@ -260,6 +265,7 @@ export function useSwap(): SwapResult {
     error,
     depositAddress,
     depositAmount,
+    viewingKey,
     execute,
     reset,
   }
