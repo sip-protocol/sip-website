@@ -26,6 +26,7 @@ export default function FeaturesPage() {
     <>
       <HeroSection />
       <PrivacyFeaturesSection />
+      <VMSection />
       <ChainsSection />
       <SDKFeaturesSection />
       <UseCasesSection />
@@ -91,7 +92,7 @@ function PrivacyFeaturesSection() {
       description: 'Each transaction generates a unique one-time address, preventing anyone from linking payments to a single recipient.',
       details: [
         'EIP-5564 compatible meta-address format',
-        'ECDH key exchange on secp256k1',
+        'Multi-curve support (secp256k1 + ed25519)',
         'Deterministic derivation from shared secret',
         'Recipient scans for incoming payments'
       ],
@@ -150,7 +151,7 @@ await shareViewingKey(viewingKey, auditorId)`
             Privacy Primitives
           </h2>
           <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
-            Enterprise-grade cryptography adapted from Zcash, battle-tested and audited
+            Enterprise-grade cryptography adapted from Zcash, battle-tested with 867+ tests
           </p>
         </div>
 
@@ -240,13 +241,142 @@ function FeatureDetail({ feature, index }: { feature: any; index: number }) {
   )
 }
 
+function VMSection() {
+  const vms = [
+    {
+      name: 'EVM',
+      fullName: 'Ethereum Virtual Machine',
+      curve: 'secp256k1',
+      status: 'active',
+      chains: ['Ethereum', 'Arbitrum', 'Base', 'Polygon', 'Optimism'],
+      color: '#627EEA',
+    },
+    {
+      name: 'SVM',
+      fullName: 'Solana Virtual Machine',
+      curve: 'ed25519',
+      status: 'active',
+      chains: ['Solana'],
+      color: '#9945FF',
+    },
+    {
+      name: 'MoveVM',
+      fullName: 'Move Virtual Machine',
+      curve: 'ed25519',
+      status: 'coming',
+      chains: ['Aptos', 'Sui'],
+      color: '#4CC9F0',
+    },
+  ]
+
+  return (
+    <section className="py-24 border-t border-gray-800/50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-cyan-500/10 text-cyan-400 border border-cyan-500/20"
+          >
+            VM-Agnostic
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="mt-6 text-3xl sm:text-4xl font-bold"
+          >
+            Works Across Virtual Machines
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto"
+          >
+            SIP is a client-side SDK supporting multiple cryptographic curves. One privacy layer for any blockchain.
+          </motion.p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-3 max-w-4xl mx-auto">
+          {vms.map((vm, index) => (
+            <motion.div
+              key={vm.name}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="p-6 rounded-2xl bg-gray-900/50 border border-gray-800 hover:border-cyan-500/50 transition-colors"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: vm.color }}
+                  />
+                  <h3 className="text-lg font-bold">{vm.name}</h3>
+                </div>
+                <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                  vm.status === 'active'
+                    ? 'bg-green-500/10 text-green-400'
+                    : 'bg-yellow-500/10 text-yellow-400'
+                }`}>
+                  {vm.status === 'active' ? 'Supported' : 'Coming Soon'}
+                </span>
+              </div>
+              <p className="text-sm text-gray-500 mb-3">{vm.fullName}</p>
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-xs px-2 py-1 rounded bg-gray-800 text-gray-400 font-mono">
+                  {vm.curve}
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {vm.chains.map((chain) => (
+                  <span key={chain} className="text-xs px-2 py-1 rounded-full bg-gray-800/50 text-gray-400">
+                    {chain}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Architecture note */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-12 max-w-2xl mx-auto p-6 rounded-xl bg-cyan-950/20 border border-cyan-500/20 text-center"
+        >
+          <p className="text-sm text-gray-400">
+            <span className="text-cyan-400 font-medium">How it works:</span> SIP generates stealth addresses client-side using your wallet&apos;s cryptographic curve. The blockchain only sees normal transactions — no special VM support required.
+          </p>
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
 function ChainsSection() {
   const chains = [
+    // Active
     { name: 'NEAR', status: 'active', color: '#00C08B', description: 'Native integration via NEAR Intents' },
     { name: 'Ethereum', status: 'active', color: '#627EEA', description: 'Full EVM support with stealth addresses' },
     { name: 'Solana', status: 'active', color: '#9945FF', description: 'High-speed privacy transactions' },
     { name: 'Zcash', status: 'active', color: '#F4B728', description: 'Shielded pool integration' },
-    { name: 'Bitcoin', status: 'coming', color: '#F7931A', description: 'Via chain signatures (coming soon)' },
+    // Coming Soon - EVM L2s
+    { name: 'Arbitrum', status: 'coming', color: '#28A0F0', description: 'Leading L2 with EVM privacy' },
+    { name: 'Base', status: 'coming', color: '#0052FF', description: 'Coinbase L2, fast growing ecosystem' },
+    { name: 'Polygon', status: 'coming', color: '#8247E5', description: 'Massive EVM ecosystem' },
+    // Coming Soon - Move chains
+    { name: 'Aptos', status: 'coming', color: '#4CC9F0', description: 'Move-based privacy via ed25519' },
+    { name: 'Sui', status: 'coming', color: '#6FBCF0', description: 'Object-model privacy support' },
+    // Coming Soon - Others
+    { name: 'Bitcoin', status: 'coming', color: '#F7931A', description: 'Via chain signatures' },
+    { name: 'Mina', status: 'coming', color: '#E39DFF', description: 'Proof verification layer' },
   ]
 
   return (
@@ -306,7 +436,7 @@ function SDKFeaturesSection() {
     {
       icon: Wallet,
       title: 'Wallet Adapters',
-      description: 'Pre-built adapters for Ethereum (wagmi), Solana (wallet-adapter), and more.'
+      description: 'Pre-built adapters for Ethereum (wagmi), Solana (wallet-adapter), and NEAR.'
     },
     {
       icon: FileCheck,
