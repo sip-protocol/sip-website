@@ -18,17 +18,23 @@ interface Token {
   icon: string
 }
 
-const tokens: Token[] = [
+// Tokens available as SOURCE (must have deposit callback implemented)
+const fromTokens: Token[] = [
   { symbol: 'ETH', name: 'Ethereum', chain: 'ethereum', icon: 'Ξ' },
-  { symbol: 'ARB', name: 'Arbitrum', chain: 'arbitrum', icon: '🔵' },
+  { symbol: 'SOL', name: 'Solana', chain: 'solana', icon: '◎' },
+]
+
+// Tokens available as DESTINATION (includes NEAR - deposit not required for destination)
+const toTokens: Token[] = [
+  { symbol: 'ETH', name: 'Ethereum', chain: 'ethereum', icon: 'Ξ' },
   { symbol: 'SOL', name: 'Solana', chain: 'solana', icon: '◎' },
   { symbol: 'NEAR', name: 'NEAR', chain: 'near', icon: 'Ⓝ' },
 ]
 
 export function SwapCard({ privacyLevel }: SwapCardProps) {
-  // Default to ETH→ARB: Both EVM chains support stealth addresses without wallet
-  const [fromToken, setFromToken] = useState(tokens[0]) // ETH
-  const [toToken, setToToken] = useState(tokens[1]) // ARB (Arbitrum)
+  // Default to ETH→SOL: Cross-chain swap demo
+  const [fromToken, setFromToken] = useState(fromTokens[0]) // ETH
+  const [toToken, setToToken] = useState(toTokens[1]) // SOL
   const [amount, setAmount] = useState('')
 
   // Wallet state
@@ -144,7 +150,7 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
           <TokenSelector
             token={fromToken}
             onSelect={setFromToken}
-            tokens={tokens}
+            tokens={fromTokens}
             testId="from-token"
           />
         </div>
@@ -183,7 +189,7 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
           <TokenSelector
             token={toToken}
             onSelect={setToToken}
-            tokens={tokens}
+            tokens={toTokens}
             testId="to-token"
           />
         </div>

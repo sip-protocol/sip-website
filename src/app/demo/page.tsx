@@ -15,9 +15,14 @@ export default function DemoPage() {
       <section className="border-b border-gray-800/50 py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20 mb-4">
-              Interactive Demo
-            </span>
+            <div className="inline-flex items-center gap-2 mb-4">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                Interactive Demo
+              </span>
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                Testnet Only
+              </span>
+            </div>
             <h1 className="text-3xl sm:text-4xl font-bold">
               Try SIP Protocol
             </h1>
