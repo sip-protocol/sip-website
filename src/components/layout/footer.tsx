@@ -34,8 +34,8 @@ const footerLinks: Record<string, FooterSection> = {
   resources: {
     title: 'Resources',
     links: [
-      { href: 'https://github.com/sip-protocol/sip-protocol/blob/main/docs/security/THREAT_MODEL.md', label: 'Security', external: true },
-      { href: 'https://github.com/sip-protocol/sip-protocol/blob/main/LICENSE', label: 'License', external: true },
+      { href: '/security', label: 'Security' },
+      { href: '/license', label: 'License' },
     ],
   },
   community: {
