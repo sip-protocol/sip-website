@@ -32,3 +32,10 @@ export {
   refreshPrices,
   clearPriceCache,
 } from './prices'
+
+export {
+  sendDeposit,
+  createDepositCallback,
+  type DepositParams,
+  type DepositResult,
+} from './wallet-deposit'

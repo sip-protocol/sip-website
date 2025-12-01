@@ -12,7 +12,8 @@ interface ProductionQuote extends Quote {
 const loadSDK = () => import('@sip-protocol/sdk')
 import { useSIP } from '@/contexts'
 import { useWalletStore, toast } from '@/stores'
-import { parseAmount, getTransactionUrl, type NetworkId } from '@/lib'
+import { parseAmount, getTransactionUrl, createDepositCallback, type NetworkId } from '@/lib'
+import { OneClickSwapStatus } from '@sip-protocol/types'
 
 export type SwapStatus = 'idle' | 'confirming' | 'signing' | 'pending' | 'awaiting_deposit' | 'processing' | 'success' | 'error'
 
@@ -79,7 +80,7 @@ const TOKEN_DECIMALS: Record<string, number> = {
  */
 export function useSwap(): SwapResult {
   const { client, isProductionMode } = useSIP()
-  const { isConnected, address, chain } = useWalletStore()
+  const { isConnected, address, chain, walletType } = useWalletStore()
 
   const [status, setStatus] = useState<SwapStatus>('idle')
   const [txHash, setTxHash] = useState<string | null>(null)
@@ -184,12 +185,38 @@ export function useSwap(): SwapResult {
 
       setStatus('signing')
 
+      // Create deposit callback for production mode
+      const depositCallback = walletType
+        ? createDepositCallback(params.fromChain, walletType, params.fromToken)
+        : undefined
+
+      // Status update handler
+      const handleStatusUpdate = (status: OneClickSwapStatus) => {
+        switch (status) {
+          case OneClickSwapStatus.PENDING_DEPOSIT:
+            setStatus('awaiting_deposit')
+            break
+          case OneClickSwapStatus.PROCESSING:
+            setStatus('processing')
+            break
+          case OneClickSwapStatus.SUCCESS:
+            setStatus('success')
+            break
+          case OneClickSwapStatus.INCOMPLETE_DEPOSIT:
+          case OneClickSwapStatus.REFUNDED:
+            setStatus('error')
+            break
+        }
+      }
+
       // Execute the intent with the quote
-      // In a real implementation, this would:
-      // 1. Sign the transaction with the connected wallet
-      // 2. Submit to the NEAR Intents network
-      // 3. Return the transaction hash
-      const result = await client.execute(intent, params.quote)
+      // In production mode: sends deposit tx and waits for completion
+      // In demo mode: returns mock result
+      const result = await client.execute(intent, params.quote, {
+        onDepositRequired: isProductionMode ? depositCallback : undefined,
+        onStatusUpdate: isProductionMode ? handleStatusUpdate : undefined,
+        timeout: 300000, // 5 minutes
+      })
 
       if (result.txHash) {
         setTxHash(result.txHash)
@@ -218,7 +245,7 @@ export function useSwap(): SwapResult {
       setStatus('error')
       toast.error(toastTitle, message)
     }
-  }, [client, isConnected, address, chain])
+  }, [client, isConnected, address, chain, walletType, isProductionMode])
 
   // Generate explorer URL based on the transaction chain
   const explorerUrl = txHash && txChain
