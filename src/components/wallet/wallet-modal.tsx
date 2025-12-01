@@ -15,7 +15,7 @@ import {
   type ChainType,
   WALLET_INFO,
 } from '@/stores'
-import { useNearWallet } from '@/hooks/use-near-wallet'
+import { useNearWalletContext } from '@/contexts'
 import {
   detectWalletConflicts,
   isWalletConflictError,
@@ -33,8 +33,8 @@ export function WalletModal() {
     setAvailableWallets,
   } = useWalletStore()
 
-  // NEAR wallet hook
-  const nearWallet = useNearWallet('testnet')
+  // NEAR wallet context (initialized in providers.tsx)
+  const nearWallet = useNearWalletContext()
 
   const [activeTab, setActiveTab] = useState<TabType>('solana')
   const [detectedWallets, setDetectedWallets] = useState<{
@@ -66,7 +66,7 @@ export function WalletModal() {
         setError(null)
       })
     }
-  }, [isModalOpen, setAvailableWallets, nearWallet.isReady, nearWallet.detectWallets])
+  }, [isModalOpen, setAvailableWallets, nearWallet])
 
   const handleConnect = async (walletType: WalletType, chain: ChainType) => {
     setError(null)

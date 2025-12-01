@@ -169,12 +169,17 @@ async function sendNearDeposit(
   amount: string,
   token: string
 ): Promise<string> {
-  // NEAR deposits would use the wallet selector
-  // For now, throw an informative error
-  throw new Error(
-    'NEAR deposits require wallet selector integration. ' +
-    'Please use a Solana or Ethereum wallet for production swaps.'
-  )
+  // Only native NEAR transfers supported for now
+  if (token !== 'NEAR') {
+    throw new Error('Only native NEAR deposits are currently supported')
+  }
+
+  // Dynamic import to avoid SSR issues and circular dependencies
+  const { sendNearTransaction } = await import('@/contexts/near-wallet-context')
+
+  // sendNearTransaction expects amount in yoctoNEAR
+  // The amount from 1Click API should already be in yoctoNEAR format
+  return sendNearTransaction(depositAddress, amount)
 }
 
 /**

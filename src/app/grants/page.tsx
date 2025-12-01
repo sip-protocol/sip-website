@@ -84,7 +84,7 @@ function HeroSection() {
             className="mt-10 flex flex-wrap justify-center gap-8"
           >
             {[
-              { value: '1,004', label: 'Tests Passing' },
+              { value: '1,004+', label: 'Tests Passing' },
               { value: 'v0.1.0', label: 'npm Published' },
               { value: 'M9', label: 'Milestones Complete' },
               { value: '100%', label: 'Open Source' },
@@ -105,7 +105,7 @@ function GrantCardsSection() {
   const grants = [
     {
       title: 'Superteam Microgrant',
-      amount: '<$10K',
+      amount: '$10K',
       description: 'Community building, developer advocacy, and ecosystem awareness.',
       href: '/grants/superteam',
       color: 'from-blue-500 to-cyan-500',

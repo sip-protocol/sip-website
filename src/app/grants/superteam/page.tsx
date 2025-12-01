@@ -103,7 +103,7 @@ function HeroSection() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="mt-4 text-xl sm:text-2xl text-gray-400"
           >
-            Privacy Layer for Cross-Chain Intents
+            The Privacy Standard for Web3
           </motion.p>
 
           {/* Amount */}
@@ -115,7 +115,7 @@ function HeroSection() {
           >
             <span className="text-gray-400">Requesting</span>
             <span className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-              $9,500
+              $10,000
             </span>
           </motion.div>
 
@@ -295,10 +295,10 @@ function SolutionSection() {
 
 function TractionSection() {
   const metrics = [
-    { value: '837', label: 'Tests Passing', detail: '745 SDK + 92 demo tests' },
+    { value: '1,004+', label: 'Tests Passing', detail: '99.5% pass rate' },
     { value: 'Published', label: 'npm Package', detail: '@sip-protocol/sdk v0.1.0' },
     { value: 'Live', label: 'Demo Deployed', detail: 'sip-protocol.org' },
-    { value: 'M8', label: 'Milestones Done', detail: 'Audit pending' },
+    { value: 'M9', label: 'Milestones Done', detail: 'Ready for production' },
   ]
 
   return (
@@ -364,10 +364,10 @@ function TractionSection() {
 
 function BudgetSection() {
   const budget = [
-    { category: 'Community Building', amount: '$3,500', percent: 36.8, icon: Users },
-    { category: 'Documentation', amount: '$2,500', percent: 26.3, icon: FileText },
-    { category: 'Hackathon Participation', amount: '$2,500', percent: 26.3, icon: Trophy },
-    { category: 'Marketing & Awareness', amount: '$1,000', percent: 10.5, icon: Megaphone },
+    { category: 'Community Building', amount: '$4,000', percent: 40, icon: Users },
+    { category: 'Documentation', amount: '$2,500', percent: 25, icon: FileText },
+    { category: 'Hackathon Participation', amount: '$2,500', percent: 25, icon: Trophy },
+    { category: 'Marketing & Awareness', amount: '$1,000', percent: 10, icon: Megaphone },
   ]
 
   return (
@@ -390,7 +390,7 @@ function BudgetSection() {
             transition={{ delay: 0.1 }}
             className="mt-6 text-3xl sm:text-4xl font-bold"
           >
-            The Ask: $9,500
+            The Ask: $10,000
           </motion.h2>
         </div>
 
@@ -436,7 +436,7 @@ function BudgetSection() {
         >
           <div className="inline-flex items-center gap-4 px-8 py-4 rounded-2xl bg-blue-500/10 border border-blue-500/20">
             <span className="text-gray-400">Total Request</span>
-            <span className="text-3xl font-bold text-white">$9,500</span>
+            <span className="text-3xl font-bold text-white">$10,000</span>
           </div>
         </motion.div>
       </div>

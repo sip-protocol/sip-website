@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { useState } from 'react'
 import {
   Shield,
   Zap,
@@ -23,17 +22,18 @@ import {
   Layers,
   Globe,
   ChevronDown,
-  Calendar,
-  Award,
-  Search,
-  Smartphone,
   ShieldCheck,
+  Wallet,
+  Network,
+  Blocks,
+  Sparkles,
 } from 'lucide-react'
 
 export default function SolanaFoundationPitchPage() {
   return (
     <>
       <HeroSection />
+      <VisionSection />
       <ProblemSection />
       <SolutionSection />
       <WhySolanaSection />
@@ -82,8 +82,8 @@ function HeroSection() {
               transition={{ duration: 0.5 }}
             >
               <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
-                <ShieldCheck className="w-4 h-4" />
-                Security Audit Grant Application
+                <Globe className="w-4 h-4" />
+                Privacy Standard for Web3
               </span>
             </motion.div>
 
@@ -104,7 +104,7 @@ function HeroSection() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="mt-4 text-xl sm:text-2xl text-gray-400"
             >
-              Security Audit for Production Readiness
+              The Privacy Standard for Solana Ecosystem
             </motion.p>
 
             {/* Description */}
@@ -114,8 +114,8 @@ function HeroSection() {
               transition={{ duration: 0.5, delay: 0.3 }}
               className="mt-6 text-gray-500 max-w-lg"
             >
-              M1-M8 complete. 837 tests passing. SDK published. Now we need a professional
-              security audit to verify our ZK circuits and cryptographic primitives before mainnet.
+              Privacy middleware for Web3 — like HTTPS for the internet. One toggle to shield
+              any transaction. Chain-agnostic. Settlement-agnostic. Starting with Solana.
             </motion.p>
 
             {/* Amount */}
@@ -128,13 +128,13 @@ function HeroSection() {
               <div>
                 <div className="text-sm text-gray-400">Requesting</div>
                 <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
-                  $50,000
+                  $100,000
                 </div>
               </div>
               <div className="h-12 w-px bg-purple-500/20" />
               <div>
                 <div className="text-sm text-gray-400">Timeline</div>
-                <div className="text-xl font-semibold text-white">3 Months</div>
+                <div className="text-xl font-semibold text-white">6 Months</div>
               </div>
             </motion.div>
 
@@ -173,10 +173,10 @@ function HeroSection() {
             <h3 className="text-lg font-semibold mb-6 text-gray-400">Key Metrics</h3>
             <div className="space-y-6">
               {[
-                { label: 'Tests Passing', value: '837', detail: '745 SDK + 92 demo' },
+                { label: 'Tests Passing', value: '837+', detail: '745 SDK + 92 demo' },
                 { label: 'npm Package', value: 'Published', detail: '@sip-protocol/sdk v0.1.0' },
-                { label: 'Milestones', value: 'M1-M8', detail: 'Audit pending' },
-                { label: 'Demo', value: 'Live', detail: 'sip-protocol.org' },
+                { label: 'Phase 1', value: '95%', detail: 'M1-M8 complete' },
+                { label: 'Status', value: 'Live', detail: 'sip-protocol.org' },
               ].map((item) => (
                 <div key={item.label} className="flex items-center justify-between">
                   <div>
@@ -206,6 +206,117 @@ function HeroSection() {
   )
 }
 
+function VisionSection() {
+  return (
+    <section className="py-24 border-t border-gray-800/50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20"
+          >
+            <Sparkles className="w-4 h-4" />
+            The Vision
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="mt-6 text-3xl sm:text-4xl font-bold"
+          >
+            Privacy Standard for Web3
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="mt-4 text-xl text-gray-400 max-w-3xl mx-auto"
+          >
+            SIP is to privacy what HTTPS is to the web. One toggle to shield any transaction.
+          </motion.p>
+        </div>
+
+        {/* Architecture Diagram */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="max-w-4xl mx-auto p-8 rounded-2xl bg-gray-900/50 border border-gray-800 font-mono text-sm"
+        >
+          <div className="space-y-4">
+            <div className="p-4 rounded-xl bg-gray-800/50 border border-gray-700 text-center">
+              <div className="text-gray-400 text-xs mb-2">APPLICATIONS</div>
+              <div className="text-white">Wallets &bull; DEXs &bull; DAOs &bull; Payments &bull; Enterprise</div>
+            </div>
+
+            <div className="flex justify-center">
+              <ArrowRight className="w-5 h-5 text-purple-400 rotate-90" />
+            </div>
+
+            <div className="p-6 rounded-xl bg-purple-950/30 border border-purple-500/30">
+              <div className="text-purple-400 font-semibold text-center mb-4">SIP PROTOCOL — THE PRIVACY STANDARD</div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="p-3 rounded-lg bg-purple-900/20 border border-purple-500/20">
+                  <div className="text-purple-300 text-xs mb-1">PRIVACY LAYER (Core)</div>
+                  <div className="text-gray-400 text-xs">Stealth Addresses &bull; Commitments &bull; Viewing Keys</div>
+                </div>
+                <div className="p-3 rounded-lg bg-pink-900/20 border border-pink-500/20">
+                  <div className="text-pink-300 text-xs mb-1">PROOF COMPOSITION (Moat)</div>
+                  <div className="text-gray-400 text-xs">Zcash &bull; Mina &bull; Noir</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-center">
+              <ArrowRight className="w-5 h-5 text-blue-400 rotate-90" />
+            </div>
+
+            <div className="p-4 rounded-xl bg-blue-950/30 border border-blue-500/20 text-center">
+              <div className="text-blue-400 text-xs mb-1">SETTLEMENT (Pluggable)</div>
+              <div className="text-gray-400">NEAR Intents &bull; Mina &bull; Direct Chain</div>
+            </div>
+
+            <div className="flex justify-center">
+              <ArrowRight className="w-5 h-5 text-green-400 rotate-90" />
+            </div>
+
+            <div className="p-4 rounded-xl bg-green-950/30 border border-green-500/20 text-center">
+              <div className="text-green-400 text-xs mb-1">BLOCKCHAINS</div>
+              <div className="text-gray-400">Solana &bull; Ethereum &bull; NEAR &bull; Bitcoin &bull; More</div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Key Points */}
+        <div className="mt-12 grid gap-6 md:grid-cols-3 max-w-4xl mx-auto">
+          {[
+            { icon: Layers, title: 'Chain-Agnostic', desc: 'Enhance every chain, compete with none' },
+            { icon: Network, title: 'Settlement-Agnostic', desc: 'One API, multiple backends' },
+            { icon: Shield, title: 'Compliance-Ready', desc: 'Viewing keys for institutions' },
+          ].map((item, index) => (
+            <motion.div
+              key={item.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              className="p-4 rounded-xl bg-gray-900/50 border border-gray-800 text-center"
+            >
+              <item.icon className="w-8 h-8 text-purple-400 mx-auto mb-3" />
+              <h3 className="font-semibold">{item.title}</h3>
+              <p className="text-sm text-gray-500 mt-1">{item.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function ProblemSection() {
   const problems = [
     {
@@ -218,25 +329,25 @@ function ProblemSection() {
       ],
     },
     {
-      icon: Search,
-      title: 'No Stealth Address SDK',
+      icon: Eye,
+      title: 'No Privacy Standard',
       points: [
-        'EIP-5564 exists only for Ethereum',
-        'Solana has no equivalent',
+        'No EIP-5564 for Solana',
         'Developers have no tools',
+        'Each project builds from scratch',
       ],
     },
     {
       icon: Globe,
       title: 'Cross-Chain Privacy Gap',
       points: [
-        'NEAR Intents: $6B+ volume',
-        'Zolana bridge: NO privacy',
-        'Wrapped tokens are transparent',
+        'Wormhole: transparent',
+        'deBridge: transparent',
+        'All bridges leak data',
       ],
     },
     {
-      icon: Eye,
+      icon: Users,
       title: 'Institutional Blockers',
       points: [
         'No compliance features',
@@ -266,7 +377,7 @@ function ProblemSection() {
             transition={{ delay: 0.1 }}
             className="mt-6 text-3xl sm:text-4xl font-bold"
           >
-            Privacy on Solana Has a Critical Gap
+            Privacy on Solana Has No Standard
           </motion.h2>
         </div>
 
@@ -305,7 +416,7 @@ function SolutionSection() {
     {
       icon: Shield,
       title: 'Stealth Addresses',
-      description: 'EIP-5564 adapted for Solana. One-time addresses prevent recipient linkability.',
+      description: 'EIP-5564 adapted for multi-curve (secp256k1 + ed25519). Native Solana support.',
     },
     {
       icon: Lock,
@@ -320,7 +431,7 @@ function SolutionSection() {
     {
       icon: Layers,
       title: 'Privacy Levels',
-      description: 'Transparent, Shielded, or Compliant. Users choose their privacy level.',
+      description: 'Transparent, Shielded, or Compliant. Users and apps choose their level.',
     },
   ]
 
@@ -353,8 +464,7 @@ function SolutionSection() {
             transition={{ delay: 0.2 }}
             className="mt-4 text-gray-400 max-w-2xl mx-auto"
           >
-            Application-layer privacy for cross-chain intents. No new consensus layer.
-            Just plug in our SDK and enable privacy.
+            Privacy middleware for Solana and beyond. Plug in our SDK, enable the toggle, done.
           </motion.p>
         </div>
 
@@ -394,14 +504,14 @@ function WhySolanaSection() {
       description: 'Jupiter, Raydium, Meteora. Privacy unlocks institutional capital.',
     },
     {
-      icon: Users,
-      title: 'Institutional Interest',
-      description: 'Confidential Balances shows demand. We extend it cross-chain.',
+      icon: Wallet,
+      title: 'Wallet Ecosystem',
+      description: 'Phantom, Solflare, Backpack. Native integration opportunities.',
     },
     {
       icon: Globe,
-      title: 'NEAR Bridge',
-      description: 'NEAR Intents brings cross-chain users. Privacy brings them to Solana.',
+      title: 'Cross-Chain Hub',
+      description: 'Wormhole, NEAR bridge. Privacy makes Solana the private gateway.',
     },
   ]
 
@@ -416,7 +526,7 @@ function WhySolanaSection() {
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20"
           >
             <Target className="w-4 h-4" />
-            Why Solana?
+            Why Solana First?
           </motion.span>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -425,7 +535,7 @@ function WhySolanaSection() {
             transition={{ delay: 0.1 }}
             className="mt-6 text-3xl sm:text-4xl font-bold"
           >
-            Perfect Fit for Privacy
+            Perfect Fit for Privacy Standard
           </motion.h2>
         </div>
 
@@ -488,10 +598,10 @@ function TractionSection() {
             <h3 className="text-xl font-semibold mb-6">Key Metrics</h3>
             <div className="grid grid-cols-2 gap-6">
               {[
-                { value: '837', label: 'Tests Passing' },
+                { value: '837+', label: 'Tests Passing' },
                 { value: '100%', label: 'Pass Rate' },
                 { value: 'v0.1.0', label: 'npm Published' },
-                { value: 'M8', label: 'Milestones Done' },
+                { value: 'M8', label: 'Phase 1: 95%' },
               ].map((metric) => (
                 <div key={metric.label} className="text-center p-4 rounded-xl bg-gray-800/50">
                   <div className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
@@ -513,16 +623,16 @@ function TractionSection() {
             <h3 className="text-xl font-semibold mb-6">What&apos;s Built</h3>
             <ul className="space-y-3">
               {[
-                'Stealth addresses (EIP-5564 adapted)',
+                'Stealth addresses (secp256k1 + ed25519)',
+                'Solana native address derivation',
                 'Pedersen commitments',
                 'Viewing keys for compliance',
                 'NEAR Intents adapter',
                 'Solana wallet adapter',
-                'Ethereum wallet adapter',
-                'Zcash RPC client',
-                'Noir ZK circuits (compiled, integrated)',
+                'Noir ZK circuits (compiled)',
                 'E2E test coverage (128 tests)',
-                'Secure memory handling (zeroization)',
+                'Secure memory handling',
+                'npm packages published',
               ].map((feature) => (
                 <li key={feature} className="flex items-center gap-3 text-gray-400">
                   <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
@@ -539,11 +649,10 @@ function TractionSection() {
 
 function CompetitorSection() {
   const competitors = [
-    { name: 'Elusiv', status: 'Sunset', statusColor: 'text-red-400', advantage: 'We\'re shipping' },
-    { name: 'Light Protocol', status: 'Pivoted', statusColor: 'text-yellow-400', advantage: 'We\'re privacy-focused' },
-    { name: 'Arcium', status: 'Testnet only', statusColor: 'text-blue-400', advantage: 'We\'re live, they\'re Q4 2025' },
-    { name: 'Wormhole/deBridge', status: 'No privacy', statusColor: 'text-gray-400', advantage: 'Only private cross-chain' },
-    { name: 'Confidential Balances', status: 'Single-chain', statusColor: 'text-purple-400', advantage: 'We\'re cross-chain' },
+    { name: 'Elusiv', status: 'Sunset', statusColor: 'text-red-400', sip: 'We\'re shipping' },
+    { name: 'Light Protocol', status: 'Pivoted', statusColor: 'text-yellow-400', sip: 'We\'re privacy-focused' },
+    { name: 'Wormhole', status: 'No privacy', statusColor: 'text-gray-400', sip: 'We add privacy layer' },
+    { name: 'Aztec', status: 'ETH only', statusColor: 'text-purple-400', sip: 'We\'re multi-chain' },
   ]
 
   return (
@@ -566,11 +675,113 @@ function CompetitorSection() {
             transition={{ delay: 0.1 }}
             className="mt-6 text-3xl sm:text-4xl font-bold"
           >
-            We Fill the Gap
+            SIP vs Arcium: Different Layers
           </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="mt-4 text-gray-400 max-w-2xl mx-auto"
+          >
+            Arcium is confidential compute infrastructure. SIP is privacy middleware. We complement, not compete.
+          </motion.p>
         </div>
 
+        {/* Arcium vs SIP Deep Comparison */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="max-w-4xl mx-auto mb-12"
+        >
+          <div className="p-8 rounded-2xl bg-gradient-to-r from-blue-950/30 to-purple-950/30 border border-blue-500/20">
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Arcium */}
+              <div className="p-6 rounded-xl bg-blue-950/30 border border-blue-500/20">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                    <Blocks className="w-5 h-5 text-blue-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-blue-400">Arcium</h3>
+                    <span className="text-xs text-gray-500">Confidential Compute</span>
+                  </div>
+                </div>
+                <ul className="space-y-2 text-sm text-gray-400">
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-400 mt-1">•</span>
+                    MPC network for confidential computation
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-400 mt-1">•</span>
+                    Solana-native infrastructure layer
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-400 mt-1">•</span>
+                    Focuses on compute privacy (processing)
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-400 mt-1">•</span>
+                    Requires apps to integrate MPC
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-yellow-400 mt-1">⚠</span>
+                    Testnet only (mainnet TBD)
+                  </li>
+                </ul>
+              </div>
+
+              {/* SIP */}
+              <div className="p-6 rounded-xl bg-purple-950/30 border border-purple-500/20">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                    <Shield className="w-5 h-5 text-purple-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-purple-400">SIP Protocol</h3>
+                    <span className="text-xs text-gray-500">Privacy Middleware</span>
+                  </div>
+                </div>
+                <ul className="space-y-2 text-sm text-gray-400">
+                  <li className="flex items-start gap-2">
+                    <span className="text-purple-400 mt-1">•</span>
+                    Transaction privacy (stealth addresses, commitments)
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-purple-400 mt-1">•</span>
+                    Chain-agnostic middleware layer
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-purple-400 mt-1">•</span>
+                    Focuses on transfer privacy (sending/receiving)
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-purple-400 mt-1">•</span>
+                    Simple SDK integration (&ldquo;one toggle&rdquo;)
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-400 mt-1">✓</span>
+                    Live SDK, 837+ tests, npm published
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Complement Message */}
+            <div className="mt-6 p-4 rounded-lg bg-gray-900/50 border border-gray-700 text-center">
+              <p className="text-sm text-gray-400">
+                <span className="text-white font-medium">They can work together:</span> Arcium for confidential compute, SIP for transaction privacy.
+                <br />
+                Future integration possible: Use Arcium MPC for SIP&apos;s proof generation.
+              </p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Other Competitors Table */}
         <div className="max-w-3xl mx-auto">
+          <h3 className="text-lg font-semibold mb-4 text-center text-gray-400">Other Privacy Solutions</h3>
           <div className="rounded-2xl overflow-hidden border border-gray-800">
             <table className="w-full">
               <thead>
@@ -592,13 +803,30 @@ function CompetitorSection() {
                   >
                     <td className="px-6 py-4 font-medium">{comp.name}</td>
                     <td className={`px-6 py-4 ${comp.statusColor}`}>{comp.status}</td>
-                    <td className="px-6 py-4 text-green-400">{comp.advantage}</td>
+                    <td className="px-6 py-4 text-green-400">{comp.sip}</td>
                   </motion.tr>
                 ))}
               </tbody>
             </table>
           </div>
         </div>
+
+        {/* Key Differentiator */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-8 max-w-3xl mx-auto text-center"
+        >
+          <div className="p-6 rounded-xl bg-green-950/20 border border-green-500/20">
+            <p className="text-green-400 font-medium">
+              Key Differentiator: SIP is the ONLY cross-chain privacy middleware with compliance features (viewing keys).
+            </p>
+            <p className="text-sm text-gray-500 mt-2">
+              Arcium = Infrastructure | SIP = Application Layer | We complement the ecosystem.
+            </p>
+          </div>
+        </motion.div>
       </div>
     </section>
   )
@@ -615,8 +843,8 @@ function ArchitectureSection() {
             viewport={{ once: true }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-cyan-500/10 text-cyan-400 border border-cyan-500/20"
           >
-            <Layers className="w-4 h-4" />
-            Architecture
+            <Blocks className="w-4 h-4" />
+            C+B Hybrid Strategy
           </motion.span>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -625,46 +853,67 @@ function ArchitectureSection() {
             transition={{ delay: 0.1 }}
             className="mt-6 text-3xl sm:text-4xl font-bold"
           >
-            How It Works
+            Technical Architecture
           </motion.h2>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="max-w-4xl mx-auto"
-        >
-          <div className="p-8 rounded-2xl bg-gray-900/50 border border-gray-800 font-mono text-sm">
-            <div className="text-gray-500 mb-4">{`// Transaction Flow`}</div>
-            <div className="space-y-2">
-              <div className="text-cyan-400">User Intent</div>
-              <div className="text-gray-600 pl-4">↓</div>
-              <div className="p-4 rounded-xl bg-purple-950/30 border border-purple-500/20">
-                <div className="text-purple-400 font-semibold mb-2">PRIVACY LAYER (SIP)</div>
-                <div className="text-gray-400 text-xs space-y-1">
-                  <div>• Stealth Addresses</div>
-                  <div>• Pedersen Commitments</div>
-                  <div>• Viewing Keys</div>
-                  <div>• ZK Proofs</div>
-                </div>
-              </div>
-              <div className="text-gray-600 pl-4">↓</div>
-              <div className="p-4 rounded-xl bg-blue-950/30 border border-blue-500/20">
-                <div className="text-blue-400 font-semibold mb-2">INTENT LAYER (NEAR)</div>
-                <div className="text-gray-400 text-xs space-y-1">
-                  <div>• Cross-chain routing</div>
-                  <div>• Chain signatures</div>
-                </div>
-              </div>
-              <div className="text-gray-600 pl-4">↓</div>
-              <div className="p-4 rounded-xl bg-green-950/30 border border-green-500/20">
-                <div className="text-green-400 font-semibold mb-2">SETTLEMENT</div>
-                <div className="text-gray-400 text-xs">Solana • Ethereum • Bitcoin • ...</div>
-              </div>
+        <div className="grid gap-8 lg:grid-cols-2 max-w-5xl mx-auto">
+          {/* Option C */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="p-8 rounded-2xl bg-purple-950/20 border border-purple-500/20"
+          >
+            <div className="text-purple-400 font-semibold text-lg mb-4">Option C: Settlement Aggregator</div>
+            <p className="text-gray-400 mb-4">One privacy layer, settle anywhere</p>
+            <ul className="space-y-2 text-sm text-gray-500">
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-purple-400" />
+                Unified API regardless of backend
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-purple-400" />
+                NEAR Intents → Mina → Direct Chain
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-purple-400" />
+                Creates standardization & switching costs
+              </li>
+            </ul>
+            <div className="mt-4 px-3 py-1 bg-purple-500/10 rounded-full inline-block text-xs text-purple-300">
+              Core Value
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+
+          {/* Option B */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="p-8 rounded-2xl bg-pink-950/20 border border-pink-500/20"
+          >
+            <div className="text-pink-400 font-semibold text-lg mb-4">Option B: Proof Aggregator</div>
+            <p className="text-gray-400 mb-4">Compose proofs for unique capabilities</p>
+            <ul className="space-y-2 text-sm text-gray-500">
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-pink-400" />
+                Zcash privacy + Mina verification
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-pink-400" />
+                Noir validity proofs
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-pink-400" />
+                Technical moat, hard to replicate
+              </li>
+            </ul>
+            <div className="mt-4 px-3 py-1 bg-pink-500/10 rounded-full inline-block text-xs text-pink-300">
+              Technical Moat
+            </div>
+          </motion.div>
+        </div>
       </div>
     </section>
   )
@@ -674,34 +923,42 @@ function MilestonesSection() {
   const milestones = [
     {
       id: 'M1',
-      title: 'Security Audit - ZK Circuits',
-      description: 'Professional audit of Noir circuits (Funding, Validity, Fulfillment proofs) by ZK-specialized firm',
-      budget: '$25,000',
+      title: 'Security Audit',
+      description: 'Professional audit of Noir ZK circuits and cryptographic SDK by security firm',
+      budget: '$30,000',
       timeline: 'Month 1-2',
       icon: ShieldCheck,
     },
     {
       id: 'M2',
-      title: 'Security Audit - Cryptographic SDK',
-      description: 'Audit of stealth addresses, Pedersen commitments, viewing keys, and encryption primitives',
-      budget: '$15,000',
-      timeline: 'Month 2',
-      icon: Lock,
+      title: 'Phantom/Solflare Integration',
+      description: 'Native wallet integration with privacy toggle in Solana\'s top wallets',
+      budget: '$25,000',
+      timeline: 'Month 2-4',
+      icon: Wallet,
     },
     {
       id: 'M3',
-      title: 'Audit Remediation & Fixes',
-      description: 'Address all findings, implement fixes, and obtain final audit report',
-      budget: '$5,000',
-      timeline: 'Month 3',
-      icon: Code,
+      title: 'Jupiter/Raydium Exploration',
+      description: 'Partnership discussions and technical integration research with major DEXs',
+      budget: '$20,000',
+      timeline: 'Month 3-5',
+      icon: TrendingUp,
     },
     {
       id: 'M4',
-      title: 'Documentation & Publication',
-      description: 'Publish audit report, update security docs, and announce mainnet readiness',
-      budget: '$5,000',
-      timeline: 'Month 3',
+      title: 'Solana-Native Optimizations',
+      description: 'Performance optimizations, ed25519 improvements, and Solana-specific features',
+      budget: '$15,000',
+      timeline: 'Month 4-6',
+      icon: Zap,
+    },
+    {
+      id: 'M5',
+      title: 'Documentation & Ecosystem',
+      description: 'Developer guides, tutorials, hackathon participation, community building',
+      budget: '$10,000',
+      timeline: 'Month 1-6',
       icon: FileText,
     },
   ]
@@ -716,8 +973,8 @@ function MilestonesSection() {
             viewport={{ once: true }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-green-500/10 text-green-400 border border-green-500/20"
           >
-            <ShieldCheck className="w-4 h-4" />
-            Audit Milestones
+            <Target className="w-4 h-4" />
+            Milestones
           </motion.span>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -726,7 +983,7 @@ function MilestonesSection() {
             transition={{ delay: 0.1 }}
             className="mt-6 text-3xl sm:text-4xl font-bold"
           >
-            Path to Mainnet Security
+            6-Month Deliverables
           </motion.h2>
         </div>
 
@@ -776,10 +1033,11 @@ function MilestonesSection() {
 
 function BudgetSection() {
   const budget = [
-    { category: 'ZK Circuit Audit', amount: 25000, color: 'bg-purple-500' },
-    { category: 'Crypto SDK Audit', amount: 15000, color: 'bg-blue-500' },
-    { category: 'Remediation & Fixes', amount: 5000, color: 'bg-green-500' },
-    { category: 'Docs & Publication', amount: 5000, color: 'bg-yellow-500' },
+    { category: 'Security Audit', amount: 30000, color: 'bg-purple-500' },
+    { category: 'Wallet Integration', amount: 25000, color: 'bg-blue-500' },
+    { category: 'DEX Exploration', amount: 20000, color: 'bg-green-500' },
+    { category: 'Solana Optimizations', amount: 15000, color: 'bg-yellow-500' },
+    { category: 'Docs & Ecosystem', amount: 10000, color: 'bg-pink-500' },
   ]
 
   const total = budget.reduce((sum, item) => sum + item.amount, 0)
@@ -804,7 +1062,7 @@ function BudgetSection() {
             transition={{ delay: 0.1 }}
             className="mt-6 text-3xl sm:text-4xl font-bold"
           >
-            Total Request: $50,000
+            Total Request: $100,000
           </motion.h2>
         </div>
 
@@ -861,9 +1119,9 @@ function BudgetSection() {
           >
             <div className="text-gray-400">Total Grant Request</div>
             <div className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
-              $50,000
+              $100,000
             </div>
-            <div className="text-sm text-gray-500 mt-2">Milestone-based payments over 3 months</div>
+            <div className="text-sm text-gray-500 mt-2">Milestone-based payments over 6 months</div>
           </motion.div>
         </div>
       </div>
@@ -883,10 +1141,10 @@ function CTASection() {
           </div>
 
           <div className="px-8 py-16 sm:px-16 text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold">Help Us Ship Secure Privacy to Solana</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold">Make Solana the Privacy Standard</h2>
             <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
-              M1-M8 complete. 837 tests passing. SDK published. We&apos;re one security audit
-              away from mainnet. Help us verify our ZK circuits and cryptographic primitives.
+              Help us establish the privacy standard for Web3, starting with Solana.
+              837+ tests. Production SDK. Live demo. Ready to scale.
             </p>
 
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -920,7 +1178,7 @@ function CTASection() {
             <div className="mt-12 pt-8 border-t border-purple-500/20">
               <div className="flex flex-wrap justify-center gap-8">
                 {[
-                  { value: '837', label: 'Tests' },
+                  { value: '837+', label: 'Tests' },
                   { value: 'Published', label: 'npm' },
                   { value: 'Live', label: 'Demo' },
                   { value: 'MIT', label: 'License' },

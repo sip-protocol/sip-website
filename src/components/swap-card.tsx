@@ -22,6 +22,7 @@ interface Token {
 const fromTokens: Token[] = [
   { symbol: 'ETH', name: 'Ethereum', chain: 'ethereum', icon: 'Ξ' },
   { symbol: 'SOL', name: 'Solana', chain: 'solana', icon: '◎' },
+  { symbol: 'NEAR', name: 'NEAR', chain: 'near', icon: 'Ⓝ' },
 ]
 
 // Tokens available as DESTINATION (includes NEAR - deposit not required for destination)

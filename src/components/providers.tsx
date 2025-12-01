@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import { ToastContainer } from '@/components/toast'
-import { SIPProvider } from '@/contexts'
+import { SIPProvider, NearWalletProvider } from '@/contexts'
 
 // Dynamic import to avoid SSR issues with SDK's WASM dependencies
 const WalletModal = dynamic(
@@ -13,9 +13,11 @@ const WalletModal = dynamic(
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <SIPProvider>
-      {children}
-      <WalletModal />
-      <ToastContainer />
+      <NearWalletProvider networkId="testnet">
+        {children}
+        <WalletModal />
+        <ToastContainer />
+      </NearWalletProvider>
     </SIPProvider>
   )
 }
