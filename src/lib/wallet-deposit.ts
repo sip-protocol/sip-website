@@ -48,10 +48,12 @@ export async function sendDeposit(params: DepositParams): Promise<string> {
 
   if (chain === 'solana') {
     return sendSolanaDeposit(walletType, depositAddress, amount, token)
-  } else if (chain === 'ethereum') {
+  } else if (chain === 'ethereum' || chain === 'arbitrum') {
     return sendEthereumDeposit(walletType, depositAddress, amount, token)
   } else if (chain === 'near') {
     return sendNearDeposit(depositAddress, amount, token)
+  } else if (chain === 'zcash') {
+    return sendZcashDeposit(depositAddress, amount, token)
   }
 
   throw new Error(`Unsupported chain for deposit: ${chain}`)
@@ -172,6 +174,24 @@ async function sendNearDeposit(
   throw new Error(
     'NEAR deposits require wallet selector integration. ' +
     'Please use a Solana or Ethereum wallet for production swaps.'
+  )
+}
+
+/**
+ * Send ZEC tokens to a deposit address
+ * Zcash shielded transactions require a local node or zcashd wallet
+ */
+async function sendZcashDeposit(
+  depositAddress: string,
+  amount: string,
+  token: string
+): Promise<string> {
+  // Zcash shielded deposits require zcashd node with wallet support
+  // This is typically handled server-side or through a browser extension
+  // For now, throw an informative error
+  throw new Error(
+    'Zcash shielded deposits require zcashd wallet integration. ' +
+    'Use z_sendmany or z_shieldcoinbase via RPC for shielded transactions.'
   )
 }
 

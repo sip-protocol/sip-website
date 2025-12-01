@@ -4,7 +4,7 @@
  * Testnet configurations for Solana Devnet, Ethereum Sepolia, and NEAR Testnet.
  */
 
-export type NetworkId = 'solana' | 'ethereum' | 'near' | 'arbitrum'
+export type NetworkId = 'solana' | 'ethereum' | 'near' | 'arbitrum' | 'zcash'
 
 export interface NetworkConfig {
   /** Network identifier */
@@ -98,6 +98,17 @@ export const NETWORKS: Record<NetworkId, NetworkConfig> = {
     decimals: 18,
     icon: '/networks/arbitrum.svg',
   },
+  zcash: {
+    id: 'zcash',
+    name: 'Zcash',
+    testnet: 'Testnet',
+    rpcEndpoint: 'https://testnet.zcash.com:8232', // Zcash testnet RPC (requires local node)
+    explorerUrl: 'https://testnet.zcashblockexplorer.com',
+    faucetUrl: 'https://faucet.zcash.com/',
+    nativeToken: 'ZEC',
+    decimals: 8,
+    icon: '/networks/zcash.svg',
+  },
 }
 
 /**
@@ -163,6 +174,15 @@ export const TOKENS: TokenConfig[] = [
     icon: '/tokens/usdc.svg',
     network: 'near',
   },
+  // Zcash Testnet
+  {
+    symbol: 'ZEC',
+    name: 'Zcash',
+    address: null, // Native token
+    decimals: 8,
+    icon: '/tokens/zec.svg',
+    network: 'zcash',
+  },
 ]
 
 /**
@@ -202,9 +222,13 @@ export function getTransactionUrl(networkId: NetworkId, txHash: string): string 
     case 'solana':
       return `${network.explorerUrl}/tx/${txHash}?cluster=devnet`
     case 'ethereum':
+    case 'arbitrum':
       return `${network.explorerUrl}/tx/${txHash}`
     case 'near':
       return `${network.explorerUrl}/txns/${txHash}`
+    case 'zcash':
+      // Zcash explorer uses different format for shielded vs transparent
+      return `${network.explorerUrl}/tx/${txHash}`
     default:
       return '#'
   }
@@ -219,8 +243,12 @@ export function getAddressUrl(networkId: NetworkId, address: string): string {
     case 'solana':
       return `${network.explorerUrl}/account/${address}?cluster=devnet`
     case 'ethereum':
+    case 'arbitrum':
       return `${network.explorerUrl}/address/${address}`
     case 'near':
+      return `${network.explorerUrl}/address/${address}`
+    case 'zcash':
+      // Zcash addresses: t-addresses (transparent) or z-addresses (shielded)
       return `${network.explorerUrl}/address/${address}`
     default:
       return '#'
