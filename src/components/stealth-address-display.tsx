@@ -217,7 +217,7 @@ export function StealthAddressDisplay({
               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-purple-600 text-[10px] font-bold">
                 2
               </span>
-              <span className="text-gray-300">Combine with recipient's meta-address</span>
+              <span className="text-gray-300">Combine with recipient&apos;s meta-address</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-purple-600 text-[10px] font-bold">
