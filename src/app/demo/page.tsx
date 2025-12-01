@@ -5,6 +5,7 @@ import { PrivacyLevel } from '@/types'
 import { SwapCard } from '@/components/swap-card'
 import { PrivacyToggle } from '@/components/privacy-toggle'
 import { ComparisonView } from '@/components/comparison-view'
+import { ZcashShowcase } from '@/components/zcash-showcase'
 
 export default function DemoPage() {
   const [privacyLevel, setPrivacyLevel] = useState<PrivacyLevel>(PrivacyLevel.SHIELDED)
@@ -61,6 +62,17 @@ export default function DemoPage() {
               </p>
             </div>
             <ComparisonView privacyLevel={privacyLevel} />
+          </div>
+
+          {/* Zcash SDK Showcase */}
+          <div className="mt-16">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold">Zcash Integration</h2>
+              <p className="mt-2 text-gray-400">
+                Explore the SDK&apos;s Zcash shielded transaction capabilities
+              </p>
+            </div>
+            <ZcashShowcase />
           </div>
         </div>
       </section>
