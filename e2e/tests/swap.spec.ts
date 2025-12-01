@@ -79,12 +79,14 @@ test.describe('Swap Execution', () => {
 
     // Click from token selector
     await demoPage.swapCard.fromToken.click()
-    await page.waitForTimeout(100)
 
-    // Select ETH
-    const ethOption = page.locator('button').filter({ hasText: 'ETH' }).first()
+    // Wait for dropdown to appear
+    const dropdown = page.getByTestId('token-dropdown')
+    await expect(dropdown).toBeVisible()
+
+    // Select ETH using specific data-testid
+    const ethOption = page.getByTestId('token-option-ETH')
     await ethOption.click()
-    await page.waitForTimeout(100)
 
     // Verify token changed
     await expect(demoPage.swapCard.fromToken).toContainText('ETH')

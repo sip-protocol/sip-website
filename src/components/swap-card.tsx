@@ -330,10 +330,11 @@ function TokenSelector({
             className="fixed inset-0 z-10"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute right-0 top-full z-20 mt-2 w-48 rounded-xl border border-gray-700 bg-gray-900 p-2 shadow-xl">
+          <div data-testid="token-dropdown" className="absolute right-0 top-full z-20 mt-2 w-48 rounded-xl border border-gray-700 bg-gray-900 p-2 shadow-xl">
             {tokens.map((t) => (
               <button
                 key={t.symbol}
+                data-testid={`token-option-${t.symbol}`}
                 onClick={() => {
                   onSelect(t)
                   setOpen(false)
