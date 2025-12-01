@@ -19,7 +19,7 @@ const footerLinks: Record<string, FooterSection> = {
     links: [
       { href: '/features', label: 'Features' },
       { href: '/demo', label: 'Demo' },
-      { href: '/about', label: 'Roadmap' },
+      { href: '/roadmap', label: 'Roadmap' },
     ],
   },
   developers: {

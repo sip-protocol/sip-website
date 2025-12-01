@@ -40,6 +40,7 @@ export default function SolanaFoundationPitchPage() {
       <TractionSection />
       <CompetitorSection />
       <ArchitectureSection />
+      <RoadmapSection />
       <MilestonesSection />
       <BudgetSection />
       <CTASection />
@@ -844,7 +845,7 @@ function ArchitectureSection() {
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-cyan-500/10 text-cyan-400 border border-cyan-500/20"
           >
             <Blocks className="w-4 h-4" />
-            C+B Hybrid Strategy
+            Hybrid Architecture
           </motion.span>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -855,17 +856,26 @@ function ArchitectureSection() {
           >
             Technical Architecture
           </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="mt-4 text-gray-400 max-w-2xl mx-auto"
+          >
+            SIP combines settlement flexibility with proof composition for a unique privacy standard.
+          </motion.p>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-2 max-w-5xl mx-auto">
-          {/* Option C */}
+          {/* Settlement Aggregator */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             className="p-8 rounded-2xl bg-purple-950/20 border border-purple-500/20"
           >
-            <div className="text-purple-400 font-semibold text-lg mb-4">Option C: Settlement Aggregator</div>
+            <div className="text-purple-400 font-semibold text-lg mb-4">Settlement Aggregator</div>
             <p className="text-gray-400 mb-4">One privacy layer, settle anywhere</p>
             <ul className="space-y-2 text-sm text-gray-500">
               <li className="flex items-center gap-2">
@@ -886,14 +896,14 @@ function ArchitectureSection() {
             </div>
           </motion.div>
 
-          {/* Option B */}
+          {/* Proof Aggregator */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             className="p-8 rounded-2xl bg-pink-950/20 border border-pink-500/20"
           >
-            <div className="text-pink-400 font-semibold text-lg mb-4">Option B: Proof Aggregator</div>
+            <div className="text-pink-400 font-semibold text-lg mb-4">Proof Aggregator</div>
             <p className="text-gray-400 mb-4">Compose proofs for unique capabilities</p>
             <ul className="space-y-2 text-sm text-gray-500">
               <li className="flex items-center gap-2">
@@ -912,6 +922,134 @@ function ArchitectureSection() {
             <div className="mt-4 px-3 py-1 bg-pink-500/10 rounded-full inline-block text-xs text-pink-300">
               Technical Moat
             </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function RoadmapSection() {
+  const phases = [
+    {
+      phase: 'Phase 1',
+      title: 'Foundation',
+      status: 'current',
+      milestones: 'M1-M8',
+      progress: 95,
+      items: ['SDK Core', 'Stealth Addresses', 'NEAR Integration', 'Demo Launch'],
+    },
+    {
+      phase: 'Phase 2',
+      title: 'Standard',
+      status: 'upcoming',
+      milestones: 'M9-M12',
+      progress: 0,
+      items: ['Wallet Integrations', 'DEX Partnerships', 'Multi-chain Settlement'],
+    },
+    {
+      phase: 'Phase 3',
+      title: 'Ecosystem',
+      status: 'future',
+      milestones: 'M13-M15',
+      progress: 0,
+      items: ['Proof Aggregation', 'Enterprise Features', 'Protocol Standard'],
+    },
+  ]
+
+  return (
+    <section className="py-24 border-t border-gray-800/50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20"
+          >
+            <Target className="w-4 h-4" />
+            Development Roadmap
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="mt-6 text-3xl sm:text-4xl font-bold"
+          >
+            Path to Privacy Standard
+          </motion.h2>
+        </div>
+
+        <div className="max-w-4xl mx-auto">
+          <div className="grid gap-6 md:grid-cols-3">
+            {phases.map((phase, index) => (
+              <motion.div
+                key={phase.phase}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className={`p-6 rounded-2xl border ${
+                  phase.status === 'current'
+                    ? 'bg-indigo-950/30 border-indigo-500/30'
+                    : 'bg-gray-900/50 border-gray-800'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <span className={`text-xs font-mono px-2 py-1 rounded ${
+                    phase.status === 'current'
+                      ? 'bg-indigo-500/20 text-indigo-400'
+                      : 'bg-gray-800 text-gray-500'
+                  }`}>
+                    {phase.milestones}
+                  </span>
+                  {phase.status === 'current' && (
+                    <span className="text-xs text-indigo-400 animate-pulse">● Active</span>
+                  )}
+                </div>
+                <h3 className={`text-lg font-semibold mb-1 ${
+                  phase.status === 'current' ? 'text-indigo-400' : 'text-gray-400'
+                }`}>
+                  {phase.phase}: {phase.title}
+                </h3>
+                {phase.progress > 0 && (
+                  <div className="mb-3">
+                    <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-indigo-500 rounded-full"
+                        style={{ width: `${phase.progress}%` }}
+                      />
+                    </div>
+                    <span className="text-xs text-gray-500">{phase.progress}% complete</span>
+                  </div>
+                )}
+                <ul className="space-y-1 mt-3">
+                  {phase.items.map((item) => (
+                    <li key={item} className="text-sm text-gray-500 flex items-center gap-2">
+                      <span className={phase.status === 'current' ? 'text-indigo-400' : 'text-gray-600'}>•</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Link to full roadmap */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-8 text-center"
+          >
+            <Link
+              href="/roadmap"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 hover:bg-indigo-500/20 transition-colors"
+            >
+              View Full Roadmap
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </motion.div>
         </div>
       </div>
