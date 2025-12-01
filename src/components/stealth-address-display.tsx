@@ -2,11 +2,40 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { PrivacyLevel } from '@sip-protocol/types'
-import {
-  generateStealthMetaAddress,
-  generateStealthAddress,
-} from '@sip-protocol/sdk'
 import type { NetworkId } from '@/lib'
+
+/**
+ * Lightweight stealth address generation for demo purposes
+ *
+ * Uses Web Crypto API to generate demo stealth addresses without
+ * pulling in heavy SDK dependencies (barretenberg/noir).
+ *
+ * In production, use @sip-protocol/sdk's generateStealthAddress functions.
+ */
+async function generateDemoStealthAddress(): Promise<{
+  stealthAddress: string
+  ephemeralKey: string
+}> {
+  // Generate random bytes for demo stealth address
+  const stealthBytes = new Uint8Array(33)
+  const ephemeralBytes = new Uint8Array(33)
+
+  crypto.getRandomValues(stealthBytes)
+  crypto.getRandomValues(ephemeralBytes)
+
+  // Set compressed public key prefix (02 or 03)
+  stealthBytes[0] = stealthBytes[32] % 2 === 0 ? 0x02 : 0x03
+  ephemeralBytes[0] = ephemeralBytes[32] % 2 === 0 ? 0x02 : 0x03
+
+  // Convert to hex
+  const toHex = (bytes: Uint8Array) =>
+    '0x' + Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('')
+
+  return {
+    stealthAddress: toHex(stealthBytes),
+    ephemeralKey: toHex(ephemeralBytes),
+  }
+}
 
 interface StealthAddressDisplayProps {
   /** Destination chain */
@@ -80,8 +109,8 @@ export function StealthAddressDisplay({
   const curve = getCurveForChain(toChain)
 
   // Generate stealth address when chain changes or component mounts
-  // Note: For demo purposes, we use secp256k1 addresses for all chains
-  // In production, ed25519 chains (Solana, NEAR) would use ed25519 stealth addresses
+  // Note: For demo purposes, we generate realistic-looking addresses
+  // In production, use @sip-protocol/sdk's generateStealthAddress functions
   useEffect(() => {
     if (!hasPrivacy) {
       setStealthAddress(null)
@@ -89,19 +118,17 @@ export function StealthAddressDisplay({
       return
     }
 
-    try {
-      // Generate a demo stealth address using secp256k1
-      // The destination chain is displayed for context, but the address format
-      // is secp256k1-based for demonstration purposes
-      const { metaAddress } = generateStealthMetaAddress(toChain)
-      const { stealthAddress: addr } = generateStealthAddress(metaAddress)
-      setStealthAddress(addr.address)
-      setEphemeralKey(addr.ephemeralPublicKey)
-    } catch {
-      // Fallback if chain not supported
-      setStealthAddress(null)
-      setEphemeralKey(null)
-    }
+    // Generate demo stealth address
+    generateDemoStealthAddress()
+      .then(({ stealthAddress: addr, ephemeralKey: key }) => {
+        setStealthAddress(addr)
+        setEphemeralKey(key)
+      })
+      .catch(() => {
+        // Fallback if generation fails
+        setStealthAddress(null)
+        setEphemeralKey(null)
+      })
   }, [toChain, hasPrivacy])
 
   const handleCopy = useCallback(async () => {
