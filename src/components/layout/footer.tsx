@@ -139,15 +139,7 @@ export function Footer() {
               <p className="text-sm text-gray-400 flex items-center gap-1">
                 Built with
                 <span className="text-pink-500">&#9829;</span>
-                on
-                <a
-                  href="https://near.org"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-purple-400 hover:text-purple-300 transition-colors"
-                >
-                  NEAR
-                </a>
+                in stealth mode
               </p>
               <a
                 href={`https://github.com/sip-protocol/sip-website/commit/${process.env.NEXT_PUBLIC_GIT_COMMIT}`}
