@@ -104,7 +104,7 @@ function MissionSection() {
               Why We Build SIP
             </h2>
             <p className="mt-6 text-lg text-gray-400">
-              In 2024, the ZachXBT incident exposed a critical vulnerability: transparent on-chain
+              On-chain investigation incidents have exposed a critical vulnerability: transparent
               activity enables coordinated attacks on traders. Market makers, DAOs, and individuals
               all face risks when their transaction history is public.
             </p>

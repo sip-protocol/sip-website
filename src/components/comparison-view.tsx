@@ -19,7 +19,7 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
           </div>
           <div>
             <h3 className="font-semibold text-red-400">Current System</h3>
-            <p className="text-xs text-gray-500">ZachXBT Vulnerability</p>
+            <p className="text-xs text-gray-500">Transparency Vulnerability</p>
           </div>
         </div>
 
