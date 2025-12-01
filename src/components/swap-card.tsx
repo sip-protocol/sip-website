@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { PrivacyLevel } from '@sip-protocol/types'
 import { useQuote, useSwap, useBalance, getStatusMessage } from '@/hooks'
 import { useWalletStore, useSwapModeStore } from '@/stores'
+import { NETWORKS, parseAmount } from '@/lib'
 import { TransactionStatus } from '@/components/transaction-status'
 import { SwapModeToggle } from '@/components/swap-mode-toggle'
 import { StealthAddressDisplay } from '@/components/stealth-address-display'
@@ -52,7 +53,39 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
   const isPreviewMode = swapMode === 'preview'
 
   // Balance fetching
-  const { formatted: balance, symbol: balanceSymbol, isLoading: isBalanceLoading } = useBalance()
+  const { balance: rawBalance, formatted: balance, symbol: balanceSymbol, isLoading: isBalanceLoading } = useBalance()
+
+  // Check if balance matches source token chain
+  const { chain: connectedChain } = useWalletStore()
+  const isBalanceForSourceToken = connectedChain === fromToken.chain
+
+  // Calculate insufficient balance
+  const hasInsufficientBalance = useMemo(() => {
+    if (!isConnected || !rawBalance || !amount || !isBalanceForSourceToken) return false
+    try {
+      const decimals = NETWORKS[fromToken.chain]?.decimals ?? 18
+      const amountBigInt = parseAmount(amount, decimals)
+      return amountBigInt > rawBalance
+    } catch {
+      return false
+    }
+  }, [isConnected, rawBalance, amount, fromToken.chain, isBalanceForSourceToken])
+
+  // MAX button handler - leave small amount for gas
+  const handleMaxClick = useCallback(() => {
+    if (!rawBalance || !isBalanceForSourceToken) return
+    const decimals = NETWORKS[fromToken.chain]?.decimals ?? 18
+    // Leave ~0.01 for gas fees (varies by chain)
+    const gasReserve = BigInt(10 ** (decimals - 2)) // 0.01 in native units
+    const maxAmount = rawBalance > gasReserve ? rawBalance - gasReserve : rawBalance
+    // Convert to string with proper decimals
+    const divisor = BigInt(10 ** decimals)
+    const whole = maxAmount / divisor
+    const fraction = maxAmount % divisor
+    const fractionStr = fraction.toString().padStart(decimals, '0').replace(/0+$/, '')
+    const formattedMax = fractionStr ? `${whole}.${fractionStr}` : whole.toString()
+    setAmount(formattedMax)
+  }, [rawBalance, fromToken.chain, isBalanceForSourceToken])
 
   // Build quote params
   const quoteParams = useMemo(() => {
@@ -153,18 +186,33 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
       <div className="mb-2 rounded-xl bg-gray-800/50 p-4">
         <div className="mb-2 flex items-center justify-between text-sm text-gray-400">
           <span>From</span>
-          <span>
-            Balance:{' '}
-            {isConnected ? (
-              isBalanceLoading ? (
-                <span className="inline-block h-4 w-12 animate-pulse rounded bg-gray-700" />
+          <div className="flex items-center gap-2">
+            <span>
+              Balance:{' '}
+              {isConnected ? (
+                isBalanceForSourceToken ? (
+                  isBalanceLoading ? (
+                    <span className="inline-block h-4 w-12 animate-pulse rounded bg-gray-700" />
+                  ) : (
+                    `${balance} ${balanceSymbol}`
+                  )
+                ) : (
+                  <span className="text-gray-500">—</span>
+                )
               ) : (
-                `${balance} ${balanceSymbol}`
-              )
-            ) : (
-              '—'
+                '—'
+              )}
+            </span>
+            {isConnected && isBalanceForSourceToken && !isBalanceLoading && rawBalance && rawBalance > 0n && (
+              <button
+                onClick={handleMaxClick}
+                data-testid="max-button"
+                className="rounded bg-purple-500/20 px-2 py-0.5 text-xs font-medium text-purple-400 transition-colors hover:bg-purple-500/30"
+              >
+                MAX
+              </button>
             )}
-          </span>
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <input
@@ -173,7 +221,9 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
             onChange={(e) => setAmount(e.target.value)}
             placeholder="0.0"
             data-testid="from-amount"
-            className="flex-1 bg-transparent text-2xl font-medium outline-none placeholder:text-gray-600"
+            className={`flex-1 bg-transparent text-2xl font-medium outline-none placeholder:text-gray-600 ${
+              hasInsufficientBalance ? 'text-red-400' : ''
+            }`}
           />
           <TokenSelector
             token={fromToken}
@@ -182,6 +232,12 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
             testId="from-token"
           />
         </div>
+        {hasInsufficientBalance && (
+          <p className="mt-2 flex items-center gap-1 text-xs text-red-400" data-testid="insufficient-balance-warning">
+            <WarningIcon className="h-3 w-3" />
+            Insufficient balance
+          </p>
+        )}
       </div>
 
       {/* Swap direction */}
@@ -315,12 +371,12 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
       {!isSuccess && (
         <button
           onClick={handleSwap}
-          disabled={(!amount || isSwapping) && isConnected}
+          disabled={(!amount || isSwapping || hasInsufficientBalance) && isConnected}
           data-testid="swap-button"
           className={`w-full rounded-xl py-4 text-lg font-semibold transition-all ${
             !isConnected
               ? 'bg-purple-600 text-white hover:bg-purple-700'
-              : !amount
+              : !amount || hasInsufficientBalance
                 ? 'cursor-not-allowed bg-gray-800 text-gray-500'
                 : isSwapping
                   ? 'cursor-wait bg-purple-600/50 text-white'
@@ -331,6 +387,8 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
         >
           {!isConnected ? (
             <span>Connect Wallet</span>
+          ) : hasInsufficientBalance ? (
+            <span>Insufficient Balance</span>
           ) : isSwapping ? (
             <span className="flex items-center justify-center gap-2">
               <LoadingSpinner />
@@ -504,6 +562,18 @@ function PreviewIcon({ className }: { className?: string }) {
         d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
       />
       <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+  )
+}
+
+function WarningIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+      />
     </svg>
   )
 }
