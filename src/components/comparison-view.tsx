@@ -38,7 +38,7 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
             <p className="mt-1 text-sm text-amber-400/80">
               This refund address linkability issue was{' '}
               <a
-                href="https://x.com/zachxbt"
+                href="https://x.com/zachxbt/status/1980612190609576229"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-medium text-amber-300 underline underline-offset-2 hover:text-amber-200"
