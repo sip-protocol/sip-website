@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { X, ExternalLink, AlertCircle } from 'lucide-react'
+import { X, ExternalLink, AlertCircle, AlertTriangle } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 // Types only - no runtime SDK import at module level to avoid WASM issues
 import type { SolanaWalletName, EthereumWalletName } from '@sip-protocol/sdk'
@@ -16,6 +16,11 @@ import {
   WALLET_INFO,
 } from '@/stores'
 import { useNearWallet } from '@/hooks/use-near-wallet'
+import {
+  detectWalletConflicts,
+  isWalletConflictError,
+  type WalletConflictInfo,
+} from '@/lib/wallet-detection'
 
 type TabType = 'solana' | 'ethereum' | 'near'
 
@@ -38,10 +43,15 @@ export function WalletModal() {
     near: WalletType[]
   }>({ solana: [], ethereum: [], near: [] })
   const [error, setError] = useState<string | null>(null)
+  const [walletConflict, setWalletConflict] = useState<WalletConflictInfo | null>(null)
 
   // Detect wallets on mount (using dynamic SDK import)
   useEffect(() => {
     if (isModalOpen) {
+      // Check for wallet conflicts first
+      const conflicts = detectWalletConflicts()
+      setWalletConflict(conflicts.hasConflict ? conflicts : null)
+
       loadSDK().then((sdk) => {
         const solanaWallets = sdk.detectSolanaWallets()
         const ethereumWallets = sdk.detectEthereumWallets()
@@ -142,6 +152,11 @@ export function WalletModal() {
     // Network error
     if (message.includes('network') || message.includes('timeout')) {
       return 'Network error. Please check your connection'
+    }
+
+    // Wallet conflict (multiple extensions)
+    if (isWalletConflictError(err)) {
+      return 'Multiple wallet extensions detected. Try disabling unused wallets.'
     }
 
     return err.message || 'Failed to connect wallet'
@@ -271,6 +286,13 @@ export function WalletModal() {
                   <div className="flex items-center gap-2 p-3 mb-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
                     <AlertCircle className="h-4 w-4 flex-shrink-0" />
                     <span>{error}</span>
+                  </div>
+                )}
+
+                {walletConflict && (
+                  <div className="flex items-center gap-2 p-3 mb-4 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400 text-sm">
+                    <AlertTriangle className="h-4 w-4 flex-shrink-0" />
+                    <span>{walletConflict.message}</span>
                   </div>
                 )}
 
