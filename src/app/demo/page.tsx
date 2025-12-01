@@ -6,6 +6,7 @@ import { SwapCard } from '@/components/swap-card'
 import { PrivacyToggle } from '@/components/privacy-toggle'
 import { ComparisonView } from '@/components/comparison-view'
 import { ZcashShowcase } from '@/components/zcash-showcase'
+import { PedersenCommitmentDisplay } from '@/components/pedersen-commitment-display'
 
 export default function DemoPage() {
   const [privacyLevel, setPrivacyLevel] = useState<PrivacyLevel>(PrivacyLevel.SHIELDED)
@@ -62,6 +63,22 @@ export default function DemoPage() {
               </p>
             </div>
             <ComparisonView privacyLevel={privacyLevel} />
+          </div>
+
+          {/* Pedersen Commitment Demo */}
+          <div className="mt-16">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold">Pedersen Commitments</h2>
+              <p className="mt-2 text-gray-400">
+                See how amounts are cryptographically hidden while remaining verifiable
+              </p>
+            </div>
+            <div className="max-w-2xl mx-auto">
+              <PedersenCommitmentDisplay
+                privacyLevel={PrivacyLevel.SHIELDED}
+                showDemo={true}
+              />
+            </div>
           </div>
 
           {/* Zcash SDK Showcase */}

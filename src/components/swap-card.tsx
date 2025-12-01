@@ -8,6 +8,7 @@ import { TransactionStatus } from '@/components/transaction-status'
 import { SwapModeToggle } from '@/components/swap-mode-toggle'
 import { StealthAddressDisplay } from '@/components/stealth-address-display'
 import { ViewingKeyDisplay } from '@/components/viewing-key-display'
+import { PedersenCommitmentDisplay } from '@/components/pedersen-commitment-display'
 import type { NetworkId } from '@/lib'
 
 interface SwapCardProps {
@@ -276,6 +277,16 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
           <StealthAddressDisplay
             toChain={toToken.chain}
             privacyLevel={privacyLevel}
+          />
+        </div>
+      )}
+
+      {/* Pedersen Commitment Display */}
+      {hasPrivacy && amount && parseFloat(amount) > 0 && (
+        <div className="mb-4">
+          <PedersenCommitmentDisplay
+            privacyLevel={privacyLevel}
+            amount={amount}
           />
         </div>
       )}
