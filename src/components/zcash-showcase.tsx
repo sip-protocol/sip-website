@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
 /**
  * Zcash SDK Capabilities Showcase
@@ -441,9 +443,22 @@ export function ZcashShowcase() {
               <p className="mb-2 text-xs font-medium text-purple-400">
                 {`// Initialize Zcash Shielded Service`}
               </p>
-              <pre className="overflow-x-auto text-xs">
-                <code className="text-gray-300">
-                  {`const service = createZcashShieldedService({
+              <SyntaxHighlighter
+                language="typescript"
+                style={oneDark}
+                customStyle={{
+                  margin: 0,
+                  padding: 0,
+                  background: 'transparent',
+                  fontSize: '0.75rem',
+                }}
+                codeTagProps={{
+                  style: {
+                    fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace',
+                  }
+                }}
+              >
+                {`const service = createZcashShieldedService({
   rpcConfig: {
     host: 'localhost',
     port: 8232,
@@ -459,8 +474,7 @@ await service.initialize()
 const balance = await service.getBalance()
 console.log('Orchard:', balance.pools.orchard)
 console.log('Sapling:', balance.pools.sapling)`}
-                </code>
-              </pre>
+              </SyntaxHighlighter>
             </div>
 
             {/* Shielded Send Example */}
@@ -468,9 +482,22 @@ console.log('Sapling:', balance.pools.sapling)`}
               <p className="mb-2 text-xs font-medium text-green-400">
                 {`// Send shielded transaction`}
               </p>
-              <pre className="overflow-x-auto text-xs">
-                <code className="text-gray-300">
-                  {`const result = await service.sendShielded({
+              <SyntaxHighlighter
+                language="typescript"
+                style={oneDark}
+                customStyle={{
+                  margin: 0,
+                  padding: 0,
+                  background: 'transparent',
+                  fontSize: '0.75rem',
+                }}
+                codeTagProps={{
+                  style: {
+                    fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace',
+                  }
+                }}
+              >
+                {`const result = await service.sendShielded({
   to: 'u1recipient...',
   amount: 1.5,
   memo: 'Payment for services',
@@ -479,8 +506,7 @@ console.log('Sapling:', balance.pools.sapling)`}
 
 console.log('Txid:', result.txid)
 console.log('Fee paid:', result.fee, 'ZEC')`}
-                </code>
-              </pre>
+              </SyntaxHighlighter>
             </div>
 
             {/* Fee Calculation Example */}
@@ -488,16 +514,28 @@ console.log('Fee paid:', result.fee, 'ZEC')`}
               <p className="mb-2 text-xs font-medium text-amber-400">
                 {`// Calculate ZIP-317 fee`}
               </p>
-              <pre className="overflow-x-auto text-xs">
-                <code className="text-gray-300">
-                  {`const fee = service.estimateFee({
+              <SyntaxHighlighter
+                language="typescript"
+                style={oneDark}
+                customStyle={{
+                  margin: 0,
+                  padding: 0,
+                  background: 'transparent',
+                  fontSize: '0.75rem',
+                }}
+                codeTagProps={{
+                  style: {
+                    fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace',
+                  }
+                }}
+              >
+                {`const fee = service.estimateFee({
   inputs: 3,
   outputs: 2,
 })
 // fee = max(2, max(3, 2)) * 5000 zatoshi
 // fee = 3 * 5000 = 15000 zatoshi = 0.00015 ZEC`}
-                </code>
-              </pre>
+              </SyntaxHighlighter>
             </div>
           </div>
         )}

@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { PrivacyLevel } from '@sip-protocol/types'
 
 /**
@@ -476,15 +478,29 @@ export function PedersenCommitmentDisplay({
           {/* SDK Code Example */}
           <div className="rounded-lg bg-gray-900/50 p-3">
             <div className="mb-2 text-xs text-gray-500">SDK Usage:</div>
-            <pre className="overflow-x-auto text-xs text-gray-400">
-              <code>{`import { commit, verifyOpening } from '@sip-protocol/sdk'
+            <SyntaxHighlighter
+              language="typescript"
+              style={oneDark}
+              customStyle={{
+                margin: 0,
+                padding: 0,
+                background: 'transparent',
+                fontSize: '0.75rem',
+              }}
+              codeTagProps={{
+                style: {
+                  fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace',
+                }
+              }}
+            >
+              {`import { commit, verifyOpening } from '@sip-protocol/sdk'
 
 // Create commitment
 const { commitment, blinding } = commit(100n)
 
 // Verify opening
-const valid = verifyOpening(commitment, 100n, blinding)`}</code>
-            </pre>
+const valid = verifyOpening(commitment, 100n, blinding)`}
+            </SyntaxHighlighter>
           </div>
         </div>
       )}

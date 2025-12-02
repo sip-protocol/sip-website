@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import {
   Shield,
   Lock,
@@ -303,9 +305,23 @@ const result = await sip.execute(intent)`
                   )}
                 </button>
               </div>
-              <pre className="p-4 text-sm overflow-x-auto">
-                <code className="text-gray-300 font-mono">{code}</code>
-              </pre>
+              <SyntaxHighlighter
+                language="typescript"
+                style={oneDark}
+                customStyle={{
+                  margin: 0,
+                  padding: '1rem',
+                  background: 'transparent',
+                  fontSize: '0.875rem',
+                }}
+                codeTagProps={{
+                  style: {
+                    fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace',
+                  }
+                }}
+              >
+                {code}
+              </SyntaxHighlighter>
             </div>
           </div>
         </div>

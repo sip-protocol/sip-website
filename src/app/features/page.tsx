@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import {
   Shield,
   Lock,
@@ -231,9 +233,23 @@ function FeatureDetail({ feature, index }: { feature: any; index: number }) {
                 )}
               </button>
             </div>
-            <pre className="p-4 text-sm overflow-x-auto">
-              <code className="text-gray-300 font-mono whitespace-pre">{feature.code}</code>
-            </pre>
+            <SyntaxHighlighter
+              language="typescript"
+              style={oneDark}
+              customStyle={{
+                margin: 0,
+                padding: '1rem',
+                background: 'transparent',
+                fontSize: '0.875rem',
+              }}
+              codeTagProps={{
+                style: {
+                  fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace',
+                }
+              }}
+            >
+              {feature.code}
+            </SyntaxHighlighter>
           </div>
         </div>
       </div>
