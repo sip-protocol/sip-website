@@ -12,7 +12,7 @@ interface ProductionQuote extends Quote {
 const loadSDK = () => import('@sip-protocol/sdk')
 import { useSIP } from '@/contexts'
 import { useWalletStore, useSwapModeStore, toast } from '@/stores'
-import { parseAmount, getTransactionUrl, createDepositCallback, type NetworkId } from '@/lib'
+import { parseAmount, getTransactionUrl, createDepositCallback, logger, type NetworkId } from '@/lib'
 import { OneClickSwapStatus } from '@sip-protocol/types'
 
 export type SwapStatus = 'idle' | 'confirming' | 'signing' | 'pending' | 'awaiting_deposit' | 'processing' | 'success' | 'error'
@@ -251,7 +251,7 @@ export function useSwap(): SwapResult {
         toast.success('Swap Complete', 'Your transaction has been processed')
       }
     } catch (err) {
-      console.error('Swap execution error:', err)
+      logger.error('Swap execution failed', err, 'useSwap')
       const { message, toastTitle } = getSwapErrorMessage(err)
       setError(message)
       setStatus('error')

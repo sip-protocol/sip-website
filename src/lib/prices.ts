@@ -120,9 +120,8 @@ async function fetchPricesFromAPI(): Promise<Record<string, number>> {
     })
 
     if (!response.ok) {
-      // Handle rate limiting (429) gracefully
+      // Handle rate limiting (429) gracefully - use fallback prices
       if (response.status === 429) {
-        console.warn('CoinGecko rate limit hit, using fallback prices')
         return getCachedOrFallbackPrices()
       }
       throw new Error(`CoinGecko API error: ${response.status}`)
@@ -150,8 +149,8 @@ async function fetchPricesFromAPI(): Promise<Record<string, number>> {
     }
 
     return prices
-  } catch (error) {
-    console.error('Failed to fetch prices from CoinGecko:', error)
+  } catch {
+    // Price fetch failed - use cached or fallback prices
     return getCachedOrFallbackPrices()
   }
 }

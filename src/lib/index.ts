@@ -39,3 +39,5 @@ export {
   type DepositParams,
   type DepositResult,
 } from './wallet-deposit'
+
+export { logger } from './logger'

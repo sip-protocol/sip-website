@@ -115,7 +115,7 @@ export function WalletModal() {
         }
       }
     } catch (err) {
-      console.error('Wallet connection failed:', err)
+      // Wallet connection failed - error handled via state/toast
       const errorMessage = getWalletErrorMessage(err)
       setError(errorMessage)
       toast.error('Connection Failed', errorMessage)

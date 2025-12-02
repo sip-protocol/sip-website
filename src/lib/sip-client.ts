@@ -71,10 +71,9 @@ async function initializeProofProvider(): Promise<ProofProvider> {
     const noirProvider = new sdk.NoirProofProvider({ verbose: false })
     await noirProvider.initialize()
     proofProvider = noirProvider
-    console.log('[SIP] NoirProofProvider initialized successfully')
-  } catch (error) {
+    // NoirProofProvider initialized successfully
+  } catch {
     // Fallback to mock provider if Noir fails (e.g., WASM not available)
-    console.warn('[SIP] NoirProofProvider failed, using MockProofProvider:', error)
     proofProvider = new sdk.MockProofProvider()
   }
 
@@ -106,7 +105,7 @@ async function getSIPConfigAsync(sdk: typeof import('@sip-protocol/sdk')): Promi
     baseConfig.intentsAdapter = {
       jwtToken: getNearIntentsJwt(),
     }
-    console.log('[SIP] Production mode enabled - using real NEAR 1Click API')
+    // Production mode enabled - using real NEAR 1Click API
   }
 
   return baseConfig

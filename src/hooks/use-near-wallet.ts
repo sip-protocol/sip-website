@@ -103,8 +103,8 @@ export function useNearWallet(networkId: NearNetworkId = 'testnet'): UseNearWall
             setAccountId(null)
           }
         })
-      } catch (err) {
-        console.error('Failed to initialize NEAR wallet selector:', err)
+      } catch {
+        // NEAR wallet initialization failed - error handled via state
         setError('Failed to initialize NEAR wallets')
       }
     }
@@ -165,7 +165,7 @@ export function useNearWallet(networkId: NearNetworkId = 'testnet'): UseNearWall
       setError('No accounts found after sign in')
       return null
     } catch (err) {
-      console.error('NEAR wallet connection failed:', err)
+      // NEAR wallet connection failed - error handled via state
       const message = err instanceof Error ? err.message : 'Connection failed'
 
       // Parse common error messages
@@ -191,8 +191,8 @@ export function useNearWallet(networkId: NearNetworkId = 'testnet'): UseNearWall
       const wallet = await selector.wallet()
       await wallet.signOut()
       setAccountId(null)
-    } catch (err) {
-      console.error('Failed to disconnect NEAR wallet:', err)
+    } catch {
+      // NEAR wallet disconnect failed - silent failure acceptable
     }
   }, [selector])
 

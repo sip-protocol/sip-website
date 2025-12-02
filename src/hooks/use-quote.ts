@@ -12,7 +12,7 @@ interface ProductionQuote extends Quote {
 const loadSDK = () => import('@sip-protocol/sdk')
 import { useSIP } from '@/contexts'
 import { useWalletStore, toast } from '@/stores'
-import { formatAmount, parseAmount, getExchangeRateSync, getUSDPrices, type NetworkId } from '@/lib'
+import { formatAmount, parseAmount, getExchangeRateSync, getUSDPrices, logger, type NetworkId } from '@/lib'
 
 export interface QuoteParams {
   fromChain: NetworkId
@@ -112,7 +112,7 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
       if (params.privacyLevel !== PrivacyLevel.TRANSPARENT) {
         const stealth = sdk.generateStealthMetaAddress(params.toChain as ChainId)
         recipientMetaAddress = stealth.metaAddress as unknown as string
-        console.log('[useQuote] Generated stealth address:', recipientMetaAddress)
+        logger.debug('Stealth address generated', 'useQuote')
       }
 
       // Build CreateIntentParams (needed for both demo and production modes)
@@ -147,20 +147,20 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
         setError('SIP client not ready')
         return
       }
-      console.log('[useQuote] Getting quotes with params:', intentParams, 'recipientMetaAddress:', recipientMetaAddress)
+      logger.debug('Fetching quotes', 'useQuote')
       // Note: recipientMetaAddress is passed as second argument, not inside intentParams
       const quotes = await client.getQuotes(intentParams, recipientMetaAddress)
 
       if (quotes.length > 0) {
         setQuote(quotes[0])
         if (isProductionMode && 'depositAddress' in quotes[0]) {
-          console.log('[Quote] Production quote received with deposit address:', quotes[0].depositAddress)
+          logger.debug('Production quote received with deposit address', 'Quote')
         }
       } else {
         setError('No quotes available for this pair')
       }
     } catch (err) {
-      console.error('Quote fetch error:', err)
+      logger.error('Quote fetch failed', err, 'useQuote')
       const errorMessage = getQuoteErrorMessage(err)
       setError(errorMessage)
       setQuote(null)

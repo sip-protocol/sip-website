@@ -43,7 +43,7 @@ export function useBalance(): UseBalanceResult {
       const rawBalance = await getBalanceForChain(address, chain)
       setBalance(rawBalance)
     } catch (err) {
-      console.error('Failed to fetch balance:', err)
+      // Balance fetch failed - error handled via state
       setError(err instanceof Error ? err.message : 'Failed to fetch balance')
       setBalance(null)
     } finally {
