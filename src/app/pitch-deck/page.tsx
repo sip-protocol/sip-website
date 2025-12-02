@@ -8,6 +8,7 @@ import { ZachXBTTweet } from '@/components/zachxbt-tweet'
 import { HowItWorks } from '@/components/how-it-works'
 import { CypherpunkManifesto, CypherpunkAscii } from '@/components/cypherpunk-manifesto'
 import { ZachXBTCaseStudy } from '@/components/zachxbt-case-study'
+import { TechnicalDeepDive } from '@/components/technical-deep-dive'
 
 export default function PitchDeckPage() {
   return (
@@ -165,6 +166,17 @@ export default function PitchDeckPage() {
               description="You control who sees what. Share access on your terms, revoke it when you choose."
             />
           </div>
+
+          {/* Technical Deep-Dive Section */}
+          <div className="mt-12">
+            <h3 className="text-xl font-semibold text-center mb-6 flex items-center justify-center gap-2">
+              <span className="text-purple-400">🔬</span>
+              Technical Deep-Dive
+              <span className="text-xs font-mono text-gray-500">(click to expand)</span>
+            </h3>
+            <TechnicalDeepDive />
+          </div>
+
           <div className="mt-10 p-6 rounded-2xl bg-gray-900/50 border border-gray-800 text-center">
             <p className="text-lg text-gray-300">
               <span className="text-purple-400 font-semibold">Chain-agnostic</span> • Works with any blockchain
