@@ -58,7 +58,10 @@ let providerInitPromise: Promise<ProofProvider> | null = null
 
 /**
  * Initialize the proof provider
- * Uses MockProofProvider (NoirProofProvider requires WASM which causes SSR issues)
+ * Uses MockProofProvider for demo (NoirProofProvider requires WASM which breaks SSR)
+ *
+ * NOTE: NoirProofProvider is NOT exported from main SDK entry to avoid WASM bundling.
+ * For real ZK proofs in browser, import BrowserNoirProvider from '@sip-protocol/sdk/browser'
  */
 async function initializeProofProvider(): Promise<ProofProvider> {
   if (proofProvider) {
@@ -67,15 +70,9 @@ async function initializeProofProvider(): Promise<ProofProvider> {
 
   const sdk = await getSDK()
 
-  try {
-    const noirProvider = new sdk.NoirProofProvider({ verbose: false })
-    await noirProvider.initialize()
-    proofProvider = noirProvider
-    // NoirProofProvider initialized successfully
-  } catch {
-    // Fallback to mock provider if Noir fails (e.g., WASM not available)
-    proofProvider = new sdk.MockProofProvider()
-  }
+  // Use MockProofProvider for demo - it simulates proofs without WASM
+  // For production with real ZK proofs, use BrowserNoirProvider in client components
+  proofProvider = new sdk.MockProofProvider()
 
   return proofProvider
 }

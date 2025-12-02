@@ -23,7 +23,7 @@
     "@near-wallet-selector/meteor-wallet": "^10.1.2",
     "@near-wallet-selector/my-near-wallet": "^10.1.2",
     "@near-wallet-selector/sender": "^10.1.2",
-    "@sip-protocol/sdk": "^0.2.0",
+    "@sip-protocol/sdk": "^0.2.2",
     "@sip-protocol/types": "^0.1.1",
     "framer-motion": "^11.0.0",
     "lucide-react": "^0.400.0",
