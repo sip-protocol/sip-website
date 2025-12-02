@@ -10,6 +10,7 @@ import { CypherpunkManifesto, CypherpunkAscii } from '@/components/cypherpunk-ma
 import { ZachXBTCaseStudy } from '@/components/zachxbt-case-study'
 import { TechnicalDeepDive } from '@/components/technical-deep-dive'
 import { CompetitiveAdvantage } from '@/components/competitive-advantage'
+import { SDKPlayground } from '@/components/sdk-playground'
 import { TEST_COUNTS } from '@/lib/constants'
 
 export default function PitchDeckPage() {
@@ -427,6 +428,22 @@ export default function PitchDeckPage() {
               description="Funding, Validity, and Fulfillment proofs"
               status="In Progress"
             />
+          </div>
+        </div>
+      </section>
+
+      {/* SDK Playground Section */}
+      <section className="py-16 border-b border-gray-800/50 bg-gradient-to-b from-purple-900/10 to-transparent">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            badge="Try It"
+            title="Interactive SDK Playground"
+          />
+          <p className="mt-4 text-center text-gray-400 max-w-2xl mx-auto">
+            Engineers learn by doing. Run real SDK code in your browser - no setup required.
+          </p>
+          <div className="mt-10">
+            <SDKPlayground />
           </div>
         </div>
       </section>
