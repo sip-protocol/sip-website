@@ -81,7 +81,8 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
               <span className="text-xs text-gray-400 sm:text-sm">Sender</span>
               <div className="flex items-center gap-1.5 sm:gap-2">
                 <code className="font-mono text-xs text-red-400 sm:text-sm">0x742d...35Cc</code>
-                <span className="rounded bg-red-500/20 px-1.5 py-0.5 text-[10px] font-medium text-red-400 sm:text-xs">
+                <span className="flex items-center gap-1 rounded bg-red-500/20 px-1.5 py-0.5 text-[10px] font-medium text-red-400 sm:text-xs">
+                  <EyeOpenIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                   EXPOSED
                 </span>
               </div>
@@ -128,7 +129,8 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
               <span className="text-xs text-gray-400 sm:text-sm">Refund</span>
               <div className="flex items-center gap-1.5 sm:gap-2">
                 <code className="font-mono text-xs text-red-400 sm:text-sm">0x742d...35Cc</code>
-                <span className="animate-pulse rounded bg-red-500 px-1.5 py-0.5 text-[10px] font-bold text-white sm:text-xs">
+                <span className="flex items-center gap-1 animate-pulse rounded bg-red-500 px-1.5 py-0.5 text-[10px] font-bold text-white sm:text-xs">
+                  <LinkIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                   SAME!
                 </span>
               </div>
@@ -249,7 +251,8 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
                     <code className="font-mono text-xs text-green-400 sm:text-sm">
                       ••••••••••••
                     </code>
-                    <span className="rounded bg-green-500/20 px-1.5 py-0.5 text-[10px] font-medium text-green-400 sm:text-xs">
+                    <span className="flex items-center gap-1 rounded bg-green-500/20 px-1.5 py-0.5 text-[10px] font-medium text-green-400 sm:text-xs">
+                      <EyeClosedIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                       HIDDEN
                     </span>
                   </>
@@ -321,7 +324,8 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
                     <code className="font-mono text-xs text-green-400 sm:text-sm">
                       0x8f2a...9b1c
                     </code>
-                    <span className="rounded bg-green-500 px-1.5 py-0.5 text-[10px] font-bold text-white sm:text-xs">
+                    <span className="flex items-center gap-1 rounded bg-green-500 px-1.5 py-0.5 text-[10px] font-bold text-white sm:text-xs">
+                      <UnlinkIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                       NEW!
                     </span>
                   </>
@@ -615,6 +619,31 @@ function UnlinkIcon({ className }: { className?: string }) {
         strokeLinecap="round"
         strokeLinejoin="round"
         d="M13.181 8.68a4.503 4.503 0 011.903 6.405m-9.768-2.782L3.56 14.06a4.5 4.5 0 006.364 6.365l3.129-3.129m5.614-5.615l1.757-1.757a4.5 4.5 0 00-6.364-6.365l-4.5 4.5c-.258.26-.479.541-.661.84m1.903 6.405a4.495 4.495 0 01-1.242-.88 4.483 4.483 0 01-1.062-1.683m6.587 2.345l5.907 5.907m-5.907-5.907L8.898 8.898M2.991 2.99l6.364 6.364"
+      />
+    </svg>
+  )
+}
+
+function EyeOpenIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+      />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+  )
+}
+
+function EyeClosedIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"
       />
     </svg>
   )

@@ -308,7 +308,10 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
           />
         </div>
         {quoteError && (
-          <p className="mt-2 text-xs text-red-400">{quoteError}</p>
+          <p className="mt-2 flex items-center gap-1 text-xs text-red-400" role="alert">
+            <WarningIcon className="h-3 w-3 flex-shrink-0" aria-hidden="true" />
+            {quoteError}
+          </p>
         )}
       </div>
 
