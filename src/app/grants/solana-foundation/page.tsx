@@ -1061,43 +1061,43 @@ function MilestonesSection() {
   const milestones = [
     {
       id: 'M1',
-      title: 'Security Audit',
-      description: 'Professional audit of Noir ZK circuits and cryptographic SDK by security firm',
-      budget: '$30,000',
+      title: 'Jupiter DEX Integration',
+      description: 'Integrate SIP privacy layer with Jupiter aggregator for private swaps',
+      budget: '$25,000',
       timeline: 'Month 1-2',
-      icon: ShieldCheck,
+      icon: TrendingUp,
     },
     {
       id: 'M2',
-      title: 'Phantom/Solflare Integration',
-      description: 'Native wallet integration with privacy toggle in Solana\'s top wallets',
-      budget: '$25,000',
-      timeline: 'Month 2-4',
+      title: 'Mobile Wallet SDK',
+      description: 'React Native SDK for mobile wallet integration (iOS & Android)',
+      budget: '$20,000',
+      timeline: 'Month 2-3',
       icon: Wallet,
     },
     {
       id: 'M3',
-      title: 'Jupiter/Raydium Exploration',
-      description: 'Partnership discussions and technical integration research with major DEXs',
-      budget: '$20,000',
-      timeline: 'Month 3-5',
-      icon: TrendingUp,
+      title: 'Noir Circuits Mainnet',
+      description: 'Deploy production ZK circuits to mainnet with verifier contracts',
+      budget: '$30,000',
+      timeline: 'Month 3-4',
+      icon: Blocks,
     },
     {
       id: 'M4',
-      title: 'Solana-Native Optimizations',
-      description: 'Performance optimizations, ed25519 improvements, and Solana-specific features',
-      budget: '$15,000',
-      timeline: 'Month 4-6',
-      icon: Zap,
+      title: 'Developer Docs & Tutorials',
+      description: 'Comprehensive documentation, video tutorials, and example projects',
+      budget: '$10,000',
+      timeline: 'Month 4',
+      icon: FileText,
     },
     {
       id: 'M5',
-      title: 'Documentation & Ecosystem',
-      description: 'Developer guides, tutorials, hackathon participation, community building',
-      budget: '$10,000',
-      timeline: 'Month 1-6',
-      icon: FileText,
+      title: 'Third-Party Security Audit',
+      description: 'Independent security audit by reputable firm with public disclosure',
+      budget: '$15,000',
+      timeline: 'Month 5',
+      icon: ShieldCheck,
     },
   ]
 
@@ -1171,11 +1171,11 @@ function MilestonesSection() {
 
 function BudgetSection() {
   const budget = [
-    { category: 'Security Audit', amount: 30000, color: 'bg-purple-500' },
-    { category: 'Wallet Integration', amount: 25000, color: 'bg-blue-500' },
-    { category: 'DEX Exploration', amount: 20000, color: 'bg-green-500' },
-    { category: 'Solana Optimizations', amount: 15000, color: 'bg-yellow-500' },
-    { category: 'Docs & Ecosystem', amount: 10000, color: 'bg-pink-500' },
+    { category: 'Noir Circuits Mainnet', amount: 30000, color: 'bg-purple-500' },
+    { category: 'Jupiter DEX Integration', amount: 25000, color: 'bg-blue-500' },
+    { category: 'Mobile Wallet SDK', amount: 20000, color: 'bg-green-500' },
+    { category: 'Security Audit', amount: 15000, color: 'bg-yellow-500' },
+    { category: 'Docs & Tutorials', amount: 10000, color: 'bg-pink-500' },
   ]
 
   const total = budget.reduce((sum, item) => sum + item.amount, 0)
