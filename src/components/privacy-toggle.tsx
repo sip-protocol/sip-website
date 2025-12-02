@@ -1,5 +1,6 @@
 'use client'
 
+import { useRef, type KeyboardEvent } from 'react'
 import { PrivacyLevel } from '@/types'
 
 interface PrivacyToggleProps {
@@ -27,6 +28,45 @@ const levels: { value: PrivacyLevel; label: string; description: string }[] = [
 
 export function PrivacyToggle({ value, onChange }: PrivacyToggleProps) {
   const currentLevel = levels.find((l) => l.value === value)
+  const buttonRefs = useRef<(HTMLButtonElement | null)[]>([])
+
+  const currentIndex = levels.findIndex((l) => l.value === value)
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    let nextIndex = index
+
+    switch (e.key) {
+      case 'ArrowRight':
+      case 'ArrowDown':
+        e.preventDefault()
+        nextIndex = (index + 1) % levels.length
+        break
+      case 'ArrowLeft':
+      case 'ArrowUp':
+        e.preventDefault()
+        nextIndex = (index - 1 + levels.length) % levels.length
+        break
+      case 'Home':
+        e.preventDefault()
+        nextIndex = 0
+        break
+      case 'End':
+        e.preventDefault()
+        nextIndex = levels.length - 1
+        break
+      case ' ':
+      case 'Enter':
+        e.preventDefault()
+        onChange(levels[index].value)
+        return
+      default:
+        return
+    }
+
+    // Move focus and select the new option
+    buttonRefs.current[nextIndex]?.focus()
+    onChange(levels[nextIndex].value)
+  }
 
   return (
     <div
@@ -40,15 +80,18 @@ export function PrivacyToggle({ value, onChange }: PrivacyToggleProps) {
         role="radiogroup"
         aria-label="Choose privacy level"
       >
-        {levels.map((level) => (
+        {levels.map((level, index) => (
           <button
             key={level.value}
+            ref={(el) => { buttonRefs.current[index] = el }}
             onClick={() => onChange(level.value)}
+            onKeyDown={(e) => handleKeyDown(e, index)}
             data-testid={`privacy-${level.value}`}
             role="radio"
             aria-checked={value === level.value}
             aria-label={`${level.label} privacy: ${level.description}`}
-            className={`relative min-h-[44px] rounded-lg px-3 py-2.5 text-sm font-medium transition-all active:scale-95 sm:px-4 ${
+            tabIndex={value === level.value ? 0 : -1}
+            className={`relative min-h-[44px] rounded-lg px-3 py-2.5 text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 active:scale-95 sm:px-4 ${
               value === level.value
                 ? level.value === PrivacyLevel.TRANSPARENT
                   ? 'bg-gray-700 text-white'

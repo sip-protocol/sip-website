@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef, type KeyboardEvent } from 'react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
@@ -48,14 +48,26 @@ function generateSimulatedUnifiedAddress(): string {
 interface TabProps {
   active: boolean
   onClick: () => void
+  onKeyDown?: (e: KeyboardEvent<HTMLButtonElement>) => void
+  tabIndex?: number
+  id?: string
+  ariaControls?: string
   children: React.ReactNode
+  buttonRef?: (el: HTMLButtonElement | null) => void
 }
 
-function Tab({ active, onClick, children }: TabProps) {
+function Tab({ active, onClick, onKeyDown, tabIndex, id, ariaControls, children, buttonRef }: TabProps) {
   return (
     <button
+      ref={buttonRef}
+      id={id}
       onClick={onClick}
-      className={`min-h-[44px] px-3 py-2.5 text-xs font-medium transition-colors active:bg-gray-800/50 sm:px-4 sm:text-sm ${
+      onKeyDown={onKeyDown}
+      role="tab"
+      aria-selected={active}
+      aria-controls={ariaControls}
+      tabIndex={tabIndex}
+      className={`min-h-[44px] px-3 py-2.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-purple-500 active:bg-gray-800/50 sm:px-4 sm:text-sm ${
         active
           ? 'border-b-2 border-purple-500 text-purple-400'
           : 'text-gray-400 hover:text-gray-300'
@@ -73,10 +85,11 @@ interface ViewingKeyData {
   generatedAt: number
 }
 
+type TabId = 'address' | 'balance' | 'fees' | 'viewing' | 'code'
+const TAB_ORDER: TabId[] = ['address', 'balance', 'fees', 'viewing', 'code']
+
 export function ZcashShowcase() {
-  const [activeTab, setActiveTab] = useState<
-    'address' | 'balance' | 'fees' | 'viewing' | 'code'
-  >('address')
+  const [activeTab, setActiveTab] = useState<TabId>('address')
   const [generatedAddress, setGeneratedAddress] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [feeInputs, setFeeInputs] = useState(1)
@@ -84,6 +97,35 @@ export function ZcashShowcase() {
   const [viewingKeyCopied, setViewingKeyCopied] = useState(false)
   const [viewingKey, setViewingKey] = useState<ViewingKeyData | null>(null)
   const [isLoadingViewingKey, setIsLoadingViewingKey] = useState(false)
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([])
+
+  const handleTabKeyDown = (e: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    let nextIndex = index
+
+    switch (e.key) {
+      case 'ArrowRight':
+        e.preventDefault()
+        nextIndex = (index + 1) % TAB_ORDER.length
+        break
+      case 'ArrowLeft':
+        e.preventDefault()
+        nextIndex = (index - 1 + TAB_ORDER.length) % TAB_ORDER.length
+        break
+      case 'Home':
+        e.preventDefault()
+        nextIndex = 0
+        break
+      case 'End':
+        e.preventDefault()
+        nextIndex = TAB_ORDER.length - 1
+        break
+      default:
+        return
+    }
+
+    tabRefs.current[nextIndex]?.focus()
+    setActiveTab(TAB_ORDER[nextIndex])
+  }
 
   // Generate real viewing key using SDK on mount
   useEffect(() => {
@@ -176,20 +218,60 @@ export function ZcashShowcase() {
       </div>
 
       {/* Tabs */}
-      <div className="mb-6 flex gap-1 border-b border-gray-700">
-        <Tab active={activeTab === 'address'} onClick={() => setActiveTab('address')}>
+      <div className="mb-6 flex gap-1 border-b border-gray-700" role="tablist" aria-label="Zcash SDK features">
+        <Tab
+          active={activeTab === 'address'}
+          onClick={() => setActiveTab('address')}
+          onKeyDown={(e) => handleTabKeyDown(e, 0)}
+          tabIndex={activeTab === 'address' ? 0 : -1}
+          id="tab-address"
+          ariaControls="panel-address"
+          buttonRef={(el) => { tabRefs.current[0] = el }}
+        >
           Addresses
         </Tab>
-        <Tab active={activeTab === 'balance'} onClick={() => setActiveTab('balance')}>
+        <Tab
+          active={activeTab === 'balance'}
+          onClick={() => setActiveTab('balance')}
+          onKeyDown={(e) => handleTabKeyDown(e, 1)}
+          tabIndex={activeTab === 'balance' ? 0 : -1}
+          id="tab-balance"
+          ariaControls="panel-balance"
+          buttonRef={(el) => { tabRefs.current[1] = el }}
+        >
           Pools
         </Tab>
-        <Tab active={activeTab === 'fees'} onClick={() => setActiveTab('fees')}>
+        <Tab
+          active={activeTab === 'fees'}
+          onClick={() => setActiveTab('fees')}
+          onKeyDown={(e) => handleTabKeyDown(e, 2)}
+          tabIndex={activeTab === 'fees' ? 0 : -1}
+          id="tab-fees"
+          ariaControls="panel-fees"
+          buttonRef={(el) => { tabRefs.current[2] = el }}
+        >
           ZIP-317 Fees
         </Tab>
-        <Tab active={activeTab === 'viewing'} onClick={() => setActiveTab('viewing')}>
+        <Tab
+          active={activeTab === 'viewing'}
+          onClick={() => setActiveTab('viewing')}
+          onKeyDown={(e) => handleTabKeyDown(e, 3)}
+          tabIndex={activeTab === 'viewing' ? 0 : -1}
+          id="tab-viewing"
+          ariaControls="panel-viewing"
+          buttonRef={(el) => { tabRefs.current[3] = el }}
+        >
           Viewing Keys
         </Tab>
-        <Tab active={activeTab === 'code'} onClick={() => setActiveTab('code')}>
+        <Tab
+          active={activeTab === 'code'}
+          onClick={() => setActiveTab('code')}
+          onKeyDown={(e) => handleTabKeyDown(e, 4)}
+          tabIndex={activeTab === 'code' ? 0 : -1}
+          id="tab-code"
+          ariaControls="panel-code"
+          buttonRef={(el) => { tabRefs.current[4] = el }}
+        >
           Code
         </Tab>
       </div>
@@ -198,7 +280,7 @@ export function ZcashShowcase() {
       <div className="min-h-[300px]">
         {/* Address Generation Tab */}
         {activeTab === 'address' && (
-          <div className="space-y-4">
+          <div id="panel-address" role="tabpanel" aria-labelledby="tab-address" tabIndex={0} className="space-y-4">
             <div className="rounded-lg border border-purple-500/20 bg-purple-950/10 p-4">
               <h4 className="mb-2 font-semibold text-purple-300">
                 Unified Address Generation
@@ -211,7 +293,7 @@ export function ZcashShowcase() {
               <button
                 onClick={handleGenerateAddress}
                 disabled={isGenerating}
-                className="mb-4 min-h-[44px] rounded-lg bg-purple-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-purple-500 active:bg-purple-700 disabled:opacity-50"
+                className="mb-4 min-h-[44px] rounded-lg bg-purple-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-purple-500 active:bg-purple-700 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900"
               >
                 {isGenerating ? 'Generating...' : 'Generate Unified Address'}
               </button>
@@ -255,7 +337,7 @@ export function ZcashShowcase() {
 
         {/* Balance/Pools Tab */}
         {activeTab === 'balance' && (
-          <div className="space-y-4">
+          <div id="panel-balance" role="tabpanel" aria-labelledby="tab-balance" tabIndex={0} className="space-y-4">
             <div className="rounded-lg border border-purple-500/20 bg-purple-950/10 p-4">
               <div className="flex items-center justify-between mb-4">
                 <h4 className="font-semibold text-purple-300">
@@ -359,7 +441,7 @@ export function ZcashShowcase() {
 
         {/* ZIP-317 Fees Tab */}
         {activeTab === 'fees' && (
-          <div className="space-y-4">
+          <div id="panel-fees" role="tabpanel" aria-labelledby="tab-fees" tabIndex={0} className="space-y-4">
             <div className="rounded-lg border border-purple-500/20 bg-purple-950/10 p-4">
               <h4 className="mb-2 font-semibold text-purple-300">
                 ZIP-317 Fee Calculator
@@ -424,7 +506,7 @@ export function ZcashShowcase() {
 
         {/* Viewing Keys Tab */}
         {activeTab === 'viewing' && (
-          <div className="space-y-4">
+          <div id="panel-viewing" role="tabpanel" aria-labelledby="tab-viewing" tabIndex={0} className="space-y-4">
             <div className="rounded-lg border border-amber-500/20 bg-amber-950/10 p-4">
               <div className="flex items-center justify-between mb-2">
                 <h4 className="font-semibold text-amber-300">
@@ -455,7 +537,7 @@ export function ZcashShowcase() {
                     </span>
                     <button
                       onClick={handleCopyViewingKey}
-                      className="min-h-[44px] min-w-[44px] rounded px-2 text-xs text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 active:bg-amber-500/20"
+                      className="min-h-[44px] min-w-[44px] rounded px-2 text-xs text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 active:bg-amber-500/20 focus:outline-none focus:ring-2 focus:ring-amber-500"
                     >
                       {viewingKeyCopied ? 'Copied!' : 'Copy'}
                     </button>
@@ -524,7 +606,7 @@ export function ZcashShowcase() {
 
         {/* Code Examples Tab */}
         {activeTab === 'code' && (
-          <div className="space-y-4">
+          <div id="panel-code" role="tabpanel" aria-labelledby="tab-code" tabIndex={0} className="space-y-4">
             {/* Shielded Service Example */}
             <div className="rounded-lg bg-gray-900/70 p-4">
               <p className="mb-2 text-xs font-medium text-purple-400">

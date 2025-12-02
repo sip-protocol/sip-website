@@ -163,7 +163,7 @@ export function ViewingKeyDisplay({
           <span className="text-xs text-gray-500">Your viewing key:</span>
           <button
             onClick={() => setShowKey(!showKey)}
-            className="min-h-[44px] rounded px-2 text-xs text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 active:bg-amber-500/20"
+            className="min-h-[44px] rounded px-2 text-xs text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 active:bg-amber-500/20 focus:outline-none focus:ring-2 focus:ring-amber-500"
           >
             {showKey ? 'Hide' : 'Reveal'}
           </button>
@@ -174,7 +174,7 @@ export function ViewingKeyDisplay({
           </code>
           <button
             onClick={handleCopy}
-            className="min-h-[44px] min-w-[44px] rounded-lg p-2 text-amber-400 transition-colors hover:bg-amber-500/20 hover:text-amber-300 active:bg-amber-500/30"
+            className="min-h-[44px] min-w-[44px] rounded-lg p-2 text-amber-400 transition-colors hover:bg-amber-500/20 hover:text-amber-300 active:bg-amber-500/30 focus:outline-none focus:ring-2 focus:ring-amber-500"
             title="Copy viewing key"
           >
             {copied ? (
@@ -185,7 +185,7 @@ export function ViewingKeyDisplay({
           </button>
           <button
             onClick={handleDownload}
-            className="min-h-[44px] min-w-[44px] rounded-lg p-2 text-amber-400 transition-colors hover:bg-amber-500/20 hover:text-amber-300 active:bg-amber-500/30"
+            className="min-h-[44px] min-w-[44px] rounded-lg p-2 text-amber-400 transition-colors hover:bg-amber-500/20 hover:text-amber-300 active:bg-amber-500/30 focus:outline-none focus:ring-2 focus:ring-amber-500"
             title="Download as JSON"
           >
             <DownloadIcon className="h-5 w-5" />

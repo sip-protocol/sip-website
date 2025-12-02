@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useRef, useEffect, type KeyboardEvent } from 'react'
 import { PrivacyLevel } from '@sip-protocol/types'
 import { useQuote, useSwap, useBalance, getStatusMessage } from '@/hooks'
 import { useWalletStore, useSwapModeStore } from '@/stores'
@@ -225,7 +225,7 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
               <button
                 onClick={handleMaxClick}
                 data-testid="max-button"
-                className="min-h-[44px] min-w-[44px] rounded bg-purple-500/20 px-3 py-2 text-xs font-medium text-purple-400 transition-colors hover:bg-purple-500/30 active:bg-purple-500/40"
+                className="min-h-[44px] min-w-[44px] rounded bg-purple-500/20 px-3 py-2 text-xs font-medium text-purple-400 transition-colors hover:bg-purple-500/30 active:bg-purple-500/40 focus:outline-none focus:ring-2 focus:ring-purple-500"
               >
                 MAX
               </button>
@@ -269,7 +269,10 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
 
       {/* Swap direction */}
       <div className="-my-2 flex justify-center">
-        <button className="z-10 rounded-xl border border-gray-700 bg-gray-900 p-2 transition-colors hover:border-purple-500">
+        <button
+          aria-label="Swap direction"
+          className="z-10 rounded-xl border border-gray-700 bg-gray-900 p-2 transition-colors hover:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+        >
           <ArrowDownIcon className="h-4 w-4 text-gray-400" />
         </button>
       </div>
@@ -484,7 +487,7 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
           onClick={handleSwap}
           disabled={(!amount || isSwapping || hasInsufficientBalance || !isZecAddressValid) && isConnected}
           data-testid="swap-button"
-          className={`min-h-[52px] w-full rounded-xl py-3 text-base font-semibold transition-all sm:py-4 sm:text-lg ${
+          className={`min-h-[52px] w-full rounded-xl py-3 text-base font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 sm:py-4 sm:text-lg ${
             !isConnected
               ? 'bg-purple-600 text-white hover:bg-purple-700 active:bg-purple-800'
               : !amount || hasInsufficientBalance || !isZecAddressValid
@@ -567,18 +570,105 @@ function TokenSelector({
   testId?: string
 }) {
   const [open, setOpen] = useState(false)
+  const [highlightedIndex, setHighlightedIndex] = useState(-1)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const listRef = useRef<HTMLDivElement>(null)
+  const optionRefs = useRef<(HTMLButtonElement | null)[]>([])
+
   const isFrom = testId === 'from-token'
   const label = isFrom ? 'Source token' : 'Destination token'
+
+  // Find current token index for initial highlight
+  const currentTokenIndex = tokens.findIndex((t) => t.symbol === token.symbol)
+
+  // Reset highlight when opening, set to current selection
+  useEffect(() => {
+    if (open) {
+      setHighlightedIndex(currentTokenIndex >= 0 ? currentTokenIndex : 0)
+      // Focus first option after opening
+      setTimeout(() => {
+        optionRefs.current[currentTokenIndex >= 0 ? currentTokenIndex : 0]?.focus()
+      }, 0)
+    } else {
+      setHighlightedIndex(-1)
+    }
+  }, [open, currentTokenIndex])
+
+  const handleButtonKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {
+    switch (e.key) {
+      case 'Enter':
+      case ' ':
+      case 'ArrowDown':
+        e.preventDefault()
+        setOpen(true)
+        break
+      case 'ArrowUp':
+        e.preventDefault()
+        setOpen(true)
+        break
+    }
+  }
+
+  const handleListKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault()
+        setHighlightedIndex((prev) => {
+          const next = Math.min(prev + 1, tokens.length - 1)
+          optionRefs.current[next]?.focus()
+          return next
+        })
+        break
+      case 'ArrowUp':
+        e.preventDefault()
+        setHighlightedIndex((prev) => {
+          const next = Math.max(prev - 1, 0)
+          optionRefs.current[next]?.focus()
+          return next
+        })
+        break
+      case 'Enter':
+      case ' ':
+        e.preventDefault()
+        if (highlightedIndex >= 0 && highlightedIndex < tokens.length) {
+          onSelect(tokens[highlightedIndex])
+          setOpen(false)
+          buttonRef.current?.focus()
+        }
+        break
+      case 'Escape':
+        e.preventDefault()
+        setOpen(false)
+        buttonRef.current?.focus()
+        break
+      case 'Tab':
+        // Close dropdown on tab out
+        setOpen(false)
+        break
+      case 'Home':
+        e.preventDefault()
+        setHighlightedIndex(0)
+        optionRefs.current[0]?.focus()
+        break
+      case 'End':
+        e.preventDefault()
+        setHighlightedIndex(tokens.length - 1)
+        optionRefs.current[tokens.length - 1]?.focus()
+        break
+    }
+  }
 
   return (
     <div className="relative flex-shrink-0">
       <button
+        ref={buttonRef}
         onClick={() => setOpen(!open)}
+        onKeyDown={handleButtonKeyDown}
         data-testid={testId}
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={`${label}: ${token.symbol} (${token.name}). Click to change`}
-        className="flex min-h-[44px] items-center gap-1.5 rounded-xl bg-gray-700/50 px-2.5 py-2 font-medium transition-colors hover:bg-gray-700 active:bg-gray-600 sm:gap-2 sm:px-3"
+        className="flex min-h-[44px] items-center gap-1.5 rounded-xl bg-gray-700/50 px-2.5 py-2 font-medium transition-colors hover:bg-gray-700 active:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 sm:gap-2 sm:px-3"
       >
         <span className="text-base sm:text-lg" aria-hidden="true">{token.icon}</span>
         <span className="text-sm sm:text-base">{token.symbol}</span>
@@ -593,24 +683,36 @@ function TokenSelector({
             aria-hidden="true"
           />
           <div
+            ref={listRef}
             data-testid="token-dropdown"
             role="listbox"
             aria-label={`Select ${label.toLowerCase()}`}
+            aria-activedescendant={highlightedIndex >= 0 ? `token-option-${tokens[highlightedIndex]?.symbol}` : undefined}
+            onKeyDown={handleListKeyDown}
             className="absolute right-0 top-full z-20 mt-2 w-44 rounded-xl border border-gray-700 bg-gray-900 p-1.5 shadow-xl sm:w-48 sm:p-2"
           >
-            {tokens.map((t) => (
+            {tokens.map((t, index) => (
               <button
                 key={t.symbol}
+                ref={(el) => { optionRefs.current[index] = el }}
+                id={`token-option-${t.symbol}`}
                 data-testid={`token-option-${t.symbol}`}
                 role="option"
                 aria-selected={t.symbol === token.symbol}
                 aria-label={`${t.symbol} - ${t.name}`}
+                tabIndex={highlightedIndex === index ? 0 : -1}
                 onClick={() => {
                   onSelect(t)
                   setOpen(false)
+                  buttonRef.current?.focus()
                 }}
-                className={`flex min-h-[44px] w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left transition-colors hover:bg-gray-800 active:bg-gray-700 sm:gap-3 sm:px-3 ${
-                  t.symbol === token.symbol ? 'bg-gray-800' : ''
+                onMouseEnter={() => setHighlightedIndex(index)}
+                className={`flex min-h-[44px] w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left transition-colors focus:outline-none sm:gap-3 sm:px-3 ${
+                  highlightedIndex === index
+                    ? 'bg-purple-600/30 ring-2 ring-inset ring-purple-500'
+                    : t.symbol === token.symbol
+                      ? 'bg-gray-800'
+                      : 'hover:bg-gray-800'
                 }`}
               >
                 <span className="text-base sm:text-lg" aria-hidden="true">{t.icon}</span>
@@ -618,12 +720,23 @@ function TokenSelector({
                   <div className="font-medium">{t.symbol}</div>
                   <div className="truncate text-xs text-gray-400">{t.name}</div>
                 </div>
+                {t.symbol === token.symbol && (
+                  <CheckIcon className="h-4 w-4 text-purple-400" aria-hidden="true" />
+                )}
               </button>
             ))}
           </div>
         </>
       )}
     </div>
+  )
+}
+
+function CheckIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+    </svg>
   )
 }
 
