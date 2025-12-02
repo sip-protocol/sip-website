@@ -1,8 +1,11 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
+
+// Dynamic SDK import for viewing key generation
+const loadSDK = () => import('@sip-protocol/sdk')
 
 /**
  * Zcash SDK Capabilities Showcase
@@ -10,17 +13,18 @@ import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
  * Demonstrates the Zcash integration features from @sip-protocol/sdk:
  * - ZcashRPCClient for zcashd interaction
  * - ZcashShieldedService for high-level operations
- * - ZIP-317 fee estimation
- * - Pool balance visualization
- * - Viewing key export for compliance
+ * - ZIP-317 fee estimation (real calculation)
+ * - Pool balance visualization (simulated)
+ * - Viewing key export for compliance (real SDK generation)
+ *
+ * NOTE: Full Zcash RPC functionality requires connection to zcashd node.
+ * This demo shows SDK capabilities without requiring a live node.
  */
 
-// ─── Mock Data ─────────────────────────────────────────────────────────────────
+// ─── Simulated Data (matches SDK types) ─────────────────────────────────────────
 
-const MOCK_UNIFIED_ADDRESS =
-  'u1qxkrh8q...7vj9 (Unified: Sapling + Orchard)'
-
-const MOCK_BALANCE = {
+// Simulated ShieldedBalance (matches SDK ZcashShieldedService.getBalance() return type)
+const SIMULATED_BALANCE = {
   confirmed: 12.54876,
   unconfirmed: 0.5,
   pools: {
@@ -31,11 +35,12 @@ const MOCK_BALANCE = {
   spendableNotes: 8,
 }
 
-const MOCK_VIEWING_KEY = {
-  key: 'zxviews1q0duytgcqqqqpqre26wkl45gvwwwd706xw608hucmvfalr759ejwf7qshjf5r9aa7323zulvz6plhttp5mltqcgs9t039cx2d09mgq05ts63n8u35hyv6h9nc9ctqqtue2u7cer2mqegunuulq2luhq3ywjcz35yyljewa4mgkgjzyfwh6fr6jd0dzd44ghk0nxdv2hnv4j5nxfwv24rwdmgllhe0p8568sgqt9ckt02v2kxf5ahtql6s0ltjpkckw8gtymxtxuu9gcr0swvz',
-  address: 'u1qxkrh8q...7vj9',
-  account: 0,
-  exportedAt: Date.now(),
+// Generate realistic unified address format
+function generateSimulatedUnifiedAddress(): string {
+  // Unified addresses start with 'u1' and are ~200 chars
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
+  const body = Array.from({ length: 180 }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
+  return `u1${body.slice(0, 50)}...${body.slice(-10)}`
 }
 
 // ─── Component ─────────────────────────────────────────────────────────────────
@@ -61,6 +66,13 @@ function Tab({ active, onClick, children }: TabProps) {
   )
 }
 
+interface ViewingKeyData {
+  key: string
+  hash: string
+  path: string
+  generatedAt: number
+}
+
 export function ZcashShowcase() {
   const [activeTab, setActiveTab] = useState<
     'address' | 'balance' | 'fees' | 'viewing' | 'code'
@@ -70,13 +82,38 @@ export function ZcashShowcase() {
   const [feeInputs, setFeeInputs] = useState(1)
   const [feeOutputs, setFeeOutputs] = useState(2)
   const [viewingKeyCopied, setViewingKeyCopied] = useState(false)
+  const [viewingKey, setViewingKey] = useState<ViewingKeyData | null>(null)
+  const [isLoadingViewingKey, setIsLoadingViewingKey] = useState(false)
 
-  // Simulate address generation
+  // Generate real viewing key using SDK on mount
+  useEffect(() => {
+    async function loadViewingKey() {
+      setIsLoadingViewingKey(true)
+      try {
+        const sdk = await loadSDK()
+        const vk = sdk.generateViewingKey('zcash/demo/account-0')
+        setViewingKey({
+          key: vk.key,
+          hash: vk.hash,
+          path: vk.path,
+          generatedAt: Date.now(),
+        })
+      } catch {
+        // SDK not available, use fallback
+        setViewingKey(null)
+      } finally {
+        setIsLoadingViewingKey(false)
+      }
+    }
+    loadViewingKey()
+  }, [])
+
+  // Generate unified address (simulated - real would require zcashd)
   const handleGenerateAddress = useCallback(async () => {
     setIsGenerating(true)
-    // Simulate network delay
+    // Simulate SDK call delay
     await new Promise((r) => setTimeout(r, 800))
-    setGeneratedAddress(MOCK_UNIFIED_ADDRESS)
+    setGeneratedAddress(generateSimulatedUnifiedAddress())
     setIsGenerating(false)
   }, [])
 
@@ -94,25 +131,36 @@ export function ZcashShowcase() {
   )
 
   const handleCopyViewingKey = useCallback(async () => {
+    if (!viewingKey) return
     try {
-      await navigator.clipboard.writeText(MOCK_VIEWING_KEY.key)
+      await navigator.clipboard.writeText(viewingKey.key)
       setViewingKeyCopied(true)
       setTimeout(() => setViewingKeyCopied(false), 2000)
     } catch {
       // Clipboard API not available
     }
-  }, [])
+  }, [viewingKey])
 
   return (
     <div className="rounded-2xl border border-purple-500/30 bg-gradient-to-b from-purple-950/20 to-gray-900/50 p-6">
       {/* Header */}
-      <div className="mb-6 flex items-center gap-3">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-500/20">
-          <ZcashIcon className="h-7 w-7 text-purple-400" />
+      <div className="mb-6 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-500/20">
+            <ZcashIcon className="h-7 w-7 text-purple-400" />
+          </div>
+          <div>
+            <h3 className="text-xl font-bold text-purple-300">Zcash SDK Integration</h3>
+            <p className="text-sm text-purple-400/70">@sip-protocol/sdk Zcash capabilities</p>
+          </div>
         </div>
-        <div>
-          <h3 className="text-xl font-bold text-purple-300">Zcash SDK Integration</h3>
-          <p className="text-sm text-purple-400/70">@sip-protocol/sdk Zcash capabilities</p>
+        <div className="flex flex-col items-end gap-1">
+          <span className="rounded bg-amber-500/20 px-2 py-0.5 text-xs text-amber-400 border border-amber-500/30">
+            Demo Mode
+          </span>
+          <span className="text-xs text-gray-500">
+            No zcashd required
+          </span>
         </div>
       </div>
 
@@ -209,20 +257,25 @@ export function ZcashShowcase() {
         {activeTab === 'balance' && (
           <div className="space-y-4">
             <div className="rounded-lg border border-purple-500/20 bg-purple-950/10 p-4">
-              <h4 className="mb-4 font-semibold text-purple-300">
-                Shielded Pool Balances
-              </h4>
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="font-semibold text-purple-300">
+                  Shielded Pool Balances
+                </h4>
+                <span className="text-xs text-gray-500 bg-gray-800 px-2 py-0.5 rounded">
+                  Simulated Data
+                </span>
+              </div>
 
               {/* Total Balance */}
               <div className="mb-6 text-center">
                 <p className="text-sm text-gray-500">Total Confirmed</p>
                 <p className="text-3xl font-bold text-white">
-                  {MOCK_BALANCE.confirmed.toFixed(8)}{' '}
+                  {SIMULATED_BALANCE.confirmed.toFixed(8)}{' '}
                   <span className="text-lg text-purple-400">ZEC</span>
                 </p>
-                {MOCK_BALANCE.unconfirmed > 0 && (
+                {SIMULATED_BALANCE.unconfirmed > 0 && (
                   <p className="text-sm text-amber-400">
-                    +{MOCK_BALANCE.unconfirmed} pending
+                    +{SIMULATED_BALANCE.unconfirmed} pending
                   </p>
                 )}
               </div>
@@ -236,14 +289,14 @@ export function ZcashShowcase() {
                     <span className="text-sm text-gray-300">Transparent</span>
                   </div>
                   <span className="font-mono text-sm text-gray-400">
-                    {MOCK_BALANCE.pools.transparent.toFixed(8)} ZEC
+                    {SIMULATED_BALANCE.pools.transparent.toFixed(8)} ZEC
                   </span>
                 </div>
                 <div className="h-2 rounded-full bg-gray-700">
                   <div
                     className="h-2 rounded-full bg-amber-500"
                     style={{
-                      width: `${(MOCK_BALANCE.pools.transparent / MOCK_BALANCE.confirmed) * 100}%`,
+                      width: `${(SIMULATED_BALANCE.pools.transparent / SIMULATED_BALANCE.confirmed) * 100}%`,
                     }}
                   />
                 </div>
@@ -255,14 +308,14 @@ export function ZcashShowcase() {
                     <span className="text-sm text-gray-300">Sapling Pool</span>
                   </div>
                   <span className="font-mono text-sm text-gray-400">
-                    {MOCK_BALANCE.pools.sapling.toFixed(8)} ZEC
+                    {SIMULATED_BALANCE.pools.sapling.toFixed(8)} ZEC
                   </span>
                 </div>
                 <div className="h-2 rounded-full bg-gray-700">
                   <div
                     className="h-2 rounded-full bg-blue-500"
                     style={{
-                      width: `${(MOCK_BALANCE.pools.sapling / MOCK_BALANCE.confirmed) * 100}%`,
+                      width: `${(SIMULATED_BALANCE.pools.sapling / SIMULATED_BALANCE.confirmed) * 100}%`,
                     }}
                   />
                 </div>
@@ -274,14 +327,14 @@ export function ZcashShowcase() {
                     <span className="text-sm text-gray-300">Orchard Pool</span>
                   </div>
                   <span className="font-mono text-sm text-gray-400">
-                    {MOCK_BALANCE.pools.orchard.toFixed(8)} ZEC
+                    {SIMULATED_BALANCE.pools.orchard.toFixed(8)} ZEC
                   </span>
                 </div>
                 <div className="h-2 rounded-full bg-gray-700">
                   <div
                     className="h-2 rounded-full bg-purple-500"
                     style={{
-                      width: `${(MOCK_BALANCE.pools.orchard / MOCK_BALANCE.confirmed) * 100}%`,
+                      width: `${(SIMULATED_BALANCE.pools.orchard / SIMULATED_BALANCE.confirmed) * 100}%`,
                     }}
                   />
                 </div>
@@ -290,10 +343,16 @@ export function ZcashShowcase() {
               {/* Note Count */}
               <div className="mt-4 rounded-lg bg-gray-900/50 p-3 text-center">
                 <span className="text-2xl font-bold text-purple-400">
-                  {MOCK_BALANCE.spendableNotes}
+                  {SIMULATED_BALANCE.spendableNotes}
                 </span>
                 <span className="ml-2 text-sm text-gray-500">spendable notes</span>
               </div>
+            </div>
+
+            {/* SDK Usage Note */}
+            <div className="p-3 rounded-lg bg-gray-900/50 text-xs text-gray-400">
+              <strong className="text-gray-300">Production Usage:</strong> Connect to zcashd via{' '}
+              <code className="text-purple-400">ZcashShieldedService.getBalance()</code> to query real pool balances.
             </div>
           </div>
         )}
@@ -367,29 +426,57 @@ export function ZcashShowcase() {
         {activeTab === 'viewing' && (
           <div className="space-y-4">
             <div className="rounded-lg border border-amber-500/20 bg-amber-950/10 p-4">
-              <h4 className="mb-2 font-semibold text-amber-300">
-                Viewing Key Export (Compliance)
-              </h4>
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-semibold text-amber-300">
+                  Viewing Key Export (Compliance)
+                </h4>
+                {viewingKey && (
+                  <span className="text-xs text-green-400 bg-green-500/20 px-2 py-0.5 rounded border border-green-500/30">
+                    Real SDK Key
+                  </span>
+                )}
+              </div>
               <p className="mb-4 text-sm text-gray-400">
                 Export viewing keys for regulatory compliance. Auditors can see incoming
                 transactions without spending authority.
               </p>
 
               {/* Viewing Key Display */}
-              <div className="mb-4 rounded-lg bg-gray-900/50 p-3">
-                <div className="mb-2 flex items-center justify-between">
-                  <span className="text-xs text-gray-500">Full Viewing Key:</span>
-                  <button
-                    onClick={handleCopyViewingKey}
-                    className="text-xs text-amber-400 hover:text-amber-300"
-                  >
-                    {viewingKeyCopied ? 'Copied!' : 'Copy'}
-                  </button>
+              {isLoadingViewingKey ? (
+                <div className="mb-4 rounded-lg bg-gray-900/50 p-4 text-center">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-amber-400 mx-auto" />
+                  <p className="mt-2 text-xs text-gray-500">Generating viewing key...</p>
                 </div>
-                <code className="block break-all text-xs text-amber-400">
-                  {MOCK_VIEWING_KEY.key.slice(0, 80)}...
-                </code>
-              </div>
+              ) : viewingKey ? (
+                <div className="mb-4 rounded-lg bg-gray-900/50 p-3">
+                  <div className="mb-2 flex items-center justify-between">
+                    <span className="text-xs text-gray-500">
+                      SIP Viewing Key (generated via SDK):
+                    </span>
+                    <button
+                      onClick={handleCopyViewingKey}
+                      className="text-xs text-amber-400 hover:text-amber-300"
+                    >
+                      {viewingKeyCopied ? 'Copied!' : 'Copy'}
+                    </button>
+                  </div>
+                  <code className="block break-all text-xs text-amber-400">
+                    {viewingKey.key.slice(0, 80)}...
+                  </code>
+                  <div className="mt-2 flex gap-4 text-xs">
+                    <span className="text-gray-500">
+                      Path: <code className="text-purple-400">{viewingKey.path}</code>
+                    </span>
+                    <span className="text-gray-500">
+                      Hash: <code className="text-purple-400">{viewingKey.hash.slice(0, 16)}...</code>
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="mb-4 rounded-lg bg-gray-900/50 p-3 text-center text-gray-500 text-sm">
+                  Viewing key generation failed
+                </div>
+              )}
 
               {/* Key Properties */}
               <div className="grid gap-3 md:grid-cols-2">
