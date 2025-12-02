@@ -7,6 +7,7 @@ import { VideoDemo } from '@/components/video-demo'
 import { ZachXBTTweet } from '@/components/zachxbt-tweet'
 import { HowItWorks } from '@/components/how-it-works'
 import { CypherpunkManifesto, CypherpunkAscii } from '@/components/cypherpunk-manifesto'
+import { ZachXBTCaseStudy } from '@/components/zachxbt-case-study'
 
 export default function PitchDeckPage() {
   return (
@@ -106,6 +107,19 @@ export default function PitchDeckPage() {
           />
           <div className="mt-10">
             <ZachXBTTweet />
+          </div>
+        </div>
+      </section>
+
+      {/* ZachXBT Case Study - How SIP Solves It */}
+      <section className="py-16 border-b border-gray-800/50 bg-gradient-to-b from-purple-900/5 to-transparent">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            badge="The Solution"
+            title="How SIP Breaks The Link"
+          />
+          <div className="mt-10">
+            <ZachXBTCaseStudy />
           </div>
         </div>
       </section>
