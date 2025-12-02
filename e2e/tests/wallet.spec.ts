@@ -53,8 +53,8 @@ test.describe('Wallet Connection', () => {
       await demoPage.goto()
       await demoPage.swapCard.swapButton.click()
 
-      // Switch to Ethereum tab
-      await page.getByRole('button', { name: 'Ethereum' }).click()
+      // Switch to Ethereum tab using data-testid
+      await page.locator('[data-testid="wallet-tab-ethereum"]').click()
 
       const metamaskOption = page.locator('button').filter({ hasText: /metamask/i })
       await expect(metamaskOption).toBeVisible()
@@ -64,8 +64,9 @@ test.describe('Wallet Connection', () => {
       await demoPage.goto()
       await demoPage.swapCard.swapButton.click()
 
-      await expect(page.getByRole('button', { name: 'Solana' })).toBeVisible()
-      await expect(page.getByRole('button', { name: 'Ethereum' })).toBeVisible()
+      // Use data-testid for reliable selection
+      await expect(page.locator('[data-testid="wallet-tab-solana"]')).toBeVisible()
+      await expect(page.locator('[data-testid="wallet-tab-ethereum"]')).toBeVisible()
     })
   })
 })

@@ -250,6 +250,7 @@ export function WalletModal() {
               <div className="flex border-b border-gray-800">
                 <button
                   onClick={() => setActiveTab('solana')}
+                  data-testid="wallet-tab-solana"
                   className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
                     activeTab === 'solana'
                       ? 'text-white border-b-2 border-purple-500'
@@ -260,6 +261,7 @@ export function WalletModal() {
                 </button>
                 <button
                   onClick={() => setActiveTab('ethereum')}
+                  data-testid="wallet-tab-ethereum"
                   className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
                     activeTab === 'ethereum'
                       ? 'text-white border-b-2 border-purple-500'
@@ -270,6 +272,7 @@ export function WalletModal() {
                 </button>
                 <button
                   onClick={() => setActiveTab('near')}
+                  data-testid="wallet-tab-near"
                   className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
                     activeTab === 'near'
                       ? 'text-white border-b-2 border-purple-500'

@@ -21,24 +21,25 @@ test.describe('Privacy Toggle', () => {
   })
 
   test('should have Shielded as default', async () => {
-    await expect(demoPage.privacyToggle.shieldedButton).toHaveAttribute('aria-pressed', 'true')
+    // role="radio" uses aria-checked, not aria-pressed
+    await expect(demoPage.privacyToggle.shieldedButton).toHaveAttribute('aria-checked', 'true')
   })
 
   test('should switch to Public mode', async () => {
     await demoPage.selectPrivacyLevel('public')
-    await expect(demoPage.privacyToggle.publicButton).toHaveAttribute('aria-pressed', 'true')
+    await expect(demoPage.privacyToggle.publicButton).toHaveAttribute('aria-checked', 'true')
     await expect(demoPage.swapCard.privacyBadge).toContainText('Public')
   })
 
   test('should switch to Compliant mode', async () => {
     await demoPage.selectPrivacyLevel('compliant')
-    await expect(demoPage.privacyToggle.compliantButton).toHaveAttribute('aria-pressed', 'true')
+    await expect(demoPage.privacyToggle.compliantButton).toHaveAttribute('aria-checked', 'true')
   })
 
   test('should switch back to Shielded from Public', async () => {
     await demoPage.selectPrivacyLevel('public')
     await demoPage.selectPrivacyLevel('shielded')
-    await expect(demoPage.privacyToggle.shieldedButton).toHaveAttribute('aria-pressed', 'true')
+    await expect(demoPage.privacyToggle.shieldedButton).toHaveAttribute('aria-checked', 'true')
   })
 
   test('should show privacy info box in shielded mode', async () => {

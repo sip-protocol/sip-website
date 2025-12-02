@@ -101,14 +101,14 @@ export class DemoPage {
   }
 
   async getActivePrivacyLevel(): Promise<string> {
-    // Check aria-pressed attribute
-    if (await this.privacyToggle.publicButton.getAttribute('aria-pressed') === 'true') {
+    // Check aria-checked attribute (role="radio" uses aria-checked, not aria-pressed)
+    if (await this.privacyToggle.publicButton.getAttribute('aria-checked') === 'true') {
       return 'public'
     }
-    if (await this.privacyToggle.shieldedButton.getAttribute('aria-pressed') === 'true') {
+    if (await this.privacyToggle.shieldedButton.getAttribute('aria-checked') === 'true') {
       return 'shielded'
     }
-    if (await this.privacyToggle.compliantButton.getAttribute('aria-pressed') === 'true') {
+    if (await this.privacyToggle.compliantButton.getAttribute('aria-checked') === 'true') {
       return 'compliant'
     }
     return 'shielded'
@@ -190,7 +190,8 @@ export class DemoPage {
       shielded: this.privacyToggle.shieldedButton,
       compliant: this.privacyToggle.compliantButton,
     }[level]
-    await expect(button).toHaveAttribute('aria-pressed', 'true')
+    // role="radio" uses aria-checked, not aria-pressed
+    await expect(button).toHaveAttribute('aria-checked', 'true')
   }
 
   async expectSwapButtonText(text: string | RegExp) {
