@@ -153,7 +153,7 @@ await shareViewingKey(viewingKey, auditorId)`
             Privacy Primitives
           </h2>
           <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
-            Enterprise-grade cryptography adapted from Zcash, battle-tested with 867+ tests
+            Enterprise-grade cryptography adapted from Zcash, battle-tested with 1,331+ tests
           </p>
         </div>
 

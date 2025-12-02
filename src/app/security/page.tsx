@@ -151,7 +151,7 @@ export default function SecurityPage() {
                 <p className="text-sm text-gray-400 mb-3">
                   SIP Protocol has not yet undergone a formal security audit. The codebase is
                   designed with audit-readiness in mind, featuring comprehensive test coverage
-                  (800+ tests) and documented security assumptions.
+                  (1,331+ tests) and documented security assumptions.
                 </p>
                 <p className="text-sm text-gray-400">
                   We recommend using small amounts ($5-10) for testing until a formal audit is completed.

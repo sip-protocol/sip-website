@@ -315,7 +315,7 @@ function RoadmapSection() {
       id: 'M6-M7',
       title: 'Demo Integration',
       status: 'complete',
-      items: ['Live demo with real wallets', 'NEAR wallet support', '800+ tests passing']
+      items: ['Live demo with real wallets', 'NEAR wallet support', '1,331+ tests passing']
     },
     {
       id: 'M8',
@@ -430,7 +430,7 @@ function CommunitySection() {
             </div>
             <div className="flex items-center gap-2">
               <Check className="h-4 w-4 text-green-500" />
-              <span>800+ Tests</span>
+              <span>1,331+ Tests</span>
             </div>
             <div className="flex items-center gap-2">
               <Check className="h-4 w-4 text-green-500" />

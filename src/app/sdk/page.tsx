@@ -291,7 +291,7 @@ await shareWithAuditor(viewingKey, auditorPublicKey)`}
       <section className="py-16 border-b border-gray-800/50 bg-gray-900/30">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-8 md:grid-cols-4">
-            <StatCard value="745+" label="Test Cases" />
+            <StatCard value="1,208+" label="Test Cases" />
             <StatCard value="6" label="Chains Supported" />
             <StatCard value="3" label="Privacy Levels" />
             <StatCard value="<50ms" label="Intent Creation" />

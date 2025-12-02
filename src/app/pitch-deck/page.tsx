@@ -345,10 +345,10 @@ export default function PitchDeckPage() {
             title="Production-Ready Infrastructure"
           />
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            <StatCard value="837+" label="Tests Passing" sublabel="SDK + Demo" />
-            <StatCard value="v0.1.9" label="SDK Version" sublabel="Published on npm" />
-            <StatCard value="2" label="Curve Support" sublabel="secp256k1 + ed25519" />
-            <StatCard value="3" label="ZK Circuits" sublabel="Noir compiled" />
+            <StatCard value="1,331+" label="Tests Passing" sublabel="1,208 SDK + 123 Demo" verifyUrl="https://github.com/sip-protocol/sip-protocol/actions" />
+            <StatCard value="v0.1.9" label="SDK Version" sublabel="Published on npm" verifyUrl="https://www.npmjs.com/package/@sip-protocol/sdk" />
+            <StatCard value="2" label="Curve Support" sublabel="secp256k1 + ed25519" verifyUrl="https://github.com/sip-protocol/sip-protocol/blob/main/packages/sdk/src/stealth.ts" />
+            <StatCard value="3" label="ZK Circuits" sublabel="Noir compiled" verifyUrl="https://github.com/sip-protocol/circuits" />
           </div>
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             <ProgressItem
@@ -548,14 +548,32 @@ function ZcashFeature({ title, description, status }: { title: string; descripti
 
 // ArchitectureDiagram is now imported from @/components/architecture-diagram
 
-function StatCard({ value, label, sublabel }: { value: string; label: string; sublabel: string }) {
-  return (
-    <div className="p-6 rounded-2xl bg-gray-900/50 border border-gray-800 text-center">
+function StatCard({ value, label, sublabel, verifyUrl }: { value: string; label: string; sublabel: string; verifyUrl?: string }) {
+  const content = (
+    <div className={`p-6 rounded-2xl bg-gray-900/50 border border-gray-800 text-center ${verifyUrl ? 'hover:border-purple-500/50 transition-colors cursor-pointer' : ''}`}>
       <div className="text-3xl font-bold text-purple-400">{value}</div>
       <div className="mt-1 font-medium">{label}</div>
       <div className="text-sm text-gray-500">{sublabel}</div>
+      {verifyUrl && (
+        <div className="mt-2 text-xs text-purple-400/60 flex items-center justify-center gap-1">
+          <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+          </svg>
+          Verify
+        </div>
+      )}
     </div>
   )
+
+  if (verifyUrl) {
+    return (
+      <a href={verifyUrl} target="_blank" rel="noopener noreferrer">
+        {content}
+      </a>
+    )
+  }
+
+  return content
 }
 
 function ProgressItem({ title, description, status }: { title: string; description: string; status: string }) {
