@@ -7,6 +7,7 @@ import { PrivacyToggle } from '@/components/privacy-toggle'
 import { ComparisonView } from '@/components/comparison-view'
 import { ZcashShowcase } from '@/components/zcash-showcase'
 import { PedersenCommitmentDisplay } from '@/components/pedersen-commitment-display'
+import { TransactionProof } from '@/components/transaction-proof'
 
 export default function DemoPage() {
   const [privacyLevel, setPrivacyLevel] = useState<PrivacyLevel>(PrivacyLevel.SHIELDED)
@@ -66,6 +67,11 @@ export default function DemoPage() {
               </p>
             </div>
             <ComparisonView privacyLevel={privacyLevel} />
+          </div>
+
+          {/* Real Transaction Proof */}
+          <div className="mt-16 border-t border-gray-800/50 pt-16">
+            <TransactionProof />
           </div>
 
           {/* Pedersen Commitment Demo */}
