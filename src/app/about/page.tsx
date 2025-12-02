@@ -15,6 +15,7 @@ import {
   Package
 } from 'lucide-react'
 import Link from 'next/link'
+import { TEST_COUNTS } from '@/lib/constants'
 
 export default function AboutPage() {
   return (
@@ -315,7 +316,7 @@ function RoadmapSection() {
       id: 'M6-M7',
       title: 'Demo Integration',
       status: 'complete',
-      items: ['Live demo with real wallets', 'NEAR wallet support', '1,331+ tests passing']
+      items: ['Live demo with real wallets', 'NEAR wallet support', `${TEST_COUNTS.totalDisplay} tests passing`]
     },
     {
       id: 'M8',
@@ -430,7 +431,7 @@ function CommunitySection() {
             </div>
             <div className="flex items-center gap-2">
               <Check className="h-4 w-4 text-green-500" />
-              <span>1,331+ Tests</span>
+              <span>{TEST_COUNTS.totalDisplay} Tests</span>
             </div>
             <div className="flex items-center gap-2">
               <Check className="h-4 w-4 text-green-500" />

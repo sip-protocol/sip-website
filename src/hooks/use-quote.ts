@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { PrivacyLevel, type Quote, type ChainId } from '@sip-protocol/types'
 
 // ProductionQuote extends Quote with depositAddress for production mode
@@ -23,6 +23,15 @@ export interface QuoteParams {
   privacyLevel: PrivacyLevel
 }
 
+/** Quote freshness status */
+export type QuoteFreshness = 'fresh' | 'stale' | 'expired'
+
+/** Auto-refresh configuration */
+const QUOTE_FRESH_DURATION = 30_000 // 30 seconds - quote is fresh
+const QUOTE_STALE_DURATION = 45_000 // 45 seconds - quote is stale but usable
+const QUOTE_EXPIRY_DURATION = 60_000 // 60 seconds - quote is expired
+const AUTO_REFRESH_INTERVAL = 25_000 // Refresh every 25 seconds to stay fresh
+
 export interface QuoteResult {
   /** The quote from the SDK (may include deposit address in production mode) */
   quote: Quote | ProductionQuote | null
@@ -42,6 +51,16 @@ export interface QuoteResult {
   depositAddress: string | null
   /** Refresh the quote */
   refresh: () => Promise<void>
+  /** Quote freshness status */
+  freshness: QuoteFreshness
+  /** Seconds until quote expires (for countdown display) */
+  expiresIn: number | null
+  /** Timestamp when quote was fetched */
+  fetchedAt: number | null
+  /** Whether auto-refresh is enabled */
+  autoRefreshEnabled: boolean
+  /** Toggle auto-refresh */
+  setAutoRefresh: (enabled: boolean) => void
 }
 
 // Token decimals mapping
@@ -76,6 +95,14 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
   const [quote, setQuote] = useState<Quote | ProductionQuote | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [fetchedAt, setFetchedAt] = useState<number | null>(null)
+  const [autoRefreshEnabled, setAutoRefreshEnabled] = useState(true)
+  const [freshness, setFreshness] = useState<QuoteFreshness>('fresh')
+  const [expiresIn, setExpiresIn] = useState<number | null>(null)
+
+  // Refs for intervals
+  const autoRefreshRef = useRef<NodeJS.Timeout | null>(null)
+  const freshnessIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
   const fetchQuote = useCallback(async () => {
     if (!params || !params.amount || parseFloat(params.amount) <= 0) {
@@ -153,11 +180,17 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
 
       if (quotes.length > 0) {
         setQuote(quotes[0])
+        setFetchedAt(Date.now())
+        setFreshness('fresh')
+        setExpiresIn(Math.round(QUOTE_EXPIRY_DURATION / 1000))
         if (isProductionMode && 'depositAddress' in quotes[0]) {
           logger.debug('Production quote received with deposit address', 'Quote')
         }
       } else {
         setError('No quotes available for this pair')
+        setFetchedAt(null)
+        setFreshness('expired')
+        setExpiresIn(null)
       }
     } catch (err) {
       logger.error('Quote fetch failed', err, 'useQuote')
@@ -186,6 +219,77 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
     const timeoutId = setTimeout(fetchQuote, 500) // 500ms debounce
     return () => clearTimeout(timeoutId)
   }, [fetchQuote])
+
+  // Auto-refresh effect
+  useEffect(() => {
+    if (!autoRefreshEnabled || !params || !quote) {
+      if (autoRefreshRef.current) {
+        clearInterval(autoRefreshRef.current)
+        autoRefreshRef.current = null
+      }
+      return
+    }
+
+    // Set up auto-refresh interval
+    autoRefreshRef.current = setInterval(() => {
+      if (!isLoading) {
+        logger.debug('Auto-refreshing quote', 'useQuote')
+        fetchQuote()
+      }
+    }, AUTO_REFRESH_INTERVAL)
+
+    return () => {
+      if (autoRefreshRef.current) {
+        clearInterval(autoRefreshRef.current)
+        autoRefreshRef.current = null
+      }
+    }
+  }, [autoRefreshEnabled, params, quote, isLoading, fetchQuote])
+
+  // Freshness tracking effect
+  useEffect(() => {
+    if (!fetchedAt || !quote) {
+      setFreshness('expired')
+      setExpiresIn(null)
+      return
+    }
+
+    const updateFreshness = () => {
+      const elapsed = Date.now() - fetchedAt
+      const remaining = Math.max(0, Math.round((QUOTE_EXPIRY_DURATION - elapsed) / 1000))
+
+      setExpiresIn(remaining)
+
+      if (elapsed < QUOTE_FRESH_DURATION) {
+        setFreshness('fresh')
+      } else if (elapsed < QUOTE_STALE_DURATION) {
+        setFreshness('stale')
+      } else {
+        setFreshness('expired')
+      }
+    }
+
+    // Update immediately
+    updateFreshness()
+
+    // Update every second for countdown
+    freshnessIntervalRef.current = setInterval(updateFreshness, 1000)
+
+    return () => {
+      if (freshnessIntervalRef.current) {
+        clearInterval(freshnessIntervalRef.current)
+        freshnessIntervalRef.current = null
+      }
+    }
+  }, [fetchedAt, quote])
+
+  // Clean up on unmount
+  useEffect(() => {
+    return () => {
+      if (autoRefreshRef.current) clearInterval(autoRefreshRef.current)
+      if (freshnessIntervalRef.current) clearInterval(freshnessIntervalRef.current)
+    }
+  }, [])
 
   // Calculate derived values
   const outputAmount = useMemo(() => {
@@ -237,6 +341,11 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
     error,
     depositAddress,
     refresh: fetchQuote,
+    freshness,
+    expiresIn,
+    fetchedAt,
+    autoRefreshEnabled,
+    setAutoRefresh: setAutoRefreshEnabled,
   }
 }
 

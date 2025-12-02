@@ -28,6 +28,7 @@ import {
   Blocks,
   Sparkles,
 } from 'lucide-react'
+import { TEST_COUNTS } from '@/lib/constants'
 
 export default function SolanaFoundationPitchPage() {
   return (
@@ -174,7 +175,7 @@ function HeroSection() {
             <h3 className="text-lg font-semibold mb-6 text-gray-400">Key Metrics</h3>
             <div className="space-y-6">
               {[
-                { label: 'Tests Passing', value: '1,331+', detail: '1,208 SDK + 123 website' },
+                { label: 'Tests Passing', value: TEST_COUNTS.totalDisplay, detail: TEST_COUNTS.detailDisplay },
                 { label: 'npm Package', value: 'Published', detail: '@sip-protocol/sdk v0.1.9' },
                 { label: 'Phase 1', value: '95%', detail: 'M1-M8 in progress' },
                 { label: 'Status', value: 'Live', detail: 'sip-protocol.org' },
@@ -599,7 +600,7 @@ function TractionSection() {
             <h3 className="text-xl font-semibold mb-6">Key Metrics</h3>
             <div className="grid grid-cols-2 gap-6">
               {[
-                { value: '1,331+', label: 'Tests Passing' },
+                { value: TEST_COUNTS.totalDisplay, label: 'Tests Passing' },
                 { value: '100%', label: 'Pass Rate' },
                 { value: 'v0.1.9', label: 'npm Published' },
                 { value: 'M8', label: 'Phase 1: 95%' },
@@ -763,7 +764,7 @@ function CompetitorSection() {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-green-400 mt-1">✓</span>
-                    Live SDK, 1,331+ tests, npm published
+                    Live SDK, {TEST_COUNTS.totalDisplay} tests, npm published
                   </li>
                 </ul>
               </div>
@@ -1282,7 +1283,7 @@ function CTASection() {
             <h2 className="text-3xl sm:text-4xl font-bold">Make Solana the Privacy Standard</h2>
             <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
               Help us establish the privacy standard for Web3, starting with Solana.
-              1,331+ tests. Production SDK. Live demo. Ready to scale.
+              {TEST_COUNTS.totalDisplay} tests. Production SDK. Live demo. Ready to scale.
             </p>
 
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -1316,7 +1317,7 @@ function CTASection() {
             <div className="mt-12 pt-8 border-t border-purple-500/20">
               <div className="flex flex-wrap justify-center gap-8">
                 {[
-                  { value: '1,331+', label: 'Tests' },
+                  { value: TEST_COUNTS.totalDisplay, label: 'Tests' },
                   { value: 'v0.1.9', label: 'npm' },
                   { value: 'Live', label: 'Demo' },
                   { value: 'MIT', label: 'License' },

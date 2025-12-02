@@ -1,4 +1,4 @@
-export { useQuote, type QuoteParams, type QuoteResult } from './use-quote'
+export { useQuote, type QuoteParams, type QuoteResult, type QuoteFreshness } from './use-quote'
 export {
   useSwap,
   getStatusMessage,

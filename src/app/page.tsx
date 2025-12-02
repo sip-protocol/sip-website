@@ -15,6 +15,7 @@ import {
   Copy,
   ExternalLink
 } from 'lucide-react'
+import { TEST_COUNTS } from '@/lib/constants'
 
 export default function Home() {
   return (
@@ -114,7 +115,7 @@ function HeroSection() {
           >
             <div className="flex items-center gap-2">
               <Check className="h-4 w-4 text-green-500" />
-              <span>1,331+ Tests Passing</span>
+              <span>{TEST_COUNTS.totalDisplay} Tests Passing</span>
             </div>
             <div className="flex items-center gap-2">
               <Check className="h-4 w-4 text-green-500" />

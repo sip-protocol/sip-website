@@ -16,6 +16,8 @@ import { SwapModeToggle } from '@/components/swap-mode-toggle'
 import { StealthAddressDisplay } from '@/components/stealth-address-display'
 import { ViewingKeyDisplay } from '@/components/viewing-key-display'
 import { PedersenCommitmentDisplay } from '@/components/pedersen-commitment-display'
+import { QuoteErrorCard } from '@/components/error-card'
+import { QuoteStatusBadge } from '@/components/quote-freshness'
 import type { NetworkId } from '@/lib'
 
 interface SwapCardProps {
@@ -107,7 +109,17 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
   }, [fromToken, toToken, amount, privacyLevel])
 
   // Fetch quote
-  const { quote, outputAmount, rate, feePercent, isLoading: isQuoteLoading, error: quoteError } = useQuote(quoteParams)
+  const {
+    quote,
+    outputAmount,
+    rate,
+    feePercent,
+    isLoading: isQuoteLoading,
+    error: quoteError,
+    freshness: quoteFreshness,
+    expiresIn: quoteExpiresIn,
+    refresh: refreshQuote,
+  } = useQuote(quoteParams)
 
   // Swap execution
   const { status, txHash, explorerUrl, txChain, error: swapError, execute, reset } = useSwap()
@@ -307,11 +319,26 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
             testId="to-token"
           />
         </div>
+        {/* Quote freshness status */}
+        {quote && !quoteError && (
+          <div className="mt-2 flex items-center justify-between">
+            <QuoteStatusBadge
+              freshness={quoteFreshness}
+              expiresIn={quoteExpiresIn}
+              isLoading={isQuoteLoading}
+              onRefresh={refreshQuote}
+            />
+          </div>
+        )}
+        {/* Quote error with recovery actions */}
         {quoteError && (
-          <p className="mt-2 flex items-center gap-1 text-xs text-red-400" role="alert">
-            <WarningIcon className="h-3 w-3 flex-shrink-0" aria-hidden="true" />
-            {quoteError}
-          </p>
+          <div className="mt-2">
+            <QuoteErrorCard
+              error={quoteError}
+              onRetry={refreshQuote}
+              onClear={() => setAmount('')}
+            />
+          </div>
         )}
       </div>
 
