@@ -11,6 +11,9 @@ import {
   validateZcashAddress,
   getAddressTypeLabel,
   getPrivacyColorClass,
+  calculatePriceImpact,
+  getImpactColorClass,
+  formatImpact,
 } from '@/lib'
 import { TransactionStatus } from '@/components/transaction-status'
 import { SwapModeToggle } from '@/components/swap-mode-toggle'
@@ -138,6 +141,16 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
   const isSuccess = status === 'success'
   const isError = status === 'error'
   const isZecDestination = toToken.symbol === 'ZEC'
+
+  // Calculate price impact
+  const priceImpact = useMemo(() => {
+    if (!amount || !outputAmount || !rate) return null
+    const inputNum = parseFloat(amount)
+    const outputNum = parseFloat(outputAmount)
+    const rateNum = parseFloat(rate)
+    if (inputNum <= 0 || outputNum <= 0 || rateNum <= 0) return null
+    return calculatePriceImpact(inputNum, outputNum, rateNum)
+  }, [amount, outputAmount, rate])
 
   // Zcash address validation
   const zecValidation = useMemo(() => {
@@ -536,6 +549,37 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
         onRetry={reset}
       />
 
+      {/* High Price Impact Warning */}
+      {priceImpact && (priceImpact.severity === 'high' || priceImpact.severity === 'severe') && (
+        <div
+          className={`mb-4 rounded-xl border p-3 ${
+            priceImpact.severity === 'severe'
+              ? 'border-red-500/30 bg-red-500/10'
+              : 'border-orange-500/30 bg-orange-500/10'
+          }`}
+          data-testid="price-impact-warning"
+        >
+          <div className="flex items-start gap-2">
+            <WarningIcon
+              className={`mt-0.5 h-4 w-4 flex-shrink-0 ${
+                priceImpact.severity === 'severe' ? 'text-red-400' : 'text-orange-400'
+              }`}
+            />
+            <div className="text-sm">
+              <p className={priceImpact.severity === 'severe' ? 'font-medium text-red-300' : 'font-medium text-orange-300'}>
+                {priceImpact.severity === 'severe' ? 'Extremely High Price Impact' : 'High Price Impact'}
+              </p>
+              <p className={priceImpact.severity === 'severe' ? 'text-red-400/80' : 'text-orange-400/80'}>
+                This trade has a {formatImpact(priceImpact.percentage)} price impact.
+                {priceImpact.severity === 'severe'
+                  ? ' Consider trading a smaller amount or waiting for better liquidity.'
+                  : ' You may receive less than expected.'}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Swap button */}
       {!isSuccess && (
         <button
@@ -591,6 +635,17 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
             <span>Solver Fee</span>
             <span>{feePercent}%</span>
           </div>
+          {priceImpact && (
+            <div className="flex items-center justify-between text-gray-400">
+              <span>Price Impact</span>
+              <span className={`flex items-center gap-1 ${getImpactColorClass(priceImpact.severity)}`}>
+                {formatImpact(priceImpact.percentage)}
+                {(priceImpact.severity === 'high' || priceImpact.severity === 'severe') && (
+                  <WarningIcon className="h-3 w-3" />
+                )}
+              </span>
+            </div>
+          )}
           <div className="flex items-center justify-between text-gray-400">
             <span>Slippage</span>
             <SlippageDisplay onClick={() => setShowSettings(true)} />
