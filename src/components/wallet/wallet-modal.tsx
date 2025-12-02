@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { X, ExternalLink, AlertCircle, AlertTriangle } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 // Types only - no runtime SDK import at module level to avoid WASM issues
-import type { SolanaWalletName, EthereumWalletName } from '@sip-protocol/sdk'
+import type { SolanaWalletName, EthereumWalletName, HardwareWalletType } from '@sip-protocol/sdk'
 
 // Dynamic SDK import to avoid WASM loading during SSG
 const loadSDK = () => import('@sip-protocol/sdk')
@@ -22,7 +22,7 @@ import {
   type WalletConflictInfo,
 } from '@/lib/wallet-detection'
 
-type TabType = 'solana' | 'ethereum' | 'near'
+type TabType = 'solana' | 'ethereum' | 'near' | 'hardware'
 
 export function WalletModal() {
   const {
@@ -41,7 +41,10 @@ export function WalletModal() {
     solana: SolanaWalletName[]
     ethereum: EthereumWalletName[]
     near: WalletType[]
-  }>({ solana: [], ethereum: [], near: [] })
+    hardware: HardwareWalletType[]
+  }>({ solana: [], ethereum: [], near: [], hardware: [] })
+  const [webUSBSupported, setWebUSBSupported] = useState(false)
+  const [selectedHardwareChain, setSelectedHardwareChain] = useState<'ethereum' | 'solana'>('ethereum')
   const [error, setError] = useState<string | null>(null)
   const [walletConflict, setWalletConflict] = useState<WalletConflictInfo | null>(null)
 
@@ -57,11 +60,25 @@ export function WalletModal() {
         const ethereumWallets = sdk.detectEthereumWallets()
         // NEAR wallets are detected via wallet selector when ready
         const nearWallets = nearWallet.isReady ? nearWallet.detectWallets() : []
-        setDetectedWallets({ solana: solanaWallets, ethereum: ethereumWallets, near: nearWallets })
+
+        // Check WebUSB support for hardware wallets
+        const hasWebUSB = sdk.supportsWebUSB()
+        setWebUSBSupported(hasWebUSB)
+
+        // Hardware wallets are always available if WebUSB is supported
+        const hardwareWallets: HardwareWalletType[] = hasWebUSB ? ['ledger', 'trezor'] : []
+
+        setDetectedWallets({
+          solana: solanaWallets,
+          ethereum: ethereumWallets,
+          near: nearWallets,
+          hardware: hardwareWallets,
+        })
         setAvailableWallets({
           solana: solanaWallets as WalletType[],
           ethereum: ethereumWallets as WalletType[],
           near: nearWallets,
+          hardware: hardwareWallets as WalletType[],
         })
         setError(null)
       })
@@ -123,6 +140,54 @@ export function WalletModal() {
     }
   }
 
+  const handleHardwareConnect = async (walletType: 'ledger' | 'trezor', chain: 'ethereum' | 'solana') => {
+    setError(null)
+    setConnecting(true)
+
+    const walletName = WALLET_INFO[walletType].name
+    const sdk = await loadSDK()
+
+    try {
+      if (walletType === 'ledger') {
+        const adapter = sdk.createLedgerAdapter({
+          chain: chain,
+          accountIndex: 0,
+        })
+
+        await adapter.connect()
+        const address = adapter.address
+
+        if (address) {
+          connect(walletType, chain, address)
+          const networkName = chain === 'ethereum' ? 'Ethereum' : 'Solana'
+          toast.success('Ledger Connected', `Connected to ${walletName} on ${networkName}`)
+        }
+      } else if (walletType === 'trezor') {
+        const adapter = sdk.createTrezorAdapter({
+          chain: chain,
+          manifestEmail: 'dev@sip-protocol.org',
+          manifestAppName: 'SIP Protocol Demo',
+          manifestUrl: 'https://sip-protocol.org',
+        })
+
+        await adapter.connect()
+        const address = adapter.address
+
+        if (address) {
+          connect(walletType, chain, address)
+          const networkName = chain === 'ethereum' ? 'Ethereum' : 'Solana'
+          toast.success('Trezor Connected', `Connected to ${walletName} on ${networkName}`)
+        }
+      }
+    } catch (err) {
+      // Wallet connection failed - error handled via state/toast
+      const errorMessage = getWalletErrorMessage(err)
+      setError(errorMessage)
+      toast.error('Connection Failed', errorMessage)
+      setConnecting(false)
+    }
+  }
+
   // Parse wallet-specific error messages
   function getWalletErrorMessage(err: unknown): string {
     if (!(err instanceof Error)) return 'Failed to connect wallet'
@@ -159,12 +224,26 @@ export function WalletModal() {
       return 'Multiple wallet extensions detected. Try disabling unused wallets.'
     }
 
+    // Hardware wallet specific errors
+    if (message.includes('webusb') || message.includes('transport')) {
+      return 'Failed to connect to hardware wallet. Please check the connection.'
+    }
+
+    if (message.includes('app not open') || message.includes('wrong app')) {
+      return 'Please open the correct app on your hardware wallet'
+    }
+
+    if (message.includes('no device selected')) {
+      return 'No device selected. Please try again.'
+    }
+
     return err.message || 'Failed to connect wallet'
   }
 
   const solanaWallets: WalletType[] = ['phantom', 'solflare']
   const ethereumWallets: WalletType[] = ['metamask', 'walletconnect']
   const nearWallets: WalletType[] = ['meteor', 'mynearwallet', 'here', 'sender']
+  const hardwareWallets: ('ledger' | 'trezor')[] = ['ledger', 'trezor']
 
   const renderWalletList = (wallets: WalletType[], chain: ChainType) => {
     const detected = chain === 'solana'
@@ -281,6 +360,17 @@ export function WalletModal() {
                 >
                   NEAR
                 </button>
+                <button
+                  onClick={() => setActiveTab('hardware')}
+                  data-testid="wallet-tab-hardware"
+                  className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
+                    activeTab === 'hardware'
+                      ? 'text-white border-b-2 border-purple-500'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  Hardware
+                </button>
               </div>
 
               {/* Content */}
@@ -302,6 +392,87 @@ export function WalletModal() {
                 {activeTab === 'solana' && renderWalletList(solanaWallets, 'solana')}
                 {activeTab === 'ethereum' && renderWalletList(ethereumWallets, 'ethereum')}
                 {activeTab === 'near' && renderWalletList(nearWallets, 'near')}
+                {activeTab === 'hardware' && (
+                  <div className="space-y-4">
+                    {!webUSBSupported ? (
+                      <div className="flex items-center gap-2 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400 text-sm">
+                        <AlertTriangle className="h-4 w-4 flex-shrink-0" />
+                        <span>WebUSB is not supported in this browser. Try Chrome or Edge.</span>
+                      </div>
+                    ) : (
+                      <>
+                        {/* Chain selector */}
+                        <div className="flex gap-2 mb-4">
+                          <button
+                            onClick={() => setSelectedHardwareChain('ethereum')}
+                            className={`flex-1 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                              selectedHardwareChain === 'ethereum'
+                                ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+                                : 'bg-gray-800/50 text-gray-400 border border-gray-700 hover:border-gray-600'
+                            }`}
+                          >
+                            Ethereum
+                          </button>
+                          <button
+                            onClick={() => setSelectedHardwareChain('solana')}
+                            className={`flex-1 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                              selectedHardwareChain === 'solana'
+                                ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+                                : 'bg-gray-800/50 text-gray-400 border border-gray-700 hover:border-gray-600'
+                            }`}
+                          >
+                            Solana
+                          </button>
+                        </div>
+
+                        {/* Hardware wallet list */}
+                        <div className="space-y-2">
+                          {hardwareWallets.map((walletType) => {
+                            const info = WALLET_INFO[walletType]
+                            const isAvailable = detectedWallets.hardware.includes(walletType)
+
+                            return (
+                              <button
+                                key={walletType}
+                                onClick={() => isAvailable
+                                  ? handleHardwareConnect(walletType, selectedHardwareChain)
+                                  : window.open(info.downloadUrl, '_blank')
+                                }
+                                className="flex items-center justify-between w-full p-4 bg-gray-800/50 hover:bg-gray-800 border border-gray-700 hover:border-gray-600 rounded-xl transition-all group"
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div className="h-10 w-10 rounded-xl bg-gray-700 flex items-center justify-center overflow-hidden">
+                                    <span className="text-lg font-bold text-gray-300">
+                                      {info.name.charAt(0)}
+                                    </span>
+                                  </div>
+                                  <div className="text-left">
+                                    <div className="font-medium text-white">{info.name}</div>
+                                    <div className="text-xs text-gray-400">
+                                      {isAvailable ? 'Connect via USB' : 'WebUSB required'}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {isAvailable ? (
+                                  <div className="px-3 py-1 text-xs font-medium text-purple-400 bg-purple-500/10 rounded-full">
+                                    Connect
+                                  </div>
+                                ) : (
+                                  <ExternalLink className="h-4 w-4 text-gray-500 group-hover:text-gray-400" />
+                                )}
+                              </button>
+                            )
+                          })}
+                        </div>
+
+                        <p className="text-xs text-gray-500">
+                          Connect your Ledger or Trezor device and ensure the correct app is open.
+                        </p>
+                      </>
+                    )}
+                  </div>
+                )}
 
                 {/* Info */}
                 <p className="mt-4 text-xs text-center text-gray-500">

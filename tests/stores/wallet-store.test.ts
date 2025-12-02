@@ -20,6 +20,7 @@ describe('Wallet Store', () => {
         solana: [],
         ethereum: [],
         near: [],
+        hardware: [],
       },
       isModalOpen: false,
     })
@@ -143,12 +144,14 @@ describe('Wallet Store', () => {
         solana: ['phantom', 'solflare'],
         ethereum: ['metamask'],
         near: ['meteor', 'mynearwallet'],
+        hardware: ['ledger', 'trezor'],
       })
 
       const state = useWalletStore.getState()
       expect(state.availableWallets.solana).toEqual(['phantom', 'solflare'])
       expect(state.availableWallets.ethereum).toEqual(['metamask'])
       expect(state.availableWallets.near).toEqual(['meteor', 'mynearwallet'])
+      expect(state.availableWallets.hardware).toEqual(['ledger', 'trezor'])
     })
 
     it('should handle empty wallet arrays', () => {
@@ -156,12 +159,25 @@ describe('Wallet Store', () => {
         solana: [],
         ethereum: [],
         near: [],
+        hardware: [],
       })
 
       const state = useWalletStore.getState()
       expect(state.availableWallets.solana).toEqual([])
       expect(state.availableWallets.ethereum).toEqual([])
       expect(state.availableWallets.near).toEqual([])
+      expect(state.availableWallets.hardware).toEqual([])
+    })
+
+    it('should default hardware to empty array if not provided', () => {
+      useWalletStore.getState().setAvailableWallets({
+        solana: ['phantom'],
+        ethereum: ['metamask'],
+        near: ['meteor'],
+      })
+
+      const state = useWalletStore.getState()
+      expect(state.availableWallets.hardware).toEqual([])
     })
   })
 })
@@ -225,10 +241,29 @@ describe('WALLET_INFO', () => {
   it('should have all required wallet types', () => {
     const expectedWallets: WalletType[] = [
       'phantom', 'solflare', 'metamask', 'walletconnect',
-      'meteor', 'mynearwallet', 'here', 'sender'
+      'meteor', 'mynearwallet', 'here', 'sender',
+      'ledger', 'trezor'
     ]
     expectedWallets.forEach(wallet => {
       expect(WALLET_INFO[wallet]).toBeDefined()
+    })
+  })
+
+  it('should have correct info for Ledger', () => {
+    expect(WALLET_INFO.ledger).toEqual({
+      name: 'Ledger',
+      icon: '/wallets/ledger.svg',
+      chain: 'ethereum',
+      downloadUrl: 'https://www.ledger.com/',
+    })
+  })
+
+  it('should have correct info for Trezor', () => {
+    expect(WALLET_INFO.trezor).toEqual({
+      name: 'Trezor',
+      icon: '/wallets/trezor.svg',
+      chain: 'ethereum',
+      downloadUrl: 'https://trezor.io/',
     })
   })
 })

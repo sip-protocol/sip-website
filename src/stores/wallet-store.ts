@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import type { ChainId } from '@sip-protocol/types'
 
-export type WalletType = 'phantom' | 'solflare' | 'metamask' | 'walletconnect' | 'meteor' | 'mynearwallet' | 'here' | 'sender'
+export type WalletType = 'phantom' | 'solflare' | 'metamask' | 'walletconnect' | 'meteor' | 'mynearwallet' | 'here' | 'sender' | 'ledger' | 'trezor'
 export type ChainType = 'solana' | 'ethereum' | 'near'
 
 export interface WalletState {
@@ -18,6 +18,7 @@ export interface WalletState {
     solana: WalletType[]
     ethereum: WalletType[]
     near: WalletType[]
+    hardware: WalletType[]
   }
 
   // Modal state
@@ -29,7 +30,7 @@ export interface WalletState {
   disconnect: () => void
   openModal: () => void
   closeModal: () => void
-  setAvailableWallets: (wallets: { solana: WalletType[]; ethereum: WalletType[]; near: WalletType[] }) => void
+  setAvailableWallets: (wallets: { solana: WalletType[]; ethereum: WalletType[]; near: WalletType[]; hardware?: WalletType[] }) => void
 }
 
 export const useWalletStore = create<WalletState>((set) => ({
@@ -43,6 +44,7 @@ export const useWalletStore = create<WalletState>((set) => ({
     solana: [],
     ethereum: [],
     near: [],
+    hardware: [],
   },
   isModalOpen: false,
 
@@ -69,7 +71,14 @@ export const useWalletStore = create<WalletState>((set) => ({
   openModal: () => set({ isModalOpen: true }),
   closeModal: () => set({ isModalOpen: false }),
 
-  setAvailableWallets: (wallets) => set({ availableWallets: wallets }),
+  setAvailableWallets: (wallets) => set({
+    availableWallets: {
+      solana: wallets.solana,
+      ethereum: wallets.ethereum,
+      near: wallets.near,
+      hardware: wallets.hardware ?? [],
+    }
+  }),
 }))
 
 // Utility to format address for display
@@ -134,5 +143,18 @@ export const WALLET_INFO: Record<WalletType, {
     icon: '/wallets/sender.svg',
     chain: 'near',
     downloadUrl: 'https://sender.org/',
+  },
+  // Hardware wallets
+  ledger: {
+    name: 'Ledger',
+    icon: '/wallets/ledger.svg',
+    chain: 'ethereum', // Default chain, supports multiple
+    downloadUrl: 'https://www.ledger.com/',
+  },
+  trezor: {
+    name: 'Trezor',
+    icon: '/wallets/trezor.svg',
+    chain: 'ethereum', // Default chain, supports multiple
+    downloadUrl: 'https://trezor.io/',
   },
 }
