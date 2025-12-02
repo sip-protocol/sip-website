@@ -3,33 +3,33 @@
 import { useState, useEffect, useCallback } from 'react'
 import { PrivacyLevel } from '@sip-protocol/types'
 
+// Dynamic SDK import to avoid WASM loading during SSG
+const loadSDK = () => import('@sip-protocol/sdk')
+
 /**
- * Lightweight viewing key generation for demo purposes
+ * Generate real viewing key using @sip-protocol/sdk
  *
- * Uses Web Crypto API to generate demo viewing keys without
- * pulling in heavy SDK dependencies (barretenberg/noir).
- *
- * In production, use @sip-protocol/sdk's generateViewingKey functions.
+ * Creates a cryptographic viewing key with:
+ * - Secure random key generation
+ * - SHA-256 hash for on-chain reference
+ * - Optional derivation path for hierarchical key management
  */
-async function generateDemoViewingKey(): Promise<{
+async function generateRealViewingKey(transactionId?: string): Promise<{
   key: string
   hash: string
+  path: string
 }> {
-  // Generate random 32 bytes for the viewing key
-  const keyBytes = new Uint8Array(32)
-  crypto.getRandomValues(keyBytes)
+  const sdk = await loadSDK()
 
-  // Convert to hex
-  const toHex = (bytes: Uint8Array) =>
-    '0x' + Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('')
+  // Generate viewing key with optional transaction-based path
+  const path = transactionId ? `tx/${transactionId}` : `swap/${Date.now()}`
+  const viewingKey = sdk.generateViewingKey(path)
 
-  const key = toHex(keyBytes)
-
-  // Generate hash using SubtleCrypto
-  const hashBuffer = await crypto.subtle.digest('SHA-256', keyBytes)
-  const hash = toHex(new Uint8Array(hashBuffer))
-
-  return { key, hash }
+  return {
+    key: viewingKey.key,
+    hash: viewingKey.hash,
+    path: viewingKey.path,
+  }
 }
 
 interface ViewingKeyDisplayProps {
@@ -50,11 +50,12 @@ function truncateKey(key: string, startChars = 10, endChars = 8): string {
 /**
  * Format viewing key for export
  */
-function formatViewingKeyForExport(key: string, hash: string, timestamp: number) {
+function formatViewingKeyForExport(key: string, hash: string, path: string | null, timestamp: number) {
   return {
     format: 'sip-viewing-key-v1',
     key,
     hash,
+    path: path || 'root',
     generatedAt: new Date(timestamp).toISOString(),
     warning: 'Anyone with this key can view the transaction details. Share only with authorized auditors.',
   }
@@ -72,30 +73,34 @@ export function ViewingKeyDisplay({
 }: ViewingKeyDisplayProps) {
   const [viewingKey, setViewingKey] = useState<string | null>(null)
   const [keyHash, setKeyHash] = useState<string | null>(null)
+  const [keyPath, setKeyPath] = useState<string | null>(null)
   const [generatedAt, setGeneratedAt] = useState<number | null>(null)
   const [copied, setCopied] = useState(false)
   const [showKey, setShowKey] = useState(false)
 
   const isCompliant = privacyLevel === PrivacyLevel.COMPLIANT
 
-  // Generate viewing key when component mounts in compliant mode
+  // Generate viewing key using real SDK when component mounts in compliant mode
   useEffect(() => {
     if (!isCompliant) {
       setViewingKey(null)
       setKeyHash(null)
+      setKeyPath(null)
       setGeneratedAt(null)
       return
     }
 
-    generateDemoViewingKey()
-      .then(({ key, hash }) => {
+    generateRealViewingKey(transactionId)
+      .then(({ key, hash, path }) => {
         setViewingKey(key)
         setKeyHash(hash)
+        setKeyPath(path)
         setGeneratedAt(Date.now())
       })
       .catch(() => {
         setViewingKey(null)
         setKeyHash(null)
+        setKeyPath(null)
       })
   }, [isCompliant, transactionId])
 
@@ -113,7 +118,7 @@ export function ViewingKeyDisplay({
   const handleDownload = useCallback(() => {
     if (!viewingKey || !keyHash || !generatedAt) return
 
-    const exportData = formatViewingKeyForExport(viewingKey, keyHash, generatedAt)
+    const exportData = formatViewingKeyForExport(viewingKey, keyHash, keyPath, generatedAt)
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
@@ -123,7 +128,7 @@ export function ViewingKeyDisplay({
     link.click()
     document.body.removeChild(link)
     URL.revokeObjectURL(url)
-  }, [viewingKey, keyHash, generatedAt])
+  }, [viewingKey, keyHash, keyPath, generatedAt])
 
   // Only show for compliant mode
   if (!isCompliant || !viewingKey) {
