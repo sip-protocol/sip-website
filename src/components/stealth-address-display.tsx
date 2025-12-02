@@ -1,12 +1,64 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { PrivacyLevel } from '@sip-protocol/types'
 import type { ChainId } from '@sip-protocol/types'
 import type { NetworkId } from '@/lib'
 
 // Dynamic SDK import to avoid WASM loading during SSG
 const loadSDK = () => import('@sip-protocol/sdk')
+
+/**
+ * Simple Tooltip Component
+ * Shows on hover with keyboard accessibility
+ */
+function Tooltip({
+  content,
+  children,
+  side = 'top',
+}: {
+  content: React.ReactNode
+  children: React.ReactNode
+  side?: 'top' | 'bottom'
+}) {
+  const [isVisible, setIsVisible] = useState(false)
+  const triggerRef = useRef<HTMLDivElement>(null)
+  const tooltipRef = useRef<HTMLDivElement>(null)
+
+  return (
+    <div
+      ref={triggerRef}
+      className="relative inline-flex"
+      onMouseEnter={() => setIsVisible(true)}
+      onMouseLeave={() => setIsVisible(false)}
+      onFocus={() => setIsVisible(true)}
+      onBlur={() => setIsVisible(false)}
+    >
+      {children}
+      {isVisible && (
+        <div
+          ref={tooltipRef}
+          role="tooltip"
+          className={`absolute z-50 w-64 p-3 rounded-lg bg-gray-800 border border-gray-700 shadow-xl text-sm ${
+            side === 'top'
+              ? 'bottom-full mb-2 left-1/2 -translate-x-1/2'
+              : 'top-full mt-2 left-1/2 -translate-x-1/2'
+          }`}
+        >
+          {content}
+          {/* Arrow */}
+          <div
+            className={`absolute left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-800 border-gray-700 transform rotate-45 ${
+              side === 'top'
+                ? 'top-full -mt-1 border-r border-b'
+                : 'bottom-full -mb-1 border-l border-t'
+            }`}
+          />
+        </div>
+      )}
+    </div>
+  )
+}
 
 /**
  * Determine the curve type for a chain
@@ -179,6 +231,34 @@ export function StealthAddressDisplay({
         <div className="flex items-center gap-2">
           <LockIcon className="h-4 w-4 text-purple-400" />
           <span className="text-sm font-medium text-purple-300">Stealth Address</span>
+          <Tooltip
+            side="bottom"
+            content={
+              <div>
+                <h4 className="font-medium text-purple-300 mb-1">What is a Stealth Address?</h4>
+                <p className="text-gray-300 text-xs leading-relaxed">
+                  A one-time address generated just for this transaction.
+                  Even if someone knows your wallet, they cannot link this payment to you.
+                </p>
+                <a
+                  href="https://docs.sip-protocol.org/concepts/stealth-addresses"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-400 text-xs mt-2 block hover:underline"
+                >
+                  Learn more →
+                </a>
+              </div>
+            }
+          >
+            <button
+              className="p-1 rounded hover:bg-purple-500/10 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              aria-label="What is a stealth address?"
+              tabIndex={0}
+            >
+              <QuestionIcon className="h-3.5 w-3.5 text-purple-400/70" />
+            </button>
+          </Tooltip>
           <span
             className={`rounded px-1.5 py-0.5 text-xs ${
               curve === 'ed25519'
@@ -281,8 +361,30 @@ export function StealthAddressDisplay({
             </div>
           </div>
 
+          {/* Visual Comparison */}
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20">
+              <h5 className="text-xs font-medium text-red-300 mb-1.5 flex items-center gap-1">
+                <EyeOpenIcon className="h-3 w-3" />
+                Without Stealth
+              </h5>
+              <p className="text-[10px] text-gray-400 leading-relaxed">
+                Your wallet address is visible. Anyone can see all your transactions and trace your activity.
+              </p>
+            </div>
+            <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20">
+              <h5 className="text-xs font-medium text-green-300 mb-1.5 flex items-center gap-1">
+                <LockIcon className="h-3 w-3" />
+                With Stealth
+              </h5>
+              <p className="text-[10px] text-gray-400 leading-relaxed">
+                Each transaction gets a unique, unlinkable address. Your activity stays private.
+              </p>
+            </div>
+          </div>
+
           {/* Standard reference */}
-          <div className="text-[10px] text-gray-600">
+          <div className="mt-3 text-[10px] text-gray-600">
             Based on EIP-5564 stealth address standard
           </div>
         </div>
@@ -333,6 +435,31 @@ function InfoIcon({ className }: { className?: string }) {
         strokeLinejoin="round"
         d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
       />
+    </svg>
+  )
+}
+
+function QuestionIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"
+      />
+    </svg>
+  )
+}
+
+function EyeOpenIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+      />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
     </svg>
   )
 }
