@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { PrivacyLevel } from '@/types'
 import { StealthAddressDisplay } from '@/components/stealth-address-display'
 import { PedersenCommitmentDisplay } from '@/components/pedersen-commitment-display'
@@ -425,14 +427,28 @@ function CodeBlock({
         {!title && (
           <button
             onClick={handleCopy}
-            className="absolute right-2 top-2 text-xs text-gray-500 hover:text-white transition-colors"
+            className="absolute right-2 top-2 z-10 text-xs text-gray-500 hover:text-white transition-colors"
           >
             {copied ? 'Copied!' : 'Copy'}
           </button>
         )}
-        <pre className={`overflow-x-auto ${compact ? 'p-3 text-xs' : 'p-4 text-sm'}`}>
-          <code className="text-gray-300">{code}</code>
-        </pre>
+        <SyntaxHighlighter
+          language="typescript"
+          style={oneDark}
+          customStyle={{
+            margin: 0,
+            padding: compact ? '0.75rem' : '1rem',
+            background: 'transparent',
+            fontSize: compact ? '0.75rem' : '0.875rem',
+          }}
+          codeTagProps={{
+            style: {
+              fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace',
+            },
+          }}
+        >
+          {code}
+        </SyntaxHighlighter>
       </div>
     </div>
   )
