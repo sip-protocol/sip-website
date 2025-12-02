@@ -27,7 +27,7 @@ const nextConfig = {
     '@ledgerhq/hw-app-eth',
     '@ledgerhq/hw-app-solana',
   ],
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
     // Resolve Ledger packages from website's node_modules for linked SDK
     config.resolve.alias = {
       ...config.resolve.alias,
@@ -37,6 +37,16 @@ const nextConfig = {
       '@ledgerhq/hw-app-solana': path.resolve(__dirname, 'node_modules/@ledgerhq/hw-app-solana'),
       '@trezor/connect-web': path.resolve(__dirname, 'node_modules/@trezor/connect-web'),
     }
+
+    // Handle WASM loading for @aztec/bb.js and similar packages
+    if (!isServer) {
+      config.experiments = {
+        ...config.experiments,
+        asyncWebAssembly: true,
+        topLevelAwait: true,
+      }
+    }
+
     return config
   },
 }

@@ -6,6 +6,9 @@ export {
   resetSIPClient,
   isRealSwapsEnabled,
   getNearIntentsJwt,
+  getSDK,
+  preloadSDK,
+  isSDKLoaded,
 } from './sip-client'
 
 export {

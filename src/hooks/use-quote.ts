@@ -8,11 +8,9 @@ interface ProductionQuote extends Quote {
   depositAddress?: string
 }
 
-// Dynamically import SDK functions to avoid SSR issues with WASM
-const loadSDK = () => import('@sip-protocol/sdk')
 import { useSIP } from '@/contexts'
 import { useWalletStore, toast } from '@/stores'
-import { formatAmount, parseAmount, getExchangeRateSync, getUSDPrices, logger, type NetworkId } from '@/lib'
+import { formatAmount, parseAmount, getExchangeRateSync, getUSDPrices, logger, getSDK, type NetworkId } from '@/lib'
 
 export interface QuoteParams {
   fromChain: NetworkId
@@ -125,8 +123,8 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
       const minOutput = expectedOutput * 0.99 // 1% slippage
       const minOutputBigInt = parseAmount(minOutput.toString(), toDecimals)
 
-      // Load SDK for privacy-related functions
-      const sdk = await loadSDK()
+      // Load SDK for privacy-related functions (cached singleton)
+      const sdk = await getSDK()
 
       // Generate viewing key for compliant mode
       let viewingKeyObj: { key: string; path: string; hash: string } | undefined

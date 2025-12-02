@@ -36,9 +36,10 @@ let sdkModule: typeof import('@sip-protocol/sdk') | null = null
 let sdkLoadPromise: Promise<typeof import('@sip-protocol/sdk')> | null = null
 
 /**
- * Load SDK module (cached)
+ * Load SDK module (cached singleton)
+ * Use this instead of dynamic import in hooks to avoid repeated loading
  */
-async function getSDK(): Promise<typeof import('@sip-protocol/sdk')> {
+export async function getSDK(): Promise<typeof import('@sip-protocol/sdk')> {
   if (sdkModule) return sdkModule
   if (sdkLoadPromise) return sdkLoadPromise
 
@@ -48,6 +49,23 @@ async function getSDK(): Promise<typeof import('@sip-protocol/sdk')> {
   })
 
   return sdkLoadPromise
+}
+
+/**
+ * Preload SDK module in background (fire and forget)
+ * Call this early (e.g., on page mount) to warm up the cache
+ */
+export function preloadSDK(): void {
+  getSDK().catch(() => {
+    // Silent fail - SDK will load on first actual use
+  })
+}
+
+/**
+ * Check if SDK is already loaded (for UI indicators)
+ */
+export function isSDKLoaded(): boolean {
+  return sdkModule !== null
 }
 
 /**

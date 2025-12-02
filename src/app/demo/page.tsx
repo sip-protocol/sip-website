@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { PrivacyLevel } from '@/types'
 import { SwapCard } from '@/components/swap-card'
 import { PrivacyToggle } from '@/components/privacy-toggle'
@@ -9,9 +9,15 @@ import { PrivacyLevelComparison } from '@/components/privacy-level-comparison'
 import { ZcashShowcase } from '@/components/zcash-showcase'
 import { PedersenCommitmentDisplay } from '@/components/pedersen-commitment-display'
 import { TransactionProof } from '@/components/transaction-proof'
+import { preloadSDK } from '@/lib'
 
 export default function DemoPage() {
   const [privacyLevel, setPrivacyLevel] = useState<PrivacyLevel>(PrivacyLevel.SHIELDED)
+
+  // Preload SDK on page mount for faster quote/swap operations
+  useEffect(() => {
+    preloadSDK()
+  }, [])
 
   return (
     <div className="min-h-screen">

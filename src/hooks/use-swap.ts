@@ -8,11 +8,9 @@ interface ProductionQuote extends Quote {
   depositAddress?: string
 }
 
-// Dynamically import SDK functions to avoid SSR issues with WASM
-const loadSDK = () => import('@sip-protocol/sdk')
 import { useSIP } from '@/contexts'
 import { useWalletStore, useSwapModeStore, useSwapHistoryStore, toast } from '@/stores'
-import { parseAmount, getTransactionUrl, createDepositCallback, logger, type NetworkId } from '@/lib'
+import { parseAmount, getTransactionUrl, createDepositCallback, logger, getSDK, type NetworkId } from '@/lib'
 import { OneClickSwapStatus } from '@sip-protocol/types'
 
 export type SwapStatus = 'idle' | 'confirming' | 'signing' | 'pending' | 'awaiting_deposit' | 'processing' | 'success' | 'error'
@@ -186,8 +184,8 @@ export function useSwap(): SwapResult {
       const toDecimals = TOKEN_DECIMALS[params.toToken] ?? 18
       const amountBigInt = parseAmount(params.amount, fromDecimals)
 
-      // Load SDK for privacy-related functions
-      const sdk = await loadSDK()
+      // Load SDK for privacy-related functions (cached singleton)
+      const sdk = await getSDK()
 
       // Generate viewing key for compliant mode
       let viewingKeyObj: { key: string; path: string; hash: string } | undefined
