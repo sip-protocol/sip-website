@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect, useRef, type KeyboardEvent } from 'react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { useZcashRpc } from '@/hooks/use-zcash-rpc'
 
 // Dynamic SDK import for viewing key generation
 const loadSDK = () => import('@sip-protocol/sdk')
@@ -11,20 +12,20 @@ const loadSDK = () => import('@sip-protocol/sdk')
  * Zcash SDK Capabilities Showcase
  *
  * Demonstrates the Zcash integration features from @sip-protocol/sdk:
- * - ZcashRPCClient for zcashd interaction
+ * - ZcashRPCClient for zcashd interaction (LIVE when configured)
  * - ZcashShieldedService for high-level operations
  * - ZIP-317 fee estimation (real calculation)
- * - Pool balance visualization (simulated)
+ * - Pool balance visualization (live or demo mode)
  * - Viewing key export for compliance (real SDK generation)
  *
- * NOTE: Full Zcash RPC functionality requires connection to zcashd node.
- * This demo shows SDK capabilities without requiring a live node.
+ * Configure ZCASH_RPC_* environment variables for live data.
+ * Falls back to demo mode when not configured.
  */
 
-// ─── Simulated Data (matches SDK types) ─────────────────────────────────────────
+// ─── Demo Data (used when RPC not connected) ────────────────────────────────────
 
-// Simulated ShieldedBalance (matches SDK ZcashShieldedService.getBalance() return type)
-const SIMULATED_BALANCE = {
+// Demo ShieldedBalance (matches SDK ZcashShieldedService.getBalance() return type)
+const DEMO_BALANCE = {
   confirmed: 12.54876,
   unconfirmed: 0.5,
   pools: {
@@ -35,8 +36,8 @@ const SIMULATED_BALANCE = {
   spendableNotes: 8,
 }
 
-// Generate realistic unified address format
-function generateSimulatedUnifiedAddress(): string {
+// Generate realistic unified address format for demo
+function generateDemoUnifiedAddress(): string {
   // Unified addresses start with 'u1' and are ~200 chars
   const chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
   const body = Array.from({ length: 180 }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
@@ -99,6 +100,33 @@ export function ZcashShowcase() {
   const [isLoadingViewingKey, setIsLoadingViewingKey] = useState(false)
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([])
 
+  // Zcash RPC connection (live data when configured)
+  const {
+    status: rpcStatus,
+    isLoading: isRpcLoading,
+    isDemoMode,
+    balanceZec,
+    address: rpcAddress,
+    generateAddress: generateRpcAddress,
+    refreshAll,
+  } = useZcashRpc()
+
+  // Derived balance data (live or demo)
+  const displayBalance = isDemoMode
+    ? DEMO_BALANCE
+    : balanceZec
+      ? {
+          confirmed: balanceZec.total,
+          unconfirmed: 0,
+          pools: {
+            transparent: balanceZec.transparent,
+            sapling: balanceZec.sapling,
+            orchard: balanceZec.orchard,
+          },
+          spendableNotes: 0, // Not available from RPC directly
+        }
+      : DEMO_BALANCE
+
   const handleTabKeyDown = (e: KeyboardEvent<HTMLButtonElement>, index: number) => {
     let nextIndex = index
 
@@ -150,14 +178,29 @@ export function ZcashShowcase() {
     loadViewingKey()
   }, [])
 
-  // Generate unified address (simulated - real would require zcashd)
+  // Generate unified address (real RPC when connected, demo otherwise)
   const handleGenerateAddress = useCallback(async () => {
     setIsGenerating(true)
-    // Simulate SDK call delay
+
+    if (!isDemoMode) {
+      // Use real RPC to generate address
+      const addr = await generateRpcAddress()
+      if (addr?.address) {
+        // Truncate for display (unified addresses are very long)
+        const truncated = addr.address.length > 70
+          ? `${addr.address.slice(0, 50)}...${addr.address.slice(-10)}`
+          : addr.address
+        setGeneratedAddress(truncated)
+        setIsGenerating(false)
+        return
+      }
+    }
+
+    // Fallback to demo mode
     await new Promise((r) => setTimeout(r, 800))
-    setGeneratedAddress(generateSimulatedUnifiedAddress())
+    setGeneratedAddress(generateDemoUnifiedAddress())
     setIsGenerating(false)
-  }, [])
+  }, [isDemoMode, generateRpcAddress])
 
   // Calculate ZIP-317 fee
   const calculateZip317Fee = useCallback(
@@ -197,12 +240,30 @@ export function ZcashShowcase() {
           </div>
         </div>
         <div className="flex flex-col items-end gap-1">
-          <span className="rounded bg-amber-500/20 px-2 py-0.5 text-xs text-amber-400 border border-amber-500/30">
-            Demo Mode
-          </span>
-          <span className="text-xs text-gray-500">
-            No zcashd required
-          </span>
+          {isRpcLoading ? (
+            <span className="rounded bg-gray-500/20 px-2 py-0.5 text-xs text-gray-400 border border-gray-500/30">
+              Connecting...
+            </span>
+          ) : isDemoMode ? (
+            <>
+              <span className="rounded bg-amber-500/20 px-2 py-0.5 text-xs text-amber-400 border border-amber-500/30">
+                Demo Mode
+              </span>
+              <span className="text-xs text-gray-500">
+                No zcashd connected
+              </span>
+            </>
+          ) : (
+            <>
+              <span className="rounded bg-green-500/20 px-2 py-0.5 text-xs text-green-400 border border-green-500/30 flex items-center gap-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" />
+                Live {rpcStatus?.testnet ? '(Testnet)' : '(Mainnet)'}
+              </span>
+              <span className="text-xs text-gray-500">
+                Block #{rpcStatus?.blockHeight?.toLocaleString()}
+              </span>
+            </>
+          )}
         </div>
       </div>
 
@@ -282,12 +343,22 @@ export function ZcashShowcase() {
         {activeTab === 'address' && (
           <div id="panel-address" role="tabpanel" aria-labelledby="tab-address" tabIndex={0} className="space-y-4">
             <div className="rounded-lg border border-purple-500/20 bg-purple-950/10 p-4">
-              <h4 className="mb-2 font-semibold text-purple-300">
-                Unified Address Generation
-              </h4>
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-semibold text-purple-300">
+                  Unified Address Generation
+                </h4>
+                <span className={`text-xs px-2 py-0.5 rounded ${
+                  isDemoMode
+                    ? 'text-gray-500 bg-gray-800'
+                    : 'text-green-400 bg-green-500/20'
+                }`}>
+                  {isDemoMode ? 'Demo' : 'Live RPC'}
+                </span>
+              </div>
               <p className="mb-4 text-sm text-gray-400">
-                Generate unified addresses with multiple receiver types (Sapling + Orchard)
-                for maximum privacy and compatibility.
+                {isDemoMode
+                  ? 'Generate sample unified addresses (Sapling + Orchard format demo).'
+                  : 'Generate real unified addresses via zcashd RPC.'}
               </p>
 
               <button
@@ -300,7 +371,12 @@ export function ZcashShowcase() {
 
               {generatedAddress && (
                 <div className="rounded-lg bg-gray-900/50 p-3">
-                  <p className="mb-1 text-xs text-gray-500">Generated Address:</p>
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-xs text-gray-500">Generated Address:</p>
+                    {!isDemoMode && (
+                      <span className="text-xs text-green-400">From zcashd</span>
+                    )}
+                  </div>
                   <code className="break-all text-sm text-green-400">
                     {generatedAddress}
                   </code>
@@ -343,21 +419,36 @@ export function ZcashShowcase() {
                 <h4 className="font-semibold text-purple-300">
                   Shielded Pool Balances
                 </h4>
-                <span className="text-xs text-gray-500 bg-gray-800 px-2 py-0.5 rounded">
-                  Simulated Data
-                </span>
+                <div className="flex items-center gap-2">
+                  {!isDemoMode && (
+                    <button
+                      onClick={refreshAll}
+                      className="text-xs text-purple-400 hover:text-purple-300 px-2 py-0.5 rounded hover:bg-purple-500/10"
+                      title="Refresh balance"
+                    >
+                      Refresh
+                    </button>
+                  )}
+                  <span className={`text-xs px-2 py-0.5 rounded ${
+                    isDemoMode
+                      ? 'text-gray-500 bg-gray-800'
+                      : 'text-green-400 bg-green-500/20'
+                  }`}>
+                    {isDemoMode ? 'Demo Data' : 'Live Data'}
+                  </span>
+                </div>
               </div>
 
               {/* Total Balance */}
               <div className="mb-6 text-center">
                 <p className="text-sm text-gray-500">Total Confirmed</p>
                 <p className="text-3xl font-bold text-white">
-                  {SIMULATED_BALANCE.confirmed.toFixed(8)}{' '}
+                  {displayBalance.confirmed.toFixed(8)}{' '}
                   <span className="text-lg text-purple-400">ZEC</span>
                 </p>
-                {SIMULATED_BALANCE.unconfirmed > 0 && (
+                {displayBalance.unconfirmed > 0 && (
                   <p className="text-sm text-amber-400">
-                    +{SIMULATED_BALANCE.unconfirmed} pending
+                    +{displayBalance.unconfirmed} pending
                   </p>
                 )}
               </div>
@@ -371,14 +462,14 @@ export function ZcashShowcase() {
                     <span className="text-sm text-gray-300">Transparent</span>
                   </div>
                   <span className="font-mono text-sm text-gray-400">
-                    {SIMULATED_BALANCE.pools.transparent.toFixed(8)} ZEC
+                    {displayBalance.pools.transparent.toFixed(8)} ZEC
                   </span>
                 </div>
                 <div className="h-2 rounded-full bg-gray-700">
                   <div
                     className="h-2 rounded-full bg-amber-500"
                     style={{
-                      width: `${(SIMULATED_BALANCE.pools.transparent / SIMULATED_BALANCE.confirmed) * 100}%`,
+                      width: `${displayBalance.confirmed > 0 ? (displayBalance.pools.transparent / displayBalance.confirmed) * 100 : 0}%`,
                     }}
                   />
                 </div>
@@ -390,14 +481,14 @@ export function ZcashShowcase() {
                     <span className="text-sm text-gray-300">Sapling Pool</span>
                   </div>
                   <span className="font-mono text-sm text-gray-400">
-                    {SIMULATED_BALANCE.pools.sapling.toFixed(8)} ZEC
+                    {displayBalance.pools.sapling.toFixed(8)} ZEC
                   </span>
                 </div>
                 <div className="h-2 rounded-full bg-gray-700">
                   <div
                     className="h-2 rounded-full bg-blue-500"
                     style={{
-                      width: `${(SIMULATED_BALANCE.pools.sapling / SIMULATED_BALANCE.confirmed) * 100}%`,
+                      width: `${displayBalance.confirmed > 0 ? (displayBalance.pools.sapling / displayBalance.confirmed) * 100 : 0}%`,
                     }}
                   />
                 </div>
@@ -409,32 +500,43 @@ export function ZcashShowcase() {
                     <span className="text-sm text-gray-300">Orchard Pool</span>
                   </div>
                   <span className="font-mono text-sm text-gray-400">
-                    {SIMULATED_BALANCE.pools.orchard.toFixed(8)} ZEC
+                    {displayBalance.pools.orchard.toFixed(8)} ZEC
                   </span>
                 </div>
                 <div className="h-2 rounded-full bg-gray-700">
                   <div
                     className="h-2 rounded-full bg-purple-500"
                     style={{
-                      width: `${(SIMULATED_BALANCE.pools.orchard / SIMULATED_BALANCE.confirmed) * 100}%`,
+                      width: `${displayBalance.confirmed > 0 ? (displayBalance.pools.orchard / displayBalance.confirmed) * 100 : 0}%`,
                     }}
                   />
                 </div>
               </div>
 
-              {/* Note Count */}
-              <div className="mt-4 rounded-lg bg-gray-900/50 p-3 text-center">
-                <span className="text-2xl font-bold text-purple-400">
-                  {SIMULATED_BALANCE.spendableNotes}
-                </span>
-                <span className="ml-2 text-sm text-gray-500">spendable notes</span>
-              </div>
+              {/* Note Count (only show in demo mode or if we have the data) */}
+              {(isDemoMode || displayBalance.spendableNotes > 0) && (
+                <div className="mt-4 rounded-lg bg-gray-900/50 p-3 text-center">
+                  <span className="text-2xl font-bold text-purple-400">
+                    {displayBalance.spendableNotes}
+                  </span>
+                  <span className="ml-2 text-sm text-gray-500">spendable notes</span>
+                </div>
+              )}
             </div>
 
             {/* SDK Usage Note */}
             <div className="p-3 rounded-lg bg-gray-900/50 text-xs text-gray-400">
-              <strong className="text-gray-300">Production Usage:</strong> Connect to zcashd via{' '}
-              <code className="text-purple-400">ZcashShieldedService.getBalance()</code> to query real pool balances.
+              {isDemoMode ? (
+                <>
+                  <strong className="text-gray-300">Connect to zcashd:</strong> Set{' '}
+                  <code className="text-purple-400">ZCASH_RPC_*</code> environment variables to see live pool balances.
+                </>
+              ) : (
+                <>
+                  <strong className="text-green-400">Connected:</strong> Showing live balance from{' '}
+                  <code className="text-purple-400">ZcashRPCClient.getAccountBalance()</code>
+                </>
+              )}
             </div>
           </div>
         )}
