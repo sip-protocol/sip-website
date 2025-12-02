@@ -26,15 +26,28 @@ const levels: { value: PrivacyLevel; label: string; description: string }[] = [
 ]
 
 export function PrivacyToggle({ value, onChange }: PrivacyToggleProps) {
+  const currentLevel = levels.find((l) => l.value === value)
+
   return (
-    <div className="inline-flex flex-col items-center gap-2" data-testid="privacy-toggle">
-      <div className="inline-flex flex-wrap justify-center gap-1 rounded-xl border border-gray-700 bg-gray-900 p-1 sm:flex-nowrap">
+    <div
+      className="inline-flex flex-col items-center gap-2"
+      data-testid="privacy-toggle"
+      role="group"
+      aria-label="Privacy level selection"
+    >
+      <div
+        className="inline-flex flex-wrap justify-center gap-1 rounded-xl border border-gray-700 bg-gray-900 p-1 sm:flex-nowrap"
+        role="radiogroup"
+        aria-label="Choose privacy level"
+      >
         {levels.map((level) => (
           <button
             key={level.value}
             onClick={() => onChange(level.value)}
             data-testid={`privacy-${level.value}`}
-            aria-pressed={value === level.value}
+            role="radio"
+            aria-checked={value === level.value}
+            aria-label={`${level.label} privacy: ${level.description}`}
             className={`relative min-h-[44px] rounded-lg px-3 py-2.5 text-sm font-medium transition-all active:scale-95 sm:px-4 ${
               value === level.value
                 ? level.value === PrivacyLevel.TRANSPARENT
@@ -45,7 +58,7 @@ export function PrivacyToggle({ value, onChange }: PrivacyToggleProps) {
                 : 'text-gray-400 hover:text-white active:bg-gray-800'
             }`}
           >
-            <span className="flex items-center gap-1.5 sm:gap-2">
+            <span className="flex items-center gap-1.5 sm:gap-2" aria-hidden="true">
               {level.value === PrivacyLevel.TRANSPARENT && <EyeOpenIcon className="h-4 w-4" />}
               {level.value === PrivacyLevel.SHIELDED && <ShieldIcon className="h-4 w-4" />}
               {level.value === PrivacyLevel.COMPLIANT && <KeyIcon className="h-4 w-4" />}
@@ -54,8 +67,12 @@ export function PrivacyToggle({ value, onChange }: PrivacyToggleProps) {
           </button>
         ))}
       </div>
-      <p className="text-center text-xs text-gray-400 sm:text-sm">
-        {levels.find((l) => l.value === value)?.description}
+      <p
+        className="text-center text-xs text-gray-400 sm:text-sm"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {currentLevel?.description}
       </p>
     </div>
   )

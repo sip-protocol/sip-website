@@ -240,6 +240,9 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
             onChange={(e) => setAmount(e.target.value)}
             placeholder="0.0"
             data-testid="from-amount"
+            aria-label={`Amount of ${fromToken.symbol} to swap`}
+            aria-describedby={hasInsufficientBalance ? 'insufficient-balance-msg' : undefined}
+            aria-invalid={hasInsufficientBalance}
             className={`min-w-0 flex-1 bg-transparent text-xl font-medium outline-none placeholder:text-gray-600 sm:text-2xl ${
               hasInsufficientBalance ? 'text-red-400' : ''
             }`}
@@ -252,8 +255,13 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
           />
         </div>
         {hasInsufficientBalance && (
-          <p className="mt-2 flex items-center gap-1 text-xs text-red-400" data-testid="insufficient-balance-warning">
-            <WarningIcon className="h-3 w-3" />
+          <p
+            id="insufficient-balance-msg"
+            className="mt-2 flex items-center gap-1 text-xs text-red-400"
+            data-testid="insufficient-balance-warning"
+            role="alert"
+          >
+            <WarningIcon className="h-3 w-3" aria-hidden="true" />
             Insufficient balance
           </p>
         )}
@@ -320,6 +328,9 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
               onChange={(e) => setZecRecipient(e.target.value)}
               placeholder="Enter z-address (zs1...) or t-address (t1...)"
               data-testid="zec-recipient-input"
+              aria-label="Zcash recipient address"
+              aria-describedby={zecValidation?.error ? 'zec-validation-error' : 'zec-address-help'}
+              aria-invalid={zecValidation ? !zecValidation.isValid : undefined}
               className={`w-full rounded-lg bg-gray-700/50 px-3 py-2 pr-10 text-sm outline-none placeholder:text-gray-500 transition-all ${
                 zecValidation
                   ? zecValidation.isValid
@@ -383,8 +394,13 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
                 </>
               ) : (
                 /* Error Message */
-                <p className="flex items-center gap-1 text-xs text-red-400" data-testid="zec-error-message">
-                  <XCircleIcon className="h-3 w-3" />
+                <p
+                  id="zec-validation-error"
+                  className="flex items-center gap-1 text-xs text-red-400"
+                  data-testid="zec-error-message"
+                  role="alert"
+                >
+                  <XCircleIcon className="h-3 w-3" aria-hidden="true" />
                   {zecValidation.error}
                 </p>
               )}
@@ -393,7 +409,7 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
 
           {/* Help Text when no input */}
           {!zecRecipient.trim() && (
-            <p className="mt-2 text-xs text-gray-500">
+            <p id="zec-address-help" className="mt-2 text-xs text-gray-500">
               Use a <span className="text-purple-400">u1...</span> (unified) or{' '}
               <span className="text-yellow-500">zs1...</span> (sapling) for full privacy
             </p>
@@ -551,17 +567,22 @@ function TokenSelector({
   testId?: string
 }) {
   const [open, setOpen] = useState(false)
+  const isFrom = testId === 'from-token'
+  const label = isFrom ? 'Source token' : 'Destination token'
 
   return (
     <div className="relative flex-shrink-0">
       <button
         onClick={() => setOpen(!open)}
         data-testid={testId}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-label={`${label}: ${token.symbol} (${token.name}). Click to change`}
         className="flex min-h-[44px] items-center gap-1.5 rounded-xl bg-gray-700/50 px-2.5 py-2 font-medium transition-colors hover:bg-gray-700 active:bg-gray-600 sm:gap-2 sm:px-3"
       >
-        <span className="text-base sm:text-lg">{token.icon}</span>
+        <span className="text-base sm:text-lg" aria-hidden="true">{token.icon}</span>
         <span className="text-sm sm:text-base">{token.symbol}</span>
-        <ChevronDownIcon className="h-4 w-4 text-gray-400" />
+        <ChevronDownIcon className="h-4 w-4 text-gray-400" aria-hidden="true" />
       </button>
 
       {open && (
@@ -569,15 +590,21 @@ function TokenSelector({
           <div
             className="fixed inset-0 z-10"
             onClick={() => setOpen(false)}
+            aria-hidden="true"
           />
           <div
             data-testid="token-dropdown"
+            role="listbox"
+            aria-label={`Select ${label.toLowerCase()}`}
             className="absolute right-0 top-full z-20 mt-2 w-44 rounded-xl border border-gray-700 bg-gray-900 p-1.5 shadow-xl sm:w-48 sm:p-2"
           >
             {tokens.map((t) => (
               <button
                 key={t.symbol}
                 data-testid={`token-option-${t.symbol}`}
+                role="option"
+                aria-selected={t.symbol === token.symbol}
+                aria-label={`${t.symbol} - ${t.name}`}
                 onClick={() => {
                   onSelect(t)
                   setOpen(false)
@@ -586,7 +613,7 @@ function TokenSelector({
                   t.symbol === token.symbol ? 'bg-gray-800' : ''
                 }`}
               >
-                <span className="text-base sm:text-lg">{t.icon}</span>
+                <span className="text-base sm:text-lg" aria-hidden="true">{t.icon}</span>
                 <div className="min-w-0 flex-1">
                   <div className="font-medium">{t.symbol}</div>
                   <div className="truncate text-xs text-gray-400">{t.name}</div>
