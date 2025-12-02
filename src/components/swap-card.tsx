@@ -14,6 +14,7 @@ import {
   calculatePriceImpact,
   getImpactColorClass,
   formatImpact,
+  getExchangeRateSync,
 } from '@/lib'
 import { TransactionStatus } from '@/components/transaction-status'
 import { SwapModeToggle } from '@/components/swap-mode-toggle'
@@ -151,6 +152,26 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
     if (inputNum <= 0 || outputNum <= 0 || rateNum <= 0) return null
     return calculatePriceImpact(inputNum, outputNum, rateNum)
   }, [amount, outputAmount, rate])
+
+  // Calculate market rate comparison
+  const marketComparison = useMemo(() => {
+    if (!rate) return null
+    const quoteRate = parseFloat(rate)
+    if (quoteRate <= 0) return null
+
+    // Get market rate from CoinGecko prices
+    const marketRate = getExchangeRateSync(fromToken.symbol, toToken.symbol)
+    if (marketRate <= 0) return null
+
+    // Calculate difference: positive = better than market, negative = worse
+    const difference = ((quoteRate - marketRate) / marketRate) * 100
+
+    return {
+      marketRate,
+      difference,
+      isBetter: difference >= 0,
+    }
+  }, [rate, fromToken.symbol, toToken.symbol])
 
   // Zcash address validation
   const zecValidation = useMemo(() => {
@@ -626,10 +647,27 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
       {amount && parseFloat(amount) > 0 && (
         <div className="mt-4 space-y-2 text-xs sm:text-sm">
           <div className="flex flex-wrap items-center justify-between gap-1 text-gray-400">
-            <span>Rate</span>
-            <span className="text-right">
-              1 {fromToken.symbol} ≈ {rate} {toToken.symbol}
+            <span className="flex items-center gap-1">
+              Rate
+              {marketComparison && Math.abs(marketComparison.difference) <= 1 && (
+                <span className="px-1.5 py-0.5 text-[10px] bg-green-500/20 text-green-400 rounded" data-testid="best-rate-badge">
+                  Best rate
+                </span>
+              )}
             </span>
+            <div className="text-right">
+              <span>1 {fromToken.symbol} ≈ {rate} {toToken.symbol}</span>
+              {marketComparison && (
+                <span
+                  className={`ml-2 text-xs ${
+                    marketComparison.isBetter ? 'text-green-400' : 'text-red-400'
+                  }`}
+                  data-testid="market-comparison"
+                >
+                  ({marketComparison.isBetter ? '+' : ''}{marketComparison.difference.toFixed(2)}% vs market)
+                </span>
+              )}
+            </div>
           </div>
           <div className="flex items-center justify-between text-gray-400">
             <span>Solver Fee</span>
