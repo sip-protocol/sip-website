@@ -157,55 +157,168 @@ export default function PitchDeckPage() {
         </div>
       </section>
 
-      {/* Zcash Integration Section */}
-      <section className="py-16 border-b border-gray-800/50">
+      {/* Built on Zcash Section - Prominent Dedicated Section */}
+      <section className="py-20 border-b border-amber-500/30 bg-gradient-to-b from-amber-900/10 via-amber-900/5 to-transparent">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-          <SectionHeader
-            badge="Zcash Integration"
-            title="Built on Zcash Privacy Technology"
-            highlight
-          />
-          <div className="mt-10 grid gap-8 lg:grid-cols-2">
-            <div className="space-y-6">
+          {/* Header with Zcash branding */}
+          <div className="text-center mb-12">
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <ZcashLogoLarge />
+              <div className="text-left">
+                <h2 className="text-3xl sm:text-4xl font-bold text-amber-400">Built on Zcash</h2>
+                <p className="text-gray-400">Bringing Zcash privacy to every chain</p>
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
+              <span className="px-4 py-2 rounded-full text-sm font-medium bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                Powered by Halo2 Heritage
+              </span>
+              <span className="px-4 py-2 rounded-full text-sm font-medium bg-green-500/20 text-green-400 border border-green-500/30">
+                Battle-tested Since 2016
+              </span>
+              <span className="px-4 py-2 rounded-full text-sm font-medium bg-purple-500/20 text-purple-400 border border-purple-500/30">
+                Billions in Shielded Txns
+              </span>
+            </div>
+          </div>
+
+          {/* Why Zcash - Main Value Prop */}
+          <div className="mb-12 p-8 rounded-2xl bg-gradient-to-r from-amber-500/10 to-amber-500/5 border border-amber-500/30">
+            <h3 className="text-2xl font-bold text-amber-400 mb-6 text-center">Why Zcash for Cross-Chain Privacy?</h3>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+              <ZcashValueProp
+                icon="🛡️"
+                title="Battle-Tested"
+                description="8+ years of production privacy. The most audited, scrutinized privacy protocol in crypto."
+              />
+              <ZcashValueProp
+                icon="🔬"
+                title="Research Pioneer"
+                description="Invented zk-SNARKs for blockchain. Halo2 eliminated trusted setup. Continuous innovation."
+              />
+              <ZcashValueProp
+                icon="⚖️"
+                title="Compliance Ready"
+                description="Viewing key architecture enables selective disclosure. Privacy with accountability."
+              />
+              <ZcashValueProp
+                icon="🌐"
+                title="Cross-Chain Ready"
+                description="SIP extends Zcash privacy beyond ZEC to any chain, any token, any protocol."
+              />
+            </div>
+          </div>
+
+          {/* Zcash Innovation Timeline */}
+          <div className="mb-12">
+            <h3 className="text-xl font-bold text-center mb-8">Zcash Innovations We Build On</h3>
+            <div className="relative">
+              <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-amber-500/20 transform -translate-x-1/2 hidden md:block" />
+              <div className="space-y-8 md:space-y-0 md:grid md:grid-cols-2 md:gap-8">
+                <ZcashTimelineItem
+                  year="2016"
+                  title="Zcash Launch"
+                  description="First cryptocurrency with zk-SNARKs. Introduced shielded transactions and z-addresses."
+                  side="left"
+                />
+                <ZcashTimelineItem
+                  year="2018"
+                  title="Sapling Upgrade"
+                  description="10x faster shielded transactions. Introduced viewing keys for selective disclosure."
+                  side="right"
+                />
+                <ZcashTimelineItem
+                  year="2020"
+                  title="Halo2 Proving System"
+                  description="No trusted setup required. Efficient recursive proofs. Foundation for modern ZK."
+                  side="left"
+                />
+                <ZcashTimelineItem
+                  year="2022"
+                  title="NU5 & Orchard"
+                  description="Unified addresses. Halo2 in production. Strongest privacy guarantees."
+                  side="right"
+                />
+                <ZcashTimelineItem
+                  year="2024"
+                  title="SIP Protocol"
+                  description="Extends Zcash privacy to cross-chain. Any token, any chain, same guarantees."
+                  side="left"
+                  highlight
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* SIP x Zcash Integration */}
+          <div className="grid gap-8 lg:grid-cols-2">
+            <div className="space-y-4">
+              <h3 className="text-xl font-bold text-amber-400 mb-4">Our Zcash Integration</h3>
               <ZcashFeature
                 title="Zcash RPC Client"
-                description="Full integration with Zcash's shielded transaction infrastructure. z_sendmany, z_getbalance, and shielded pool operations."
+                description="Full integration with zcashd. z_sendmany, z_getbalance, shielded pool operations. Direct access to Zcash's privacy infrastructure."
                 status="Implemented"
               />
               <ZcashFeature
-                title="Viewing Key Design"
-                description="SIP's viewing keys are inspired by Zcash's incoming/outgoing viewing key architecture. Selective disclosure for compliance."
+                title="Viewing Key Architecture"
+                description="SIP's viewing keys mirror Zcash's IVK/OVK design. Same compliance-ready selective disclosure, extended cross-chain."
                 status="Implemented"
               />
               <ZcashFeature
-                title="Proof Composition (Future)"
-                description="Compose proofs from multiple systems — Zcash's Halo2 for privacy execution, combined with Mina for succinct verification."
+                title="z-Address Validation"
+                description="Native support for Zcash shielded addresses as swap destinations. Full address format validation."
+                status="Implemented"
+              />
+              <ZcashFeature
+                title="Halo2 Proof Composition"
+                description="Future: Compose proofs from Zcash's Halo2 with other systems. Leverage Zcash's proving heritage."
                 status="Planned"
               />
             </div>
-            <div className="p-6 rounded-2xl bg-amber-500/5 border border-amber-500/20">
-              <div className="flex items-center gap-2 mb-4">
-                <ZcashLogo />
-                <span className="text-lg font-semibold text-amber-400">Why Zcash?</span>
+
+            <div className="space-y-6">
+              {/* Complementary, Not Competing */}
+              <div className="p-6 rounded-2xl bg-green-500/5 border border-green-500/20">
+                <h4 className="text-lg font-semibold text-green-400 mb-4">Complementing, Not Competing</h4>
+                <p className="text-gray-300 mb-4">
+                  SIP doesn&apos;t replace Zcash — we <strong className="text-green-400">extend</strong> it.
+                  Zcash provides the strongest privacy guarantees for ZEC transactions.
+                  SIP brings those same principles to every other chain.
+                </p>
+                <div className="text-sm text-gray-400">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-green-400">→</span>
+                    <span>Zcash: Privacy for ZEC</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-purple-400">→</span>
+                    <span>SIP: Zcash-level privacy for ETH, SOL, BTC, and beyond</span>
+                  </div>
+                </div>
               </div>
-              <ul className="space-y-3 text-gray-300">
-                <li className="flex items-start gap-2">
-                  <span className="text-amber-400 mt-1">✓</span>
-                  <span>Battle-tested privacy since 2016 — billions in shielded transactions</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-amber-400 mt-1">✓</span>
-                  <span>Halo2 proving system — no trusted setup, efficient recursion</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-amber-400 mt-1">✓</span>
-                  <span>Strongest privacy guarantees in production</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-amber-400 mt-1">✓</span>
-                  <span>Active research community (ECC, Zcash Foundation)</span>
-                </li>
-              </ul>
+
+              {/* Zcash Foundation Reference */}
+              <div className="p-6 rounded-2xl bg-amber-500/5 border border-amber-500/20">
+                <h4 className="text-lg font-semibold text-amber-400 mb-4">Standing on Giants</h4>
+                <ul className="space-y-3 text-gray-300 text-sm">
+                  <li className="flex items-start gap-2">
+                    <span className="text-amber-400 mt-0.5">📚</span>
+                    <span>Built on research from <strong>Zcash Foundation</strong> and <strong>Electric Coin Co</strong></span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-amber-400 mt-0.5">🔬</span>
+                    <span>Cryptographic primitives validated by <strong>8 years</strong> of production use</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-amber-400 mt-0.5">💰</span>
+                    <span><strong>$4B+</strong> secured in Zcash shielded pools</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-amber-400 mt-0.5">🏆</span>
+                    <span>The <strong>gold standard</strong> for blockchain privacy</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -633,5 +746,59 @@ function ZcashLogo() {
       <path d="M16 7v4m0 10v4M9 16h4m6 0h4" stroke="#F4B728" strokeWidth="2" strokeLinecap="round" />
       <path d="M11 11l3 3m4 4l3 3M21 11l-3 3m-4 4l-3 3" stroke="#F4B728" strokeWidth="2" strokeLinecap="round" />
     </svg>
+  )
+}
+
+function ZcashLogoLarge() {
+  return (
+    <svg className="h-16 w-16" viewBox="0 0 32 32" fill="none">
+      <circle cx="16" cy="16" r="15" stroke="#F4B728" strokeWidth="1.5" />
+      <path d="M16 7v4m0 10v4M9 16h4m6 0h4" stroke="#F4B728" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M11 11l3 3m4 4l3 3M21 11l-3 3m-4 4l-3 3" stroke="#F4B728" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function ZcashValueProp({ icon, title, description }: { icon: string; title: string; description: string }) {
+  return (
+    <div className="text-center">
+      <div className="text-3xl mb-3">{icon}</div>
+      <h4 className="font-semibold text-white mb-2">{title}</h4>
+      <p className="text-sm text-gray-400">{description}</p>
+    </div>
+  )
+}
+
+function ZcashTimelineItem({
+  year,
+  title,
+  description,
+  side,
+  highlight,
+}: {
+  year: string
+  title: string
+  description: string
+  side: 'left' | 'right'
+  highlight?: boolean
+}) {
+  return (
+    <div className={`relative ${side === 'right' ? 'md:col-start-2' : ''}`}>
+      <div className={`p-4 rounded-xl ${
+        highlight
+          ? 'bg-purple-500/10 border border-purple-500/30'
+          : 'bg-gray-900/50 border border-gray-800'
+      }`}>
+        <div className="flex items-center gap-2 mb-2">
+          <span className={`px-2 py-0.5 rounded text-xs font-bold ${
+            highlight ? 'bg-purple-500/20 text-purple-400' : 'bg-amber-500/20 text-amber-400'
+          }`}>
+            {year}
+          </span>
+          <h4 className={`font-semibold ${highlight ? 'text-purple-400' : 'text-white'}`}>{title}</h4>
+        </div>
+        <p className="text-sm text-gray-400">{description}</p>
+      </div>
+    </div>
   )
 }
