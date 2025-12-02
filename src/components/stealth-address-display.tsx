@@ -2,38 +2,56 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { PrivacyLevel } from '@sip-protocol/types'
+import type { ChainId } from '@sip-protocol/types'
 import type { NetworkId } from '@/lib'
 
+// Dynamic SDK import to avoid WASM loading during SSG
+const loadSDK = () => import('@sip-protocol/sdk')
+
 /**
- * Lightweight stealth address generation for demo purposes
+ * Determine the curve type for a chain
  *
- * Uses Web Crypto API to generate demo stealth addresses without
- * pulling in heavy SDK dependencies (barretenberg/noir).
+ * ed25519: Solana, NEAR (native chain curve)
+ * secp256k1: Ethereum, Zcash, Arbitrum (EVM and Bitcoin-derived)
  *
- * In production, use @sip-protocol/sdk's generateStealthAddress functions.
+ * Note: Currently SDK only supports secp256k1 stealth addresses.
+ * Ed25519 support is in development (see SDK source).
  */
-async function generateDemoStealthAddress(): Promise<{
+function getCurveForChain(chain: NetworkId): 'ed25519' | 'secp256k1' {
+  if (chain === 'solana' || chain === 'near') {
+    return 'ed25519'
+  }
+  return 'secp256k1'
+}
+
+/**
+ * Generate real stealth address using @sip-protocol/sdk
+ *
+ * Uses EIP-5564 compatible secp256k1 stealth addresses.
+ * The SDK generates cryptographically valid addresses using:
+ * - secp256k1 elliptic curve (same as Bitcoin/Ethereum)
+ * - Proper key derivation and shared secret computation
+ */
+async function generateRealStealthAddress(chain: NetworkId): Promise<{
   stealthAddress: string
   ephemeralKey: string
+  curve: 'secp256k1' | 'ed25519'
 }> {
-  // Generate random bytes for demo stealth address
-  const stealthBytes = new Uint8Array(33)
-  const ephemeralBytes = new Uint8Array(33)
+  const sdk = await loadSDK()
 
-  crypto.getRandomValues(stealthBytes)
-  crypto.getRandomValues(ephemeralBytes)
+  // Generate stealth meta-address using SDK (secp256k1)
+  // This creates a real cryptographic keypair
+  const { metaAddress } = sdk.generateStealthMetaAddress(chain as ChainId)
 
-  // Set compressed public key prefix (02 or 03)
-  stealthBytes[0] = stealthBytes[32] % 2 === 0 ? 0x02 : 0x03
-  ephemeralBytes[0] = ephemeralBytes[32] % 2 === 0 ? 0x02 : 0x03
-
-  // Convert to hex
-  const toHex = (bytes: Uint8Array) =>
-    '0x' + Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('')
+  // Derive an actual stealth address from the meta-address
+  // This simulates what a sender would do
+  const { stealthAddress } = sdk.generateStealthAddress(metaAddress)
 
   return {
-    stealthAddress: toHex(stealthBytes),
-    ephemeralKey: toHex(ephemeralBytes),
+    stealthAddress: stealthAddress.address,
+    ephemeralKey: stealthAddress.ephemeralPublicKey,
+    // Note: SDK currently generates secp256k1, curve shown is what chain uses natively
+    curve: getCurveForChain(chain),
   }
 }
 
@@ -49,22 +67,6 @@ interface StealthAddressDisplayProps {
 }
 
 type CurveType = 'ed25519' | 'secp256k1'
-
-/**
- * Get the curve type for a chain
- *
- * ed25519: Solana, NEAR (native chain curve)
- * secp256k1: Ethereum, Zcash, Arbitrum (EVM and Bitcoin-derived)
- *
- * Note: For demo purposes, we generate secp256k1 addresses for all chains.
- * The actual curve used depends on the destination chain's native implementation.
- */
-function getCurveForChain(chain: NetworkId): CurveType {
-  if (chain === 'solana' || chain === 'near') {
-    return 'ed25519'
-  }
-  return 'secp256k1'
-}
 
 /**
  * Get chain display name
@@ -102,15 +104,13 @@ export function StealthAddressDisplay({
 }: StealthAddressDisplayProps) {
   const [stealthAddress, setStealthAddress] = useState<string | null>(null)
   const [ephemeralKey, setEphemeralKey] = useState<string | null>(null)
+  const [curve, setCurve] = useState<CurveType>('secp256k1')
   const [copied, setCopied] = useState(false)
   const [showDetails, setShowDetails] = useState(false)
 
   const hasPrivacy = privacyLevel !== PrivacyLevel.TRANSPARENT
-  const curve = getCurveForChain(toChain)
 
-  // Generate stealth address when chain changes or component mounts
-  // Note: For demo purposes, we generate realistic-looking addresses
-  // In production, use @sip-protocol/sdk's generateStealthAddress functions
+  // Generate stealth address using real SDK when chain changes
   useEffect(() => {
     if (!hasPrivacy) {
       setStealthAddress(null)
@@ -118,14 +118,15 @@ export function StealthAddressDisplay({
       return
     }
 
-    // Generate demo stealth address
-    generateDemoStealthAddress()
-      .then(({ stealthAddress: addr, ephemeralKey: key }) => {
+    // Generate real stealth address using @sip-protocol/sdk
+    generateRealStealthAddress(toChain)
+      .then(({ stealthAddress: addr, ephemeralKey: key, curve: curveType }) => {
         setStealthAddress(addr)
         setEphemeralKey(key)
+        setCurve(curveType)
       })
       .catch(() => {
-        // Fallback if generation fails
+        // Fallback if SDK generation fails
         setStealthAddress(null)
         setEphemeralKey(null)
       })
