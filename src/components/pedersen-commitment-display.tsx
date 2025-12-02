@@ -5,50 +5,75 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { PrivacyLevel } from '@sip-protocol/types'
 
+// Dynamic SDK import to avoid WASM loading during SSG
+const loadSDK = () => import('@sip-protocol/sdk')
+
 /**
- * Lightweight Pedersen commitment generation for demo purposes
+ * Generate real Pedersen commitment using @sip-protocol/sdk
  *
- * Uses Web Crypto API to generate demo commitments without
- * pulling in heavy SDK dependencies (barretenberg/noir).
- *
- * In production, use @sip-protocol/sdk's commit/verifyOpening functions.
+ * Uses actual elliptic curve math: C = v*G + r*H
+ * where G and H are generator points on secp256k1.
  */
-async function generateDemoCommitment(amount: string): Promise<{
+async function generateRealCommitment(amount: string): Promise<{
   commitment: string
   blinding: string
   amountHex: string
 }> {
-  // Generate random 32 bytes for blinding factor
-  const blindingBytes = new Uint8Array(32)
-  crypto.getRandomValues(blindingBytes)
+  const sdk = await loadSDK()
 
-  // Convert to hex
-  const toHex = (bytes: Uint8Array) =>
-    '0x' + Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('')
+  // Convert amount to bigint (SDK uses bigint for precision)
+  const amountNum = parseFloat(amount) || 0
+  const amountBigInt = BigInt(Math.floor(amountNum * 1e8)) // 8 decimals precision
 
-  const blinding = toHex(blindingBytes)
-
-  // Generate commitment (simulated - in production this is C = v*G + r*H)
-  // For demo, we hash amount + blinding to get a realistic-looking commitment
-  const encoder = new TextEncoder()
-  const data = encoder.encode(`${amount}:${blinding}`)
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data)
-  const hashBytes = new Uint8Array(hashBuffer)
-
-  // Create compressed point format (33 bytes with 02/03 prefix)
-  const commitmentBytes = new Uint8Array(33)
-  commitmentBytes[0] = hashBytes[0] % 2 === 0 ? 0x02 : 0x03
-  commitmentBytes.set(hashBytes, 1)
+  // Create real Pedersen commitment using SDK
+  // Returns { commitment: HexString, blinding: HexString }
+  const result = sdk.commit(amountBigInt)
 
   // Convert amount to hex for display
-  const amountNum = parseFloat(amount) || 0
-  const amountWei = BigInt(Math.floor(amountNum * 1e18))
-  const amountHex = '0x' + amountWei.toString(16).padStart(16, '0')
+  const amountHex = '0x' + amountBigInt.toString(16).padStart(16, '0')
 
   return {
-    commitment: toHex(commitmentBytes),
-    blinding,
+    commitment: result.commitment,
+    blinding: result.blinding,
     amountHex,
+  }
+}
+
+/**
+ * Verify commitment opening using real SDK
+ */
+async function verifyRealCommitment(
+  commitment: string,
+  amount: string,
+  blinding: string
+): Promise<boolean> {
+  const sdk = await loadSDK()
+
+  const amountNum = parseFloat(amount) || 0
+  const amountBigInt = BigInt(Math.floor(amountNum * 1e8))
+
+  // verifyOpening takes raw hex strings
+  return sdk.verifyOpening(commitment as `0x${string}`, amountBigInt, blinding as `0x${string}`)
+}
+
+/**
+ * Add two commitments homomorphically using real SDK
+ */
+async function addRealCommitments(
+  c1: string,
+  c2: string,
+  b1: string,
+  b2: string
+): Promise<{ commitment: string; blinding: string }> {
+  const sdk = await loadSDK()
+
+  // addCommitments takes raw hex strings and returns CommitmentPoint
+  const sumCommitment = sdk.addCommitments(c1 as `0x${string}`, c2 as `0x${string}`)
+  const sumBlinding = sdk.addBlindings(b1 as `0x${string}`, b2 as `0x${string}`)
+
+  return {
+    commitment: sumCommitment.commitment,
+    blinding: sumBlinding,
   }
 }
 
@@ -102,7 +127,7 @@ export function PedersenCommitmentDisplay({
 
   const hasPrivacy = privacyLevel !== PrivacyLevel.TRANSPARENT
 
-  // Generate commitment when amount changes
+  // Generate commitment using real SDK when amount changes
   useEffect(() => {
     if (!hasPrivacy || !amount || parseFloat(amount) <= 0) {
       setCommitment(null)
@@ -111,7 +136,7 @@ export function PedersenCommitmentDisplay({
       return
     }
 
-    generateDemoCommitment(amount)
+    generateRealCommitment(amount)
       .then(({ commitment: c, blinding: b, amountHex: a }) => {
         setCommitment(c)
         setBlinding(b)
@@ -124,10 +149,10 @@ export function PedersenCommitmentDisplay({
       })
   }, [amount, hasPrivacy])
 
-  // Demo: Generate commitment
+  // Demo: Generate commitment using real SDK
   const handleDemoGenerate = useCallback(async () => {
     try {
-      const { commitment: c, blinding: b } = await generateDemoCommitment(demoAmount)
+      const { commitment: c, blinding: b } = await generateRealCommitment(demoAmount)
       setDemoCommitment(c)
       setDemoBlinding(b)
       setIsVerified(null)
@@ -137,26 +162,37 @@ export function PedersenCommitmentDisplay({
     }
   }, [demoAmount])
 
-  // Demo: Verify commitment
-  const handleDemoVerify = useCallback(() => {
-    // In demo, we always verify true since we just generated it
-    setIsVerified(true)
-    setTimeout(() => setIsVerified(null), 2000)
-  }, [])
+  // Demo: Verify commitment using real SDK
+  const handleDemoVerify = useCallback(async () => {
+    if (!demoCommitment || !demoBlinding) return
+    try {
+      const valid = await verifyRealCommitment(demoCommitment, demoAmount, demoBlinding)
+      setIsVerified(valid)
+      setTimeout(() => setIsVerified(null), 2000)
+    } catch {
+      setIsVerified(false)
+      setTimeout(() => setIsVerified(null), 2000)
+    }
+  }, [demoCommitment, demoBlinding, demoAmount])
 
-  // Homomorphic demo: Generate sum
+  // Homomorphic demo: Generate sum using real SDK point addition
   const handleHomomorphicDemo = useCallback(async () => {
     try {
+      // Generate two real commitments
       const [c1Result, c2Result] = await Promise.all([
-        generateDemoCommitment(homoAmount1),
-        generateDemoCommitment(homoAmount2),
+        generateRealCommitment(homoAmount1),
+        generateRealCommitment(homoAmount2),
       ])
       setHomoC1(c1Result.commitment)
       setHomoC2(c2Result.commitment)
 
-      // Generate "sum" commitment for demo (in production, this is actual point addition)
-      const sumAmount = (parseFloat(homoAmount1) || 0) + (parseFloat(homoAmount2) || 0)
-      const sumResult = await generateDemoCommitment(sumAmount.toString())
+      // Use real homomorphic addition: C(a) + C(b) = C(a+b)
+      const sumResult = await addRealCommitments(
+        c1Result.commitment,
+        c2Result.commitment,
+        c1Result.blinding,
+        c2Result.blinding
+      )
       setHomoSum(sumResult.commitment)
     } catch {
       setHomoC1(null)
