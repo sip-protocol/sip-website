@@ -130,6 +130,13 @@ function getChainName(chain: NetworkId): string {
     near: 'NEAR',
     zcash: 'Zcash',
     arbitrum: 'Arbitrum',
+    base: 'Base',
+    bitcoin: 'Bitcoin',
+    optimism: 'Optimism',
+    polygon: 'Polygon',
+    bsc: 'BNB Chain',
+    avalanche: 'Avalanche',
+    aptos: 'Aptos',
   }
   return names[chain] || chain
 }

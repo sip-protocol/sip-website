@@ -13,16 +13,34 @@ const COINGECKO_IDS: Record<string, string> = {
   ZEC: 'zcash',
   USDC: 'usd-coin',
   WETH: 'ethereum', // WETH tracks ETH price
+  // New chains
+  BTC: 'bitcoin',
+  ARB: 'arbitrum', // ARB token (network uses ETH)
+  BASE: 'ethereum', // Base uses ETH
+  OP: 'optimism', // OP token (network uses ETH)
+  POL: 'matic-network', // Polygon (formerly MATIC)
+  BNB: 'binancecoin',
+  AVAX: 'avalanche-2',
+  APT: 'aptos',
 }
 
-// Fallback prices (last known approximate values)
+// Fallback prices (last known approximate values as of Dec 2025)
 const FALLBACK_PRICES: Record<string, number> = {
-  SOL: 100,
-  ETH: 3500,
-  NEAR: 5,
-  ZEC: 50,
+  SOL: 230,
+  ETH: 3600,
+  NEAR: 6,
+  ZEC: 60,
   USDC: 1,
-  WETH: 3500,
+  WETH: 3600,
+  // New tokens
+  BTC: 97000,
+  ARB: 1,
+  BASE: 3600, // Uses ETH
+  OP: 2.5,
+  POL: 0.6,
+  BNB: 650,
+  AVAX: 45,
+  APT: 14,
 }
 
 // Cache configuration

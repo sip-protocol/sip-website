@@ -60,6 +60,15 @@ const TOKEN_DECIMALS: Record<string, number> = {
   ZEC: 8,
   USDC: 6,
   WETH: 18,
+  // New tokens
+  BTC: 8,
+  ARB: 18,
+  BASE: 18,
+  OP: 18,
+  POL: 18,
+  BNB: 18,
+  AVAX: 18,
+  APT: 8,
 }
 
 /**

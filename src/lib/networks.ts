@@ -4,7 +4,19 @@
  * Testnet configurations for Solana Devnet, Ethereum Sepolia, and NEAR Testnet.
  */
 
-export type NetworkId = 'solana' | 'ethereum' | 'near' | 'arbitrum' | 'zcash'
+export type NetworkId =
+  | 'solana'
+  | 'ethereum'
+  | 'near'
+  | 'arbitrum'
+  | 'zcash'
+  | 'base'
+  | 'bitcoin'
+  | 'optimism'
+  | 'polygon'
+  | 'bsc'
+  | 'avalanche'
+  | 'aptos'
 
 export interface NetworkConfig {
   /** Network identifier */
@@ -109,6 +121,88 @@ export const NETWORKS: Record<NetworkId, NetworkConfig> = {
     decimals: 8,
     icon: '/networks/zcash.svg',
   },
+  base: {
+    id: 'base',
+    name: 'Base',
+    testnet: 'Sepolia',
+    chainId: 84532,
+    rpcEndpoint: 'https://sepolia.base.org',
+    explorerUrl: 'https://sepolia.basescan.org',
+    faucetUrl: 'https://www.coinbase.com/faucets/base-ethereum-goerli-faucet',
+    nativeToken: 'ETH',
+    decimals: 18,
+    icon: '/networks/base.svg',
+  },
+  bitcoin: {
+    id: 'bitcoin',
+    name: 'Bitcoin',
+    testnet: 'Testnet',
+    rpcEndpoint: 'https://blockstream.info/testnet/api',
+    explorerUrl: 'https://blockstream.info/testnet',
+    faucetUrl: 'https://testnet-faucet.com/btc-testnet/',
+    nativeToken: 'BTC',
+    decimals: 8,
+    icon: '/networks/bitcoin.svg',
+  },
+  optimism: {
+    id: 'optimism',
+    name: 'Optimism',
+    testnet: 'Sepolia',
+    chainId: 11155420,
+    rpcEndpoint: 'https://sepolia.optimism.io',
+    explorerUrl: 'https://sepolia-optimism.etherscan.io',
+    faucetUrl: 'https://www.alchemy.com/faucets/optimism-sepolia',
+    nativeToken: 'ETH',
+    decimals: 18,
+    icon: '/networks/optimism.svg',
+  },
+  polygon: {
+    id: 'polygon',
+    name: 'Polygon',
+    testnet: 'Amoy',
+    chainId: 80002,
+    rpcEndpoint: 'https://rpc-amoy.polygon.technology',
+    explorerUrl: 'https://amoy.polygonscan.com',
+    faucetUrl: 'https://faucet.polygon.technology/',
+    nativeToken: 'POL',
+    decimals: 18,
+    icon: '/networks/polygon.svg',
+  },
+  bsc: {
+    id: 'bsc',
+    name: 'BNB Chain',
+    testnet: 'Testnet',
+    chainId: 97,
+    rpcEndpoint: 'https://data-seed-prebsc-1-s1.binance.org:8545',
+    explorerUrl: 'https://testnet.bscscan.com',
+    faucetUrl: 'https://testnet.bnbchain.org/faucet-smart',
+    nativeToken: 'BNB',
+    decimals: 18,
+    icon: '/networks/bsc.svg',
+  },
+  avalanche: {
+    id: 'avalanche',
+    name: 'Avalanche',
+    testnet: 'Fuji',
+    chainId: 43113,
+    rpcEndpoint: 'https://api.avax-test.network/ext/bc/C/rpc',
+    explorerUrl: 'https://testnet.snowtrace.io',
+    faucetUrl: 'https://faucet.avax.network/',
+    nativeToken: 'AVAX',
+    decimals: 18,
+    icon: '/networks/avalanche.svg',
+  },
+  aptos: {
+    id: 'aptos',
+    name: 'Aptos',
+    testnet: 'Testnet',
+    rpcEndpoint: 'https://fullnode.testnet.aptoslabs.com/v1',
+    explorerUrl: 'https://explorer.aptoslabs.com/?network=testnet',
+    faucetUrl: 'https://www.aptosfaucet.com/',
+    nativeToken: 'APT',
+    decimals: 8,
+    icon: '/networks/aptos.svg',
+  },
 }
 
 /**
@@ -183,6 +277,78 @@ export const TOKENS: TokenConfig[] = [
     icon: '/tokens/zec.svg',
     network: 'zcash',
   },
+  // Arbitrum
+  {
+    symbol: 'ARB',
+    name: 'Arbitrum',
+    address: null, // Uses ETH as native, ARB is the token
+    decimals: 18,
+    icon: '/tokens/arb.svg',
+    network: 'arbitrum',
+  },
+  // Base
+  {
+    symbol: 'BASE',
+    name: 'Base',
+    address: null, // Uses ETH as native
+    decimals: 18,
+    icon: '/tokens/base.svg',
+    network: 'base',
+  },
+  // Bitcoin
+  {
+    symbol: 'BTC',
+    name: 'Bitcoin',
+    address: null,
+    decimals: 8,
+    icon: '/tokens/btc.svg',
+    network: 'bitcoin',
+  },
+  // Optimism
+  {
+    symbol: 'OP',
+    name: 'Optimism',
+    address: null, // Uses ETH as native, OP is the token
+    decimals: 18,
+    icon: '/tokens/op.svg',
+    network: 'optimism',
+  },
+  // Polygon
+  {
+    symbol: 'POL',
+    name: 'Polygon',
+    address: null,
+    decimals: 18,
+    icon: '/tokens/pol.svg',
+    network: 'polygon',
+  },
+  // BNB Chain
+  {
+    symbol: 'BNB',
+    name: 'BNB',
+    address: null,
+    decimals: 18,
+    icon: '/tokens/bnb.svg',
+    network: 'bsc',
+  },
+  // Avalanche
+  {
+    symbol: 'AVAX',
+    name: 'Avalanche',
+    address: null,
+    decimals: 18,
+    icon: '/tokens/avax.svg',
+    network: 'avalanche',
+  },
+  // Aptos
+  {
+    symbol: 'APT',
+    name: 'Aptos',
+    address: null,
+    decimals: 8,
+    icon: '/tokens/apt.svg',
+    network: 'aptos',
+  },
 ]
 
 /**
@@ -223,12 +389,19 @@ export function getTransactionUrl(networkId: NetworkId, txHash: string): string 
       return `${network.explorerUrl}/tx/${txHash}?cluster=devnet`
     case 'ethereum':
     case 'arbitrum':
+    case 'base':
+    case 'optimism':
+    case 'polygon':
+    case 'bsc':
+    case 'avalanche':
       return `${network.explorerUrl}/tx/${txHash}`
     case 'near':
       return `${network.explorerUrl}/txns/${txHash}`
     case 'zcash':
-      // Zcash explorer uses different format for shielded vs transparent
+    case 'bitcoin':
       return `${network.explorerUrl}/tx/${txHash}`
+    case 'aptos':
+      return `${network.explorerUrl}/txn/${txHash}`
     default:
       return '#'
   }
@@ -244,12 +417,19 @@ export function getAddressUrl(networkId: NetworkId, address: string): string {
       return `${network.explorerUrl}/account/${address}?cluster=devnet`
     case 'ethereum':
     case 'arbitrum':
+    case 'base':
+    case 'optimism':
+    case 'polygon':
+    case 'bsc':
+    case 'avalanche':
       return `${network.explorerUrl}/address/${address}`
     case 'near':
       return `${network.explorerUrl}/address/${address}`
     case 'zcash':
-      // Zcash addresses: t-addresses (transparent) or z-addresses (shielded)
+    case 'bitcoin':
       return `${network.explorerUrl}/address/${address}`
+    case 'aptos':
+      return `${network.explorerUrl}/account/${address}`
     default:
       return '#'
   }

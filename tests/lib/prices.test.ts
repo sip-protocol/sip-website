@@ -91,10 +91,10 @@ describe('Price Service', () => {
 
       const prices = await getUSDPrices()
 
-      // Should return fallback prices
-      expect(prices.SOL).toBe(100)
-      expect(prices.ETH).toBe(3500)
-      expect(prices.NEAR).toBe(5)
+      // Should return fallback prices (updated Dec 2025)
+      expect(prices.SOL).toBe(230)
+      expect(prices.ETH).toBe(3600)
+      expect(prices.NEAR).toBe(6)
     })
 
     it('should handle rate limiting (429) gracefully', async () => {
@@ -105,9 +105,9 @@ describe('Price Service', () => {
 
       const prices = await getUSDPrices()
 
-      // Should return fallback prices without throwing
-      expect(prices.SOL).toBe(100)
-      expect(prices.ETH).toBe(3500)
+      // Should return fallback prices without throwing (updated Dec 2025)
+      expect(prices.SOL).toBe(230)
+      expect(prices.ETH).toBe(3600)
     })
 
     it('should handle non-OK response', async () => {
@@ -118,8 +118,8 @@ describe('Price Service', () => {
 
       const prices = await getUSDPrices()
 
-      // Should return fallback prices
-      expect(prices.SOL).toBe(100)
+      // Should return fallback prices (updated Dec 2025)
+      expect(prices.SOL).toBe(230)
     })
 
     it('should dedupe concurrent requests', async () => {
@@ -196,9 +196,9 @@ describe('Price Service', () => {
     it('should return fallback rate when cache is empty', () => {
       const rate = getExchangeRateSync('SOL', 'ETH')
 
-      // Fallback: SOL: 100, ETH: 3500
-      // 100 / 3500 ≈ 0.02857
-      expect(rate).toBeCloseTo(0.02857, 4)
+      // Fallback (Dec 2025): SOL: 230, ETH: 3600
+      // 230 / 3600 ≈ 0.0639
+      expect(rate).toBeCloseTo(230 / 3600, 4)
     })
 
     it('should use cached prices when available', async () => {
@@ -219,8 +219,8 @@ describe('Price Service', () => {
     it('should handle unknown tokens with fallback to 1', () => {
       const rate = getExchangeRateSync('UNKNOWN', 'ETH')
 
-      // UNKNOWN: 1 (fallback), ETH: 3500
-      expect(rate).toBeCloseTo(1 / 3500, 6)
+      // UNKNOWN: 1 (fallback), ETH: 3600 (Dec 2025)
+      expect(rate).toBeCloseTo(1 / 3600, 6)
     })
   })
 

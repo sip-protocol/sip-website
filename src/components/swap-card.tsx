@@ -37,19 +37,35 @@ interface Token {
   icon: string
 }
 
-// Tokens available as SOURCE (must have deposit callback implemented)
+// Tokens available as SOURCE (chains with wallet deposit support)
 const fromTokens: Token[] = [
   { symbol: 'ETH', name: 'Ethereum', chain: 'ethereum', icon: 'Ξ' },
   { symbol: 'SOL', name: 'Solana', chain: 'solana', icon: '◎' },
   { symbol: 'NEAR', name: 'NEAR', chain: 'near', icon: 'Ⓝ' },
+  { symbol: 'BTC', name: 'Bitcoin', chain: 'bitcoin', icon: '₿' },
+  { symbol: 'ARB', name: 'Arbitrum', chain: 'arbitrum', icon: '🔷' },
+  { symbol: 'BASE', name: 'Base', chain: 'base', icon: '🔵' },
+  { symbol: 'OP', name: 'Optimism', chain: 'optimism', icon: '🔴' },
+  { symbol: 'POL', name: 'Polygon', chain: 'polygon', icon: '💜' },
+  { symbol: 'BNB', name: 'BNB Chain', chain: 'bsc', icon: '🟡' },
+  { symbol: 'AVAX', name: 'Avalanche', chain: 'avalanche', icon: '🔺' },
+  { symbol: 'APT', name: 'Aptos', chain: 'aptos', icon: '🌀' },
 ]
 
-// Tokens available as DESTINATION (includes NEAR, ZEC - deposit not required for destination)
+// Tokens available as DESTINATION (all supported chains)
 const toTokens: Token[] = [
   { symbol: 'ETH', name: 'Ethereum', chain: 'ethereum', icon: 'Ξ' },
   { symbol: 'SOL', name: 'Solana', chain: 'solana', icon: '◎' },
   { symbol: 'NEAR', name: 'NEAR', chain: 'near', icon: 'Ⓝ' },
   { symbol: 'ZEC', name: 'Zcash', chain: 'zcash', icon: '🛡️' },
+  { symbol: 'BTC', name: 'Bitcoin', chain: 'bitcoin', icon: '₿' },
+  { symbol: 'ARB', name: 'Arbitrum', chain: 'arbitrum', icon: '🔷' },
+  { symbol: 'BASE', name: 'Base', chain: 'base', icon: '🔵' },
+  { symbol: 'OP', name: 'Optimism', chain: 'optimism', icon: '🔴' },
+  { symbol: 'POL', name: 'Polygon', chain: 'polygon', icon: '💜' },
+  { symbol: 'BNB', name: 'BNB Chain', chain: 'bsc', icon: '🟡' },
+  { symbol: 'AVAX', name: 'Avalanche', chain: 'avalanche', icon: '🔺' },
+  { symbol: 'APT', name: 'Aptos', chain: 'aptos', icon: '🌀' },
 ]
 
 export function SwapCard({ privacyLevel }: SwapCardProps) {
