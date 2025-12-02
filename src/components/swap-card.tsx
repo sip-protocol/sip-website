@@ -155,11 +155,11 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
   return (
     <div className="card overflow-hidden" data-testid="swap-card">
       {/* Header */}
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <h3 className="text-lg font-semibold">Swap</h3>
         <div
           data-testid="privacy-badge"
-          className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${
+          className={`inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium ${
             hasPrivacy
               ? 'bg-purple-600/20 text-purple-400'
               : 'bg-gray-700/50 text-gray-400'
@@ -201,11 +201,11 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
       )}
 
       {/* From */}
-      <div className="mb-2 rounded-xl bg-gray-800/50 p-4">
-        <div className="mb-2 flex items-center justify-between text-sm text-gray-400">
+      <div className="mb-2 rounded-xl bg-gray-800/50 p-3 sm:p-4">
+        <div className="mb-2 flex flex-wrap items-center justify-between gap-1 text-sm text-gray-400">
           <span>From</span>
           <div className="flex items-center gap-2">
-            <span>
+            <span className="text-xs sm:text-sm">
               Balance:{' '}
               {isConnected ? (
                 isBalanceForSourceToken ? (
@@ -225,21 +225,22 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
               <button
                 onClick={handleMaxClick}
                 data-testid="max-button"
-                className="rounded bg-purple-500/20 px-2 py-0.5 text-xs font-medium text-purple-400 transition-colors hover:bg-purple-500/30"
+                className="min-h-[44px] min-w-[44px] rounded bg-purple-500/20 px-3 py-2 text-xs font-medium text-purple-400 transition-colors hover:bg-purple-500/30 active:bg-purple-500/40"
               >
                 MAX
               </button>
             )}
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <input
             type="number"
+            inputMode="decimal"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             placeholder="0.0"
             data-testid="from-amount"
-            className={`flex-1 bg-transparent text-2xl font-medium outline-none placeholder:text-gray-600 ${
+            className={`min-w-0 flex-1 bg-transparent text-xl font-medium outline-none placeholder:text-gray-600 sm:text-2xl ${
               hasInsufficientBalance ? 'text-red-400' : ''
             }`}
           />
@@ -266,24 +267,24 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
       </div>
 
       {/* To */}
-      <div className="mb-6 mt-2 rounded-xl bg-gray-800/50 p-4">
-        <div className="mb-2 flex items-center justify-between text-sm text-gray-400">
+      <div className="mb-6 mt-2 rounded-xl bg-gray-800/50 p-3 sm:p-4">
+        <div className="mb-2 flex flex-wrap items-center justify-between gap-1 text-sm text-gray-400">
           <span>To (estimated)</span>
           {hasPrivacy && (
-            <span className="flex items-center gap-1 text-purple-400">
+            <span className="flex items-center gap-1 text-xs text-purple-400 sm:text-sm">
               <ShieldIcon className="h-3 w-3" />
               Stealth Address
             </span>
           )}
         </div>
-        <div className="flex items-center gap-3">
-          <div className="flex-1">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="min-w-0 flex-1">
             {isQuoteLoading ? (
-              <span className="flex items-center gap-2 text-2xl font-medium text-gray-500" data-testid="quote-loading">
+              <span className="flex items-center gap-2 text-xl font-medium text-gray-500 sm:text-2xl" data-testid="quote-loading">
                 <LoadingSpinner />
               </span>
             ) : (
-              <span className="text-2xl font-medium text-gray-400" data-testid="to-output">
+              <span className="block truncate text-xl font-medium text-gray-400 sm:text-2xl" data-testid="to-output">
                 {outputAmount || '0'}
               </span>
             )}
@@ -302,13 +303,13 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
 
       {/* ZEC Recipient Address Input */}
       {isZecDestination && (
-        <div className="mb-4 rounded-xl bg-gray-800/50 p-4" data-testid="zec-recipient-section">
-          <div className="mb-2 flex items-center justify-between text-sm text-gray-400">
+        <div className="mb-4 rounded-xl bg-gray-800/50 p-3 sm:p-4" data-testid="zec-recipient-section">
+          <div className="mb-2 flex flex-wrap items-center justify-between gap-1 text-sm text-gray-400">
             <span className="flex items-center gap-1">
               <ZcashIcon className="h-4 w-4 text-yellow-500" />
-              Zcash Recipient Address
+              <span className="text-xs sm:text-sm">Zcash Recipient</span>
             </span>
-            <span className="text-xs text-yellow-500">Required for ZEC</span>
+            <span className="text-xs text-yellow-500">Required</span>
           </div>
 
           {/* Input with validation indicator */}
@@ -467,16 +468,16 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
           onClick={handleSwap}
           disabled={(!amount || isSwapping || hasInsufficientBalance || !isZecAddressValid) && isConnected}
           data-testid="swap-button"
-          className={`w-full rounded-xl py-4 text-lg font-semibold transition-all ${
+          className={`min-h-[52px] w-full rounded-xl py-3 text-base font-semibold transition-all sm:py-4 sm:text-lg ${
             !isConnected
-              ? 'bg-purple-600 text-white hover:bg-purple-700'
+              ? 'bg-purple-600 text-white hover:bg-purple-700 active:bg-purple-800'
               : !amount || hasInsufficientBalance || !isZecAddressValid
                 ? 'cursor-not-allowed bg-gray-800 text-gray-500'
                 : isSwapping
                   ? 'cursor-wait bg-purple-600/50 text-white'
                   : isPreviewMode
-                    ? 'bg-amber-600 text-white hover:bg-amber-700'
-                    : 'bg-purple-600 text-white hover:bg-purple-700'
+                    ? 'bg-amber-600 text-white hover:bg-amber-700 active:bg-amber-800'
+                    : 'bg-purple-600 text-white hover:bg-purple-700 active:bg-purple-800'
           }`}
         >
           {!isConnected ? (
@@ -505,20 +506,20 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
 
       {/* Transaction details */}
       {amount && parseFloat(amount) > 0 && (
-        <div className="mt-4 space-y-2 text-sm">
-          <div className="flex justify-between text-gray-400">
+        <div className="mt-4 space-y-2 text-xs sm:text-sm">
+          <div className="flex flex-wrap items-center justify-between gap-1 text-gray-400">
             <span>Rate</span>
-            <span>
+            <span className="text-right">
               1 {fromToken.symbol} ≈ {rate} {toToken.symbol}
             </span>
           </div>
-          <div className="flex justify-between text-gray-400">
+          <div className="flex items-center justify-between text-gray-400">
             <span>Solver Fee</span>
             <span>{feePercent}%</span>
           </div>
-          <div className="flex justify-between text-gray-400">
+          <div className="flex flex-wrap items-center justify-between gap-1 text-gray-400">
             <span>Privacy</span>
-            <span className={isShielded ? 'text-purple-400' : 'text-gray-500'}>
+            <span className={`text-right ${isShielded ? 'text-purple-400' : 'text-gray-500'}`}>
               {privacyLevel === PrivacyLevel.TRANSPARENT
                 ? 'None'
                 : privacyLevel === PrivacyLevel.COMPLIANT
@@ -526,9 +527,9 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
                   : 'Full shielding'}
             </span>
           </div>
-          <div className="flex justify-between text-gray-400">
+          <div className="flex flex-wrap items-center justify-between gap-1 text-gray-400">
             <span>Route</span>
-            <span className="text-gray-500">
+            <span className="text-right text-gray-500">
               {fromToken.name} → {toToken.name}
             </span>
           </div>
@@ -552,14 +553,14 @@ function TokenSelector({
   const [open, setOpen] = useState(false)
 
   return (
-    <div className="relative">
+    <div className="relative flex-shrink-0">
       <button
         onClick={() => setOpen(!open)}
         data-testid={testId}
-        className="flex items-center gap-2 rounded-xl bg-gray-700/50 px-3 py-2 font-medium transition-colors hover:bg-gray-700"
+        className="flex min-h-[44px] items-center gap-1.5 rounded-xl bg-gray-700/50 px-2.5 py-2 font-medium transition-colors hover:bg-gray-700 active:bg-gray-600 sm:gap-2 sm:px-3"
       >
-        <span className="text-lg">{token.icon}</span>
-        <span>{token.symbol}</span>
+        <span className="text-base sm:text-lg">{token.icon}</span>
+        <span className="text-sm sm:text-base">{token.symbol}</span>
         <ChevronDownIcon className="h-4 w-4 text-gray-400" />
       </button>
 
@@ -569,7 +570,10 @@ function TokenSelector({
             className="fixed inset-0 z-10"
             onClick={() => setOpen(false)}
           />
-          <div data-testid="token-dropdown" className="absolute right-0 top-full z-20 mt-2 w-48 rounded-xl border border-gray-700 bg-gray-900 p-2 shadow-xl">
+          <div
+            data-testid="token-dropdown"
+            className="absolute right-0 top-full z-20 mt-2 w-44 rounded-xl border border-gray-700 bg-gray-900 p-1.5 shadow-xl sm:w-48 sm:p-2"
+          >
             {tokens.map((t) => (
               <button
                 key={t.symbol}
@@ -578,14 +582,14 @@ function TokenSelector({
                   onSelect(t)
                   setOpen(false)
                 }}
-                className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-gray-800 ${
+                className={`flex min-h-[44px] w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left transition-colors hover:bg-gray-800 active:bg-gray-700 sm:gap-3 sm:px-3 ${
                   t.symbol === token.symbol ? 'bg-gray-800' : ''
                 }`}
               >
-                <span className="text-lg">{t.icon}</span>
-                <div>
+                <span className="text-base sm:text-lg">{t.icon}</span>
+                <div className="min-w-0 flex-1">
                   <div className="font-medium">{t.symbol}</div>
-                  <div className="text-xs text-gray-400">{t.name}</div>
+                  <div className="truncate text-xs text-gray-400">{t.name}</div>
                 </div>
               </button>
             ))}
