@@ -23,6 +23,7 @@ import { ViewingKeyDisplay } from '@/components/viewing-key-display'
 import { PedersenCommitmentDisplay } from '@/components/pedersen-commitment-display'
 import { QuoteErrorCard } from '@/components/error-card'
 import { QuoteStatusBadge } from '@/components/quote-freshness'
+import { RecentSwaps } from '@/components/recent-swaps'
 import type { NetworkId } from '@/lib'
 
 interface SwapCardProps {
@@ -723,6 +724,11 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
           </div>
         </div>
       )}
+
+      {/* Recent Swaps History */}
+      <div className="mt-6">
+        <RecentSwaps />
+      </div>
     </div>
   )
 }

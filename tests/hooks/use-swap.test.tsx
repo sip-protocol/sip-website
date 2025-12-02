@@ -28,9 +28,19 @@ const mockSwapModeState = {
   mode: 'execute' as 'preview' | 'execute',
 }
 
+// Mock swap history store
+const mockSwapHistoryState = {
+  swaps: [],
+  addSwap: vi.fn(),
+  updateSwap: vi.fn(),
+  getSwap: vi.fn(),
+  clearHistory: vi.fn(),
+}
+
 vi.mock('@/stores', () => ({
   useWalletStore: () => mockWalletState,
   useSwapModeStore: () => mockSwapModeState,
+  useSwapHistoryStore: () => mockSwapHistoryState,
   toast: {
     success: vi.fn(),
     error: vi.fn(),

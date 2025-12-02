@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { PrivacyLevel, type Quote, type ChainId } from '@sip-protocol/types'
 
 // ProductionQuote extends Quote with depositAddress for production mode
@@ -11,7 +11,7 @@ interface ProductionQuote extends Quote {
 // Dynamically import SDK functions to avoid SSR issues with WASM
 const loadSDK = () => import('@sip-protocol/sdk')
 import { useSIP } from '@/contexts'
-import { useWalletStore, useSwapModeStore, toast } from '@/stores'
+import { useWalletStore, useSwapModeStore, useSwapHistoryStore, toast } from '@/stores'
 import { parseAmount, getTransactionUrl, createDepositCallback, logger, type NetworkId } from '@/lib'
 import { OneClickSwapStatus } from '@sip-protocol/types'
 
@@ -84,6 +84,7 @@ export function useSwap(): SwapResult {
   const { client, isProductionMode } = useSIP()
   const { isConnected, address, chain, walletType } = useWalletStore()
   const { mode: swapMode } = useSwapModeStore()
+  const { addSwap, updateSwap: updateSwapHistory } = useSwapHistoryStore()
 
   const [status, setStatus] = useState<SwapStatus>('idle')
   const [txHash, setTxHash] = useState<string | null>(null)
@@ -92,6 +93,7 @@ export function useSwap(): SwapResult {
   const [depositAddress, setDepositAddress] = useState<string | null>(null)
   const [depositAmount, setDepositAmount] = useState<string | null>(null)
   const [viewingKey, setViewingKey] = useState<string | null>(null)
+  const currentSwapId = useRef<string | null>(null)
 
   const reset = useCallback(() => {
     setStatus('idle')
@@ -143,6 +145,22 @@ export function useSwap(): SwapResult {
       setError(null)
       setTxHash(null)
       setTxChain(params.fromChain)
+
+      // Track swap in history
+      const swapId = `swap-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
+      currentSwapId.current = swapId
+      addSwap({
+        id: swapId,
+        fromToken: params.fromToken,
+        toToken: params.toToken,
+        fromChain: params.fromChain,
+        toChain: params.toChain,
+        fromAmount: params.amount,
+        toAmount: params.quote?.outputAmount ? (Number(params.quote.outputAmount) / 1e18).toFixed(6) : '—',
+        status: 'pending',
+        timestamp: Date.now(),
+        privacyLevel: params.privacyLevel,
+      })
 
       const fromDecimals = TOKEN_DECIMALS[params.fromToken] ?? 18
       const toDecimals = TOKEN_DECIMALS[params.toToken] ?? 18
@@ -230,6 +248,19 @@ export function useSwap(): SwapResult {
         timeout: 300000, // 5 minutes
       })
 
+      // Update swap history with success
+      const explorerUrlForHistory = result.txHash && params.fromChain
+        ? getTransactionUrl(params.fromChain, result.txHash)
+        : undefined
+
+      if (currentSwapId.current) {
+        updateSwapHistory(currentSwapId.current, {
+          status: 'completed',
+          txHash: result.txHash || undefined,
+          explorerUrl: explorerUrlForHistory,
+        })
+      }
+
       if (result.txHash) {
         setTxHash(result.txHash)
         setStatus('success')
@@ -251,13 +282,18 @@ export function useSwap(): SwapResult {
         toast.success('Swap Complete', 'Your transaction has been processed')
       }
     } catch (err) {
+      // Update swap history with failure
+      if (currentSwapId.current) {
+        updateSwapHistory(currentSwapId.current, { status: 'failed' })
+      }
+
       logger.error('Swap execution failed', err, 'useSwap')
       const { message, toastTitle } = getSwapErrorMessage(err)
       setError(message)
       setStatus('error')
       toast.error(toastTitle, message)
     }
-  }, [client, isConnected, address, chain, walletType, isProductionMode, swapMode])
+  }, [client, isConnected, address, chain, walletType, isProductionMode, swapMode, addSwap, updateSwapHistory])
 
   // Generate explorer URL based on the transaction chain
   const explorerUrl = txHash && txChain
