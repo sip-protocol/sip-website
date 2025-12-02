@@ -1,6 +1,11 @@
 'use client'
 
 import Link from 'next/link'
+import { ArchitectureDiagram } from '@/components/architecture-diagram'
+import { TeamSection } from '@/components/team-section'
+import { VideoDemo } from '@/components/video-demo'
+import { ZachXBTTweet } from '@/components/zachxbt-tweet'
+import { HowItWorks } from '@/components/how-it-works'
 
 export default function PitchDeckPage() {
   return (
@@ -45,6 +50,25 @@ export default function PitchDeckPage() {
         </div>
       </section>
 
+      {/* Video Demo Section */}
+      <section className="py-16 border-b border-gray-800/50 bg-gradient-to-b from-purple-900/5 to-transparent">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            badge="Demo"
+            title="See SIP in Action"
+          />
+          <div className="mt-10">
+            <VideoDemo
+              config={{
+                youtubeId: 'dQw4w9WgXcQ', // TODO: Replace with actual SIP demo video ID
+                title: 'SIP Protocol Demo',
+              }}
+              caption="One toggle to shield sender, amount, and recipient"
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Problem Section */}
       <section className="py-16 border-b border-gray-800/50">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
@@ -68,6 +92,19 @@ export default function PitchDeckPage() {
               title="Single-Chain Only"
               description="Existing privacy solutions (Aztec, Railgun, Penumbra) work on one chain. Cross-chain privacy doesn't exist."
             />
+          </div>
+        </div>
+      </section>
+
+      {/* ZachXBT Tweet Section */}
+      <section className="py-16 border-b border-gray-800/50 bg-gradient-to-b from-red-900/5 to-transparent">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            badge="Real World Problem"
+            title="This Isn't Theoretical"
+          />
+          <div className="mt-10">
+            <ZachXBTTweet />
           </div>
         </div>
       </section>
@@ -103,6 +140,19 @@ export default function PitchDeckPage() {
             <p className="text-lg text-gray-300 mt-2">
               <span className="text-purple-400 font-semibold">Settlement-agnostic</span> • Pluggable backend (NEAR Intents, Mina, direct)
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="py-16 border-b border-gray-800/50">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            badge="How It Works"
+            title="Four Steps to Privacy"
+          />
+          <div className="mt-10">
+            <HowItWorks />
           </div>
         </div>
       </section>
@@ -284,6 +334,19 @@ export default function PitchDeckPage() {
         </div>
       </section>
 
+      {/* Team Section */}
+      <section className="py-16 border-b border-gray-800/50">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            badge="Built By"
+            title="The Team"
+          />
+          <div className="mt-10">
+            <TeamSection />
+          </div>
+        </div>
+      </section>
+
       {/* Footer CTA */}
       <section className="py-16 border-t border-gray-800/50 bg-gradient-to-t from-purple-900/10 to-transparent">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-center">
@@ -370,44 +433,7 @@ function ZcashFeature({ title, description, status }: { title: string; descripti
   )
 }
 
-function ArchitectureDiagram() {
-  return (
-    <div className="p-6 rounded-2xl bg-gray-900/50 border border-gray-800 font-mono text-sm overflow-x-auto">
-      <pre className="text-gray-400 whitespace-pre">
-{`┌─────────────────────────────────────────────────────────────────────────┐
-│  APPLICATIONS                                                           │
-│  • Wallets  • DEXs  • DAOs  • Payments  • NFT  • Gaming  • Enterprise  │
-└────────────────────────────────┬────────────────────────────────────────┘
-                                 │ "Add privacy with one toggle"
-                                 ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│  `}<span className="text-purple-400 font-bold">SIP PROTOCOL — THE PRIVACY STANDARD</span>{`                                  │
-│  ┌───────────────────────────────────────────────────────────────────┐ │
-│  │ PRIVACY LAYER                                                     │ │
-│  │ • Stealth Addresses  • Pedersen Commitments  • Viewing Keys       │ │
-│  │ • Privacy Levels     • Unified API           • Compliance Ready   │ │
-│  └───────────────────────────────────────────────────────────────────┘ │
-│  ┌───────────────────────────────────────────────────────────────────┐ │
-│  │ `}<span className="text-amber-400">PROOF COMPOSITION (Zcash + Mina + Noir)</span>{`                           │ │
-│  │ • Zcash → Privacy execution    • Mina → Succinct verification     │ │
-│  │ • Noir  → Validity proofs      • Compose proofs from any system   │ │
-│  └───────────────────────────────────────────────────────────────────┘ │
-└────────────────────────────────┬────────────────────────────────────────┘
-                                 │ "Settle anywhere"
-                                 ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│  SETTLEMENT LAYER (Pluggable)                                           │
-│  • NEAR Intents  • Mina Protocol  • Direct Chain  • More coming...     │
-└────────────────────────────────┬────────────────────────────────────────┘
-                                 ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│  BLOCKCHAIN LAYER                                                       │
-│  • Ethereum  • Solana  • NEAR  • Bitcoin  • Cosmos  • Move chains      │
-└─────────────────────────────────────────────────────────────────────────┘`}
-      </pre>
-    </div>
-  )
-}
+// ArchitectureDiagram is now imported from @/components/architecture-diagram
 
 function StatCard({ value, label, sublabel }: { value: string; label: string; sublabel: string }) {
   return (

@@ -3,6 +3,18 @@ const path = require('path')
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'img.youtube.com',
+      },
+    ],
+  },
   env: {
     NEXT_PUBLIC_GIT_COMMIT: process.env.GIT_COMMIT || 'dev',
     NEXT_PUBLIC_GIT_BRANCH: process.env.GIT_BRANCH || 'local',
