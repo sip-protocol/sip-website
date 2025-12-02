@@ -14,6 +14,12 @@ interface TransactionStatusProps {
   isShielded: boolean
   isCompliant?: boolean
   viewingKey?: string | null
+  /** Deposit address for production swaps (NEAR Intents) */
+  depositAddress?: string | null
+  /** Deposit amount (user-friendly string like "100 USDC") */
+  depositAmount?: string | null
+  /** Token symbol being deposited */
+  depositToken?: string | null
   onReset: () => void
   onRetry: () => void
 }
@@ -31,6 +37,9 @@ export function TransactionStatus({
   isShielded,
   isCompliant = false,
   viewingKey,
+  depositAddress,
+  depositAmount,
+  depositToken,
   onReset,
   onRetry,
 }: TransactionStatusProps) {
@@ -39,12 +48,33 @@ export function TransactionStatus({
   const isPending = status === 'confirming' || status === 'signing' || status === 'pending'
   const isProduction = status === 'awaiting_deposit' || status === 'processing'
   const [copied, setCopied] = useState(false)
+  const [depositCopied, setDepositCopied] = useState(false)
 
   const copyViewingKey = async () => {
     if (viewingKey) {
       await navigator.clipboard.writeText(viewingKey)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
+    }
+  }
+
+  const copyDepositAddress = async () => {
+    if (depositAddress) {
+      try {
+        await navigator.clipboard.writeText(depositAddress)
+        setDepositCopied(true)
+        setTimeout(() => setDepositCopied(false), 2000)
+      } catch {
+        // Fallback for mobile - create temporary input
+        const input = document.createElement('input')
+        input.value = depositAddress
+        document.body.appendChild(input)
+        input.select()
+        document.execCommand('copy')
+        document.body.removeChild(input)
+        setDepositCopied(true)
+        setTimeout(() => setDepositCopied(false), 2000)
+      }
     }
   }
 
@@ -114,10 +144,78 @@ export function TransactionStatus({
             <div className="flex-1">
               <p className="font-medium text-amber-300">Awaiting Deposit</p>
               <p className="text-sm text-amber-400/80">
-                Send tokens to the deposit address to complete swap
+                {depositAmount && depositToken
+                  ? `Send ${depositAmount} ${depositToken} to complete your swap`
+                  : 'Send tokens to the deposit address to complete swap'}
               </p>
             </div>
           </div>
+
+          {/* Deposit Address - CRITICAL for user to complete swap */}
+          {depositAddress ? (
+            <div className="mt-4 rounded-lg bg-amber-950/30 border border-amber-500/20 p-4">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-sm font-medium text-amber-200">
+                  Deposit Address
+                </p>
+                <span className="text-xs text-amber-400/70 bg-amber-500/10 px-2 py-0.5 rounded">
+                  {chain ? NETWORKS[chain]?.name : 'Origin Chain'}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 bg-black/30 rounded-lg p-3">
+                <code className="flex-1 text-sm text-white font-mono break-all select-all">
+                  {depositAddress}
+                </code>
+                <button
+                  onClick={copyDepositAddress}
+                  className="flex-shrink-0 p-2 rounded-lg hover:bg-amber-500/20 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+                  aria-label="Copy deposit address"
+                  title="Copy to clipboard"
+                >
+                  {depositCopied ? (
+                    <CheckIcon className="h-5 w-5 text-green-400" />
+                  ) : (
+                    <CopyIcon className="h-5 w-5 text-amber-400" />
+                  )}
+                </button>
+              </div>
+              {depositCopied && (
+                <p className="mt-2 text-xs text-green-400 text-center">
+                  Address copied to clipboard!
+                </p>
+              )}
+
+              {/* Amount reminder */}
+              {depositAmount && depositToken && (
+                <div className="mt-3 flex items-center gap-2 text-sm">
+                  <span className="text-amber-400/70">Amount to send:</span>
+                  <span className="font-medium text-white">
+                    {depositAmount} {depositToken}
+                  </span>
+                </div>
+              )}
+
+              {/* Warning / Instructions */}
+              <div className="mt-3 flex items-start gap-2 text-xs text-amber-400/80">
+                <WarningIcon className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-medium text-amber-300">Important:</p>
+                  <ul className="mt-1 space-y-0.5 list-disc list-inside">
+                    <li>Send exact amount to avoid issues</li>
+                    <li>Swap will complete automatically after deposit confirms</li>
+                    <li>Do not close this page until complete</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="mt-4 rounded-lg bg-red-500/10 border border-red-500/20 p-3">
+              <div className="flex items-center gap-2 text-red-400 text-sm">
+                <WarningIcon className="h-4 w-4" />
+                <span>Deposit address not available. Please try again.</span>
+              </div>
+            </div>
+          )}
 
           {/* Production progress steps */}
           <div className="mt-4 flex items-center justify-between text-xs">
@@ -512,6 +610,14 @@ function CopyIcon({ className }: { className?: string }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
+    </svg>
+  )
+}
+
+function WarningIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
     </svg>
   )
 }
