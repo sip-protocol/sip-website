@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { SwapStatus } from '@/hooks'
 import type { NetworkId } from '@/lib'
 import { NETWORKS } from '@/lib'
@@ -20,6 +20,8 @@ interface TransactionStatusProps {
   depositAmount?: string | null
   /** Token symbol being deposited */
   depositToken?: string | null
+  /** Estimated completion time in seconds */
+  estimatedTime?: number
   onReset: () => void
   onRetry: () => void
 }
@@ -40,6 +42,7 @@ export function TransactionStatus({
   depositAddress,
   depositAmount,
   depositToken,
+  estimatedTime = 60,
   onReset,
   onRetry,
 }: TransactionStatusProps) {
@@ -49,6 +52,7 @@ export function TransactionStatus({
   const isProduction = status === 'awaiting_deposit' || status === 'processing'
   const [copied, setCopied] = useState(false)
   const [depositCopied, setDepositCopied] = useState(false)
+  const [startedAt] = useState<number | null>(() => isPending || isProduction ? Date.now() : null)
 
   const copyViewingKey = async () => {
     if (viewingKey) {
@@ -128,6 +132,15 @@ export function TransactionStatus({
               isComplete={false}
             />
           </div>
+
+          {/* Timer */}
+          {startedAt && estimatedTime > 0 && (
+            <TransactionTimer
+              estimatedTime={estimatedTime}
+              startedAt={startedAt}
+              colorClass="purple"
+            />
+          )}
         </div>
       )}
 
@@ -254,6 +267,15 @@ export function TransactionStatus({
             <StatusDivider isComplete={true} />
             <StatusStep label="Settle" isActive={true} isComplete={false} />
           </div>
+
+          {/* Timer */}
+          {startedAt && estimatedTime > 0 && (
+            <TransactionTimer
+              estimatedTime={estimatedTime}
+              startedAt={startedAt}
+              colorClass="blue"
+            />
+          )}
         </div>
       )}
 
@@ -458,6 +480,109 @@ function StatusDivider({ isComplete }: { isComplete: boolean }) {
     <div
       className={`h-0.5 flex-1 mx-2 ${isComplete ? 'bg-purple-500' : 'bg-purple-500/30'}`}
     />
+  )
+}
+
+/**
+ * Live countdown timer with progress bar
+ */
+function TransactionTimer({
+  estimatedTime,
+  startedAt,
+  colorClass = 'purple',
+}: {
+  estimatedTime: number
+  startedAt: number
+  colorClass?: 'purple' | 'amber' | 'blue'
+}) {
+  const [elapsed, setElapsed] = useState(0)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setElapsed(Math.floor((Date.now() - startedAt) / 1000))
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [startedAt])
+
+  const remaining = Math.max(0, estimatedTime - elapsed)
+  const progress = Math.min(100, (elapsed / estimatedTime) * 100)
+  const isOvertime = elapsed > estimatedTime
+
+  const colors = {
+    purple: {
+      bar: 'bg-purple-500',
+      track: 'bg-purple-500/20',
+      text: 'text-purple-400',
+      overtime: 'text-yellow-400',
+    },
+    amber: {
+      bar: 'bg-amber-500',
+      track: 'bg-amber-500/20',
+      text: 'text-amber-400',
+      overtime: 'text-yellow-400',
+    },
+    blue: {
+      bar: 'bg-blue-500',
+      track: 'bg-blue-500/20',
+      text: 'text-blue-400',
+      overtime: 'text-yellow-400',
+    },
+  }
+
+  const c = colors[colorClass]
+
+  return (
+    <div className="mt-3">
+      {/* Progress bar */}
+      <div className={`w-full h-1.5 rounded-full ${c.track}`}>
+        <div
+          className={`h-1.5 rounded-full transition-all duration-1000 ${isOvertime ? 'bg-yellow-500 animate-pulse' : c.bar}`}
+          style={{ width: `${Math.min(100, progress)}%` }}
+        />
+      </div>
+
+      {/* Time display */}
+      <div className="flex items-center justify-between mt-2 text-xs">
+        <span className={c.text}>
+          {formatTimerDuration(elapsed)} elapsed
+        </span>
+        <span className={isOvertime ? c.overtime : c.text}>
+          {isOvertime ? (
+            <span className="flex items-center gap-1">
+              <ClockIcon className="h-3 w-3" />
+              Taking longer than expected...
+            </span>
+          ) : (
+            `~${formatTimerDuration(remaining)} remaining`
+          )}
+        </span>
+      </div>
+
+      {/* Overtime warning */}
+      {isOvertime && elapsed > estimatedTime * 1.5 && (
+        <p className="mt-2 text-xs text-yellow-400/80 bg-yellow-500/10 rounded-lg px-2 py-1.5">
+          Don&apos;t worry, your transaction is still processing. Cross-chain swaps can sometimes take longer during high network activity.
+        </p>
+      )}
+    </div>
+  )
+}
+
+function formatTimerDuration(seconds: number): string {
+  if (seconds < 60) return `${seconds}s`
+  const mins = Math.floor(seconds / 60)
+  const secs = seconds % 60
+  if (mins < 60) return `${mins}m ${secs}s`
+  const hours = Math.floor(mins / 60)
+  const remainingMins = mins % 60
+  return `${hours}h ${remainingMins}m`
+}
+
+function ClockIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
   )
 }
 
