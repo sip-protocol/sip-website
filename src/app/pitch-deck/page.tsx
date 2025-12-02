@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { ArchitectureDiagram } from '@/components/architecture-diagram'
-import { TeamSection } from '@/components/team-section'
+import { FounderProfile } from '@/components/founder-profile'
 import { VideoDemo } from '@/components/video-demo'
 import { ZachXBTTweet } from '@/components/zachxbt-tweet'
 import { HowItWorks } from '@/components/how-it-works'
@@ -334,15 +334,15 @@ export default function PitchDeckPage() {
         </div>
       </section>
 
-      {/* Team Section */}
+      {/* Founder Section */}
       <section className="py-16 border-b border-gray-800/50">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <SectionHeader
             badge="Built By"
-            title="The Team"
+            title="The Founder"
           />
           <div className="mt-10">
-            <TeamSection />
+            <FounderProfile />
           </div>
         </div>
       </section>
