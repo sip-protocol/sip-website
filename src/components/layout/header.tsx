@@ -16,6 +16,7 @@ const WalletButton = dynamic(
 const navLinks = [
   { href: '/features', label: 'Features' },
   { href: '/demo', label: 'Demo' },
+  { href: '/sdk', label: 'SDK' },
   { href: 'https://docs.sip-protocol.org', label: 'Docs', external: true },
   { href: '/about', label: 'About' },
 ]
