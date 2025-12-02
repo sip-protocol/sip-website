@@ -9,6 +9,7 @@ import { HowItWorks } from '@/components/how-it-works'
 import { CypherpunkManifesto, CypherpunkAscii } from '@/components/cypherpunk-manifesto'
 import { ZachXBTCaseStudy } from '@/components/zachxbt-case-study'
 import { TechnicalDeepDive } from '@/components/technical-deep-dive'
+import { CompetitiveAdvantage } from '@/components/competitive-advantage'
 
 export default function PitchDeckPage() {
   return (
@@ -434,10 +435,10 @@ export default function PitchDeckPage() {
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <SectionHeader
             badge="Competitive Landscape"
-            title="How SIP Compares"
+            title="Why SIP Wins"
           />
-          <div className="mt-10 overflow-x-auto">
-            <ComparisonTable />
+          <div className="mt-10">
+            <CompetitiveAdvantage />
           </div>
         </div>
       </section>
