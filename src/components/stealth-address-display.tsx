@@ -160,10 +160,10 @@ export function StealthAddressDisplay({
         <span className="font-mono">{truncateAddress(stealthAddress)}</span>
         <button
           onClick={handleCopy}
-          className="rounded p-1 hover:bg-purple-500/20"
+          className="min-h-[44px] min-w-[44px] rounded p-2 hover:bg-purple-500/20 active:bg-purple-500/30"
           title="Copy stealth address"
         >
-          {copied ? <CheckIcon className="h-3 w-3 text-green-400" /> : <CopyIcon className="h-3 w-3" />}
+          {copied ? <CheckIcon className="h-4 w-4 text-green-400" /> : <CopyIcon className="h-4 w-4" />}
         </button>
       </div>
     )
@@ -191,7 +191,7 @@ export function StealthAddressDisplay({
         </div>
         <button
           onClick={() => setShowDetails(!showDetails)}
-          className="text-xs text-purple-400 hover:text-purple-300"
+          className="min-h-[44px] rounded px-2 text-xs text-purple-400 hover:bg-purple-500/10 hover:text-purple-300 active:bg-purple-500/20"
         >
           {showDetails ? 'Hide details' : 'How it works'}
         </button>
@@ -206,13 +206,13 @@ export function StealthAddressDisplay({
           </code>
           <button
             onClick={handleCopy}
-            className="rounded-lg p-2 text-purple-400 transition-colors hover:bg-purple-500/20 hover:text-purple-300"
+            className="min-h-[44px] min-w-[44px] rounded-lg p-2 text-purple-400 transition-colors hover:bg-purple-500/20 hover:text-purple-300 active:bg-purple-500/30"
             title="Copy full address"
           >
             {copied ? (
-              <CheckIcon className="h-4 w-4 text-green-400" />
+              <CheckIcon className="h-5 w-5 text-green-400" />
             ) : (
-              <CopyIcon className="h-4 w-4" />
+              <CopyIcon className="h-5 w-5" />
             )}
           </button>
         </div>

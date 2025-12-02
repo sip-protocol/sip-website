@@ -163,32 +163,32 @@ export function ViewingKeyDisplay({
           <span className="text-xs text-gray-500">Your viewing key:</span>
           <button
             onClick={() => setShowKey(!showKey)}
-            className="text-xs text-amber-400 hover:text-amber-300"
+            className="min-h-[44px] rounded px-2 text-xs text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 active:bg-amber-500/20"
           >
             {showKey ? 'Hide' : 'Reveal'}
           </button>
         </div>
-        <div className="flex items-center gap-2">
-          <code className="flex-1 break-all font-mono text-sm text-white">
+        <div className="flex items-center gap-1">
+          <code className="min-w-0 flex-1 break-all font-mono text-sm text-white">
             {showKey ? truncateKey(viewingKey, 14, 10) : '••••••••••••••••••••••••••••••••'}
           </code>
           <button
             onClick={handleCopy}
-            className="rounded-lg p-2 text-amber-400 transition-colors hover:bg-amber-500/20 hover:text-amber-300"
+            className="min-h-[44px] min-w-[44px] rounded-lg p-2 text-amber-400 transition-colors hover:bg-amber-500/20 hover:text-amber-300 active:bg-amber-500/30"
             title="Copy viewing key"
           >
             {copied ? (
-              <CheckIcon className="h-4 w-4 text-green-400" />
+              <CheckIcon className="h-5 w-5 text-green-400" />
             ) : (
-              <CopyIcon className="h-4 w-4" />
+              <CopyIcon className="h-5 w-5" />
             )}
           </button>
           <button
             onClick={handleDownload}
-            className="rounded-lg p-2 text-amber-400 transition-colors hover:bg-amber-500/20 hover:text-amber-300"
+            className="min-h-[44px] min-w-[44px] rounded-lg p-2 text-amber-400 transition-colors hover:bg-amber-500/20 hover:text-amber-300 active:bg-amber-500/30"
             title="Download as JSON"
           >
-            <DownloadIcon className="h-4 w-4" />
+            <DownloadIcon className="h-5 w-5" />
           </button>
         </div>
       </div>

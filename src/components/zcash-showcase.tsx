@@ -55,7 +55,7 @@ function Tab({ active, onClick, children }: TabProps) {
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-2 text-sm font-medium transition-colors ${
+      className={`min-h-[44px] px-3 py-2.5 text-xs font-medium transition-colors active:bg-gray-800/50 sm:px-4 sm:text-sm ${
         active
           ? 'border-b-2 border-purple-500 text-purple-400'
           : 'text-gray-400 hover:text-gray-300'
@@ -211,7 +211,7 @@ export function ZcashShowcase() {
               <button
                 onClick={handleGenerateAddress}
                 disabled={isGenerating}
-                className="mb-4 rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-500 disabled:opacity-50"
+                className="mb-4 min-h-[44px] rounded-lg bg-purple-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-purple-500 active:bg-purple-700 disabled:opacity-50"
               >
                 {isGenerating ? 'Generating...' : 'Generate Unified Address'}
               </button>
@@ -455,7 +455,7 @@ export function ZcashShowcase() {
                     </span>
                     <button
                       onClick={handleCopyViewingKey}
-                      className="text-xs text-amber-400 hover:text-amber-300"
+                      className="min-h-[44px] min-w-[44px] rounded px-2 text-xs text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 active:bg-amber-500/20"
                     >
                       {viewingKeyCopied ? 'Copied!' : 'Copy'}
                     </button>
