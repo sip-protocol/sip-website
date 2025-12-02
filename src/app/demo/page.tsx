@@ -5,6 +5,7 @@ import { PrivacyLevel } from '@/types'
 import { SwapCard } from '@/components/swap-card'
 import { PrivacyToggle } from '@/components/privacy-toggle'
 import { ComparisonView } from '@/components/comparison-view'
+import { PrivacyLevelComparison } from '@/components/privacy-level-comparison'
 import { ZcashShowcase } from '@/components/zcash-showcase'
 import { PedersenCommitmentDisplay } from '@/components/pedersen-commitment-display'
 import { TransactionProof } from '@/components/transaction-proof'
@@ -58,10 +59,18 @@ export default function DemoPage() {
             </div>
           </div>
 
-          {/* Comparison View */}
+          {/* Privacy Level A/B/C Comparison */}
+          <div className="mt-16">
+            <PrivacyLevelComparison
+              selectedLevel={privacyLevel}
+              onSelectLevel={setPrivacyLevel}
+            />
+          </div>
+
+          {/* Before/After Comparison View */}
           <div className="mt-16">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold">Privacy Comparison</h2>
+              <h2 className="text-2xl font-bold">Before vs After SIP</h2>
               <p className="mt-2 text-gray-400">
                 See what chain analysis can observe in each mode
               </p>
