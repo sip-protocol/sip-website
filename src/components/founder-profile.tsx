@@ -73,15 +73,29 @@ interface FounderProfileProps {
     text: string
     subtitle?: string
   }
+  originStory?: {
+    title: string
+    content: string
+  }
+  soloFounderPhilosophy?: {
+    title: string
+    content: string
+    highlights?: string[]
+  }
+  vision?: {
+    title: string
+    timeline: string
+    goals: string[]
+  }
 }
 
 // Default configuration with real GitHub data
 const defaultConfig: FounderProfileProps = {
   name: 'RECTOR',
   username: '@rz1989s',
-  role: 'Founder, RECTOR LABS',
+  role: 'Founder, SIP Protocol',
   avatar: 'https://avatars.githubusercontent.com/u/95009642?v=4',
-  bio: '"Building for eternity" — A Solana maximalist and blockchain innovator focused on decentralized finance architecture and high-performance systems. Founder of RECTOR LABS, pioneering MEV democratization and DeFi innovation on Solana.',
+  bio: 'Building the privacy standard for Web3. Blockchain architect focused on cryptographic privacy, cross-chain infrastructure, and high-performance systems. Believer that privacy is a right, not a feature.',
   github: 'https://github.com/rz1989s',
   twitter: 'https://x.com/rz1989s',
   website: 'https://rectorspace.com',
@@ -91,9 +105,17 @@ const defaultConfig: FounderProfileProps = {
     followers: 26,
     commits: 1573,
     prs: 117,
-    badge: '3x Pair Extraordinaire',
+    badge: '868 Tests',
   },
   projects: [
+    {
+      name: 'sip-protocol',
+      description: 'Privacy layer for cross-chain transactions — 745 SDK tests, 123 demo tests',
+      url: 'https://github.com/sip-protocol/sip-protocol',
+      stars: 1,
+      language: 'TypeScript',
+      tags: ['TypeScript', 'Privacy', 'ZK'],
+    },
     {
       name: 'claude-code-statusline',
       description: 'Terminal statusline tool with cost tracking — 205 stars, 13 forks',
@@ -104,14 +126,6 @@ const defaultConfig: FounderProfileProps = {
       tags: ['Shell', 'CLI'],
     },
     {
-      name: 'sip-protocol',
-      description: 'Privacy layer for cross-chain transactions via NEAR Intents + Zcash',
-      url: 'https://github.com/sip-protocol/sip-protocol',
-      stars: 1,
-      language: 'TypeScript',
-      tags: ['TypeScript', 'Privacy'],
-    },
-    {
       name: 'meteora-cp-amm-fee-routing',
       description: 'Permissionless fee routing for Meteora DAMM V2 pools — $7,500 bounty',
       url: 'https://github.com/rz1989s/meteora-cp-amm-fee-routing',
@@ -120,10 +134,32 @@ const defaultConfig: FounderProfileProps = {
       tags: ['TypeScript', 'Solana'],
     },
   ],
-  techStack: ['Rust', 'TypeScript', 'Python', 'React', 'Node.js', 'Solana', 'Web3.js', 'Docker', 'PostgreSQL'],
+  techStack: ['TypeScript', 'Rust', 'Noir', 'React', 'Solana', 'NEAR', 'Zcash', 'Docker'],
   quote: {
-    text: '"23 days from idea to production-ready MEV infrastructure"',
-    subtitle: '— Execution speed meets technical excellence',
+    text: '"One person. 868 tests. Zero shortcuts."',
+    subtitle: '— Pure execution, no committee decisions',
+  },
+  originStory: {
+    title: 'Why Privacy?',
+    content: 'Remember when HTTP was the norm? We now consider sites without HTTPS dangerous. Web3 is in its HTTP era — transparency is the default, but crime follows money. As Web3 matures, privacy becomes essential defense. SIP doesn\'t ignore blockchain fundamentals — it makes them better. Privacy isn\'t hiding, it\'s protection.',
+  },
+  soloFounderPhilosophy: {
+    title: 'Why Solo?',
+    content: 'Many doubt solo founders. I think differently. After building with teams, I learned that wrong teams are more dangerous than external threats — they\'re internal ones. Good projects with good teams still die from lack of synchronization. Solo means pure execution.',
+    highlights: [
+      'No committee decisions',
+      'No synchronization overhead',
+      'Ship fast, iterate faster',
+    ],
+  },
+  vision: {
+    title: 'The Endgame',
+    timeline: '2028',
+    goals: [
+      'SIP as THE privacy standard — like HTTPS for Web3',
+      'Privacy toggle in top 10 wallets globally',
+      '"Privacy by SIP" recognized like "Secured by SSL"',
+    ],
   },
 }
 
@@ -230,6 +266,79 @@ export function FounderProfile(props: FounderProfileProps = {}) {
               <span className="text-purple-400">💡</span> About
             </h4>
             <p className="text-gray-300 text-sm leading-relaxed">{config.bio}</p>
+          </motion.div>
+        )}
+
+        {/* Origin Story */}
+        {config.originStory && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.3, delay: 0.25 }}
+            viewport={{ once: true }}
+            className="mt-6"
+          >
+            <h4 className="text-sm font-medium text-gray-400 mb-2 flex items-center gap-2">
+              <span className="text-purple-400">🔐</span> {config.originStory.title}
+            </h4>
+            <div className="p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-cyan-500/10 border border-purple-500/20">
+              <p className="text-gray-300 text-sm leading-relaxed italic">{config.originStory.content}</p>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Solo Founder Philosophy */}
+        {config.soloFounderPhilosophy && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.3, delay: 0.3 }}
+            viewport={{ once: true }}
+            className="mt-6"
+          >
+            <h4 className="text-sm font-medium text-gray-400 mb-2 flex items-center gap-2">
+              <span className="text-purple-400">⚡</span> {config.soloFounderPhilosophy.title}
+            </h4>
+            <p className="text-gray-300 text-sm leading-relaxed mb-3">{config.soloFounderPhilosophy.content}</p>
+            {config.soloFounderPhilosophy.highlights && (
+              <div className="flex flex-wrap gap-2">
+                {config.soloFounderPhilosophy.highlights.map((highlight) => (
+                  <span
+                    key={highlight}
+                    className="px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-medium"
+                  >
+                    {highlight}
+                  </span>
+                ))}
+              </div>
+            )}
+          </motion.div>
+        )}
+
+        {/* Vision */}
+        {config.vision && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.3, delay: 0.35 }}
+            viewport={{ once: true }}
+            className="mt-6"
+          >
+            <h4 className="text-sm font-medium text-gray-400 mb-2 flex items-center gap-2">
+              <span className="text-purple-400">🎯</span> {config.vision.title}
+              <span className="ml-auto text-xs text-cyan-400 font-mono">{config.vision.timeline}</span>
+            </h4>
+            <div className="space-y-2">
+              {config.vision.goals.map((goal, index) => (
+                <div
+                  key={index}
+                  className="flex items-start gap-2 p-3 rounded-lg bg-gray-800/50 border border-gray-700"
+                >
+                  <span className="text-green-400 text-sm">→</span>
+                  <span className="text-gray-300 text-sm">{goal}</span>
+                </div>
+              ))}
+            </div>
           </motion.div>
         )}
 
