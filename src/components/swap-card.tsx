@@ -4,7 +4,13 @@ import { useState, useMemo, useCallback } from 'react'
 import { PrivacyLevel } from '@sip-protocol/types'
 import { useQuote, useSwap, useBalance, getStatusMessage } from '@/hooks'
 import { useWalletStore, useSwapModeStore } from '@/stores'
-import { NETWORKS, parseAmount } from '@/lib'
+import {
+  NETWORKS,
+  parseAmount,
+  validateZcashAddress,
+  getAddressTypeLabel,
+  getPrivacyColorClass,
+} from '@/lib'
 import { TransactionStatus } from '@/components/transaction-status'
 import { SwapModeToggle } from '@/components/swap-mode-toggle'
 import { StealthAddressDisplay } from '@/components/stealth-address-display'
@@ -114,6 +120,18 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
   const isSuccess = status === 'success'
   const isError = status === 'error'
   const isZecDestination = toToken.symbol === 'ZEC'
+
+  // Zcash address validation
+  const zecValidation = useMemo(() => {
+    if (!isZecDestination || !zecRecipient.trim()) {
+      return null
+    }
+    return validateZcashAddress(zecRecipient)
+  }, [isZecDestination, zecRecipient])
+
+  // Check if ZEC address is valid (required for ZEC swaps)
+  const isZecAddressValid = !isZecDestination || (zecValidation?.isValid ?? false)
+  const isZecTransparent = zecValidation?.type === 'transparent'
 
   const handleSwap = async () => {
     if (!isConnected) {
@@ -292,17 +310,93 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
             </span>
             <span className="text-xs text-yellow-500">Required for ZEC</span>
           </div>
-          <input
-            type="text"
-            value={zecRecipient}
-            onChange={(e) => setZecRecipient(e.target.value)}
-            placeholder="Enter z-address (zs1...) or t-address (t1...)"
-            data-testid="zec-recipient-input"
-            className="w-full rounded-lg bg-gray-700/50 px-3 py-2 text-sm outline-none placeholder:text-gray-500 focus:ring-1 focus:ring-yellow-500/50"
-          />
-          <p className="mt-2 text-xs text-gray-500">
-            Use a <span className="text-yellow-500">z-address</span> for full privacy or <span className="text-gray-400">t-address</span> for transparent
-          </p>
+
+          {/* Input with validation indicator */}
+          <div className="relative">
+            <input
+              type="text"
+              value={zecRecipient}
+              onChange={(e) => setZecRecipient(e.target.value)}
+              placeholder="Enter z-address (zs1...) or t-address (t1...)"
+              data-testid="zec-recipient-input"
+              className={`w-full rounded-lg bg-gray-700/50 px-3 py-2 pr-10 text-sm outline-none placeholder:text-gray-500 transition-all ${
+                zecValidation
+                  ? zecValidation.isValid
+                    ? 'ring-1 ring-green-500/50'
+                    : 'ring-1 ring-red-500/50'
+                  : 'focus:ring-1 focus:ring-yellow-500/50'
+              }`}
+            />
+            {/* Validation Icon */}
+            {zecRecipient.trim() && (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                {zecValidation?.isValid ? (
+                  <CheckCircleIcon className="h-5 w-5 text-green-400" data-testid="zec-valid-icon" />
+                ) : (
+                  <XCircleIcon className="h-5 w-5 text-red-400" data-testid="zec-invalid-icon" />
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Validation Status */}
+          {zecValidation && (
+            <div className="mt-2 space-y-1">
+              {zecValidation.isValid ? (
+                <>
+                  {/* Address Type Label */}
+                  <div className="flex items-center gap-2 text-xs">
+                    <span className="text-gray-500">Type:</span>
+                    <span className={getPrivacyColorClass(zecValidation.type)}>
+                      {getAddressTypeLabel(zecValidation.type)}
+                    </span>
+                    {zecValidation.isTestnet && (
+                      <span className="rounded bg-amber-500/20 px-1.5 py-0.5 text-amber-400">
+                        Testnet
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Transparent Address Warning */}
+                  {isZecTransparent && (
+                    <div
+                      className="flex items-start gap-2 rounded-lg border border-orange-500/30 bg-orange-500/10 p-2 mt-2"
+                      data-testid="zec-transparent-warning"
+                    >
+                      <WarningIcon className="mt-0.5 h-4 w-4 flex-shrink-0 text-orange-400" />
+                      <div className="text-xs text-orange-400">
+                        <strong>Privacy Warning:</strong> Transparent addresses expose transaction details
+                        publicly. Use a <span className="text-yellow-400">zs1...</span> (Sapling) or{' '}
+                        <span className="text-purple-400">u1...</span> (Unified) address for privacy.
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Privacy Note for shielded addresses */}
+                  {!isZecTransparent && zecValidation.privacyNote && (
+                    <p className="text-xs text-green-400/80 mt-1">
+                      <ShieldIcon className="inline h-3 w-3 mr-1" />
+                      {zecValidation.privacyNote}
+                    </p>
+                  )}
+                </>
+              ) : (
+                /* Error Message */
+                <p className="flex items-center gap-1 text-xs text-red-400" data-testid="zec-error-message">
+                  <XCircleIcon className="h-3 w-3" />
+                  {zecValidation.error}
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Help Text when no input */}
+          {!zecRecipient.trim() && (
+            <p className="mt-2 text-xs text-gray-500">
+              Use a <span className="text-purple-400">u1...</span> (unified) or{' '}
+              <span className="text-yellow-500">zs1...</span> (sapling) for full privacy
+            </p>
+          )}
         </div>
       )}
 
@@ -371,12 +465,12 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
       {!isSuccess && (
         <button
           onClick={handleSwap}
-          disabled={(!amount || isSwapping || hasInsufficientBalance) && isConnected}
+          disabled={(!amount || isSwapping || hasInsufficientBalance || !isZecAddressValid) && isConnected}
           data-testid="swap-button"
           className={`w-full rounded-xl py-4 text-lg font-semibold transition-all ${
             !isConnected
               ? 'bg-purple-600 text-white hover:bg-purple-700'
-              : !amount || hasInsufficientBalance
+              : !amount || hasInsufficientBalance || !isZecAddressValid
                 ? 'cursor-not-allowed bg-gray-800 text-gray-500'
                 : isSwapping
                   ? 'cursor-wait bg-purple-600/50 text-white'
@@ -389,6 +483,8 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
             <span>Connect Wallet</span>
           ) : hasInsufficientBalance ? (
             <span>Insufficient Balance</span>
+          ) : !isZecAddressValid ? (
+            <span>Enter Valid Zcash Address</span>
           ) : isSwapping ? (
             <span className="flex items-center justify-center gap-2">
               <LoadingSpinner />
@@ -605,6 +701,30 @@ function LoadingSpinner() {
         className="opacity-75"
         fill="currentColor"
         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+      />
+    </svg>
+  )
+}
+
+function CheckCircleIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
+    </svg>
+  )
+}
+
+function XCircleIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
       />
     </svg>
   )

@@ -41,3 +41,12 @@ export {
 } from './wallet-deposit'
 
 export { logger } from './logger'
+
+export {
+  validateZcashAddress,
+  isShieldedAddress,
+  getAddressTypeLabel,
+  getPrivacyColorClass,
+  type ZcashAddressType,
+  type ZcashValidationResult,
+} from './zcash-validation'
