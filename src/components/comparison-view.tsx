@@ -28,14 +28,14 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
   return (
     <div className="space-y-6">
       {/* ZachXBT Attribution Banner */}
-      <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4">
-        <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-amber-500/20">
-            <AlertIcon className="h-5 w-5 text-amber-400" />
+      <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 sm:rounded-xl sm:p-4">
+        <div className="flex items-start gap-2 sm:gap-3">
+          <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-amber-500/20 sm:h-10 sm:w-10">
+            <AlertIcon className="h-4 w-4 text-amber-400 sm:h-5 sm:w-5" />
           </div>
-          <div>
-            <p className="font-semibold text-amber-300">Real Vulnerability</p>
-            <p className="mt-1 text-sm text-amber-400/80">
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-amber-300 sm:text-base">Real Vulnerability</p>
+            <p className="mt-1 text-xs leading-relaxed text-amber-400/80 sm:text-sm">
               This refund address linkability issue was{' '}
               <a
                 href="https://x.com/zachxbt/status/1980612190609576229"
@@ -53,16 +53,16 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
       </div>
 
       {/* Side-by-Side Comparison */}
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
         {/* BEFORE SIP (Vulnerable) */}
-        <div className="rounded-2xl border-2 border-red-500/40 bg-gradient-to-b from-red-950/20 to-gray-900/50 p-6">
-          <div className="mb-6 flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/20">
-              <CrossIcon className="h-6 w-6 text-red-400" />
+        <div className="rounded-xl border-2 border-red-500/40 bg-gradient-to-b from-red-950/20 to-gray-900/50 p-4 sm:rounded-2xl sm:p-6">
+          <div className="mb-4 flex items-center gap-2 sm:mb-6 sm:gap-3">
+            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-red-500/20 sm:h-12 sm:w-12 sm:rounded-xl">
+              <CrossIcon className="h-5 w-5 text-red-400 sm:h-6 sm:w-6" />
             </div>
-            <div>
-              <h3 className="text-xl font-bold text-red-400">Before SIP</h3>
-              <p className="text-sm text-red-400/70">Privacy Vulnerable</p>
+            <div className="min-w-0">
+              <h3 className="text-lg font-bold text-red-400 sm:text-xl">Before SIP</h3>
+              <p className="text-xs text-red-400/70 sm:text-sm">Privacy Vulnerable</p>
             </div>
           </div>
 
@@ -74,14 +74,14 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
 
             {/* Sender */}
             <div
-              className={`flex items-center justify-between rounded-lg bg-gray-800/50 p-3 transition-all duration-500 ${
+              className={`flex flex-wrap items-center justify-between gap-2 rounded-lg bg-gray-800/50 p-2.5 transition-all duration-500 sm:p-3 ${
                 animationStep === 0 ? 'ring-2 ring-red-500/50' : ''
               }`}
             >
-              <span className="text-sm text-gray-400">Sender</span>
-              <div className="flex items-center gap-2">
-                <code className="font-mono text-sm text-red-400">0x742d...35Cc</code>
-                <span className="rounded bg-red-500/20 px-1.5 py-0.5 text-xs font-medium text-red-400">
+              <span className="text-xs text-gray-400 sm:text-sm">Sender</span>
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <code className="font-mono text-xs text-red-400 sm:text-sm">0x742d...35Cc</code>
+                <span className="rounded bg-red-500/20 px-1.5 py-0.5 text-[10px] font-medium text-red-400 sm:text-xs">
                   EXPOSED
                 </span>
               </div>
@@ -90,20 +90,20 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
             {/* Arrow down */}
             <div className="flex justify-center">
               <ArrowDown
-                className={`h-6 w-6 transition-all duration-500 ${
-                  animationStep === 1 ? 'text-red-400 scale-125' : 'text-gray-600'
+                className={`h-5 w-5 transition-all duration-500 sm:h-6 sm:w-6 ${
+                  animationStep === 1 ? 'scale-125 text-red-400' : 'text-gray-600'
                 }`}
               />
             </div>
 
             {/* Shielded Pool */}
             <div
-              className={`flex items-center justify-between rounded-lg bg-gray-800/50 p-3 transition-all duration-500 ${
+              className={`flex flex-wrap items-center justify-between gap-2 rounded-lg bg-gray-800/50 p-2.5 transition-all duration-500 sm:p-3 ${
                 animationStep === 1 ? 'ring-2 ring-red-500/50' : ''
               }`}
             >
-              <span className="text-sm text-gray-400">Shielded Pool</span>
-              <span className="text-sm text-gray-500">
+              <span className="text-xs text-gray-400 sm:text-sm">Shielded Pool</span>
+              <span className="text-xs text-gray-500 sm:text-sm">
                 (privacy should be here)
               </span>
             </div>
@@ -111,24 +111,24 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
             {/* Arrow down */}
             <div className="flex justify-center">
               <ArrowDown
-                className={`h-6 w-6 transition-all duration-500 ${
-                  animationStep === 2 ? 'text-red-400 scale-125' : 'text-gray-600'
+                className={`h-5 w-5 transition-all duration-500 sm:h-6 sm:w-6 ${
+                  animationStep === 2 ? 'scale-125 text-red-400' : 'text-gray-600'
                 }`}
               />
             </div>
 
             {/* Refund Address - THE PROBLEM */}
             <div
-              className={`relative flex items-center justify-between rounded-lg border-2 border-dashed border-red-500/50 bg-red-950/30 p-3 transition-all duration-500 ${
+              className={`relative flex flex-wrap items-center justify-between gap-2 rounded-lg border-2 border-dashed border-red-500/50 bg-red-950/30 p-2.5 transition-all duration-500 sm:p-3 ${
                 animationStep === 2 || animationStep === 3
                   ? 'ring-2 ring-red-500'
                   : ''
               }`}
             >
-              <span className="text-sm text-gray-400">Refund</span>
-              <div className="flex items-center gap-2">
-                <code className="font-mono text-sm text-red-400">0x742d...35Cc</code>
-                <span className="animate-pulse rounded bg-red-500 px-1.5 py-0.5 text-xs font-bold text-white">
+              <span className="text-xs text-gray-400 sm:text-sm">Refund</span>
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <code className="font-mono text-xs text-red-400 sm:text-sm">0x742d...35Cc</code>
+                <span className="animate-pulse rounded bg-red-500 px-1.5 py-0.5 text-[10px] font-bold text-white sm:text-xs">
                   SAME!
                 </span>
               </div>
@@ -136,85 +136,92 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
           </div>
 
           {/* Linkage Visualization */}
-          <div className="mt-6 rounded-xl border border-red-500/30 bg-red-950/20 p-4">
-            <div className="mb-3 flex items-center gap-2">
-              <LinkIcon className="h-4 w-4 text-red-400" />
-              <span className="text-sm font-semibold text-red-400">
+          <div className="mt-4 rounded-lg border border-red-500/30 bg-red-950/20 p-3 sm:mt-6 sm:rounded-xl sm:p-4">
+            <div className="mb-2 flex items-center gap-2 sm:mb-3">
+              <LinkIcon className="h-3.5 w-3.5 text-red-400 sm:h-4 sm:w-4" />
+              <span className="text-xs font-semibold text-red-400 sm:text-sm">
                 Linkability Chain
               </span>
             </div>
-            <div className="flex items-center justify-center gap-2 text-xs">
-              <span className="rounded bg-red-500/20 px-2 py-1 font-mono text-red-400">
+            <div className="flex flex-wrap items-center justify-center gap-1.5 text-[10px] sm:gap-2 sm:text-xs">
+              <span className="rounded bg-red-500/20 px-1.5 py-0.5 font-mono text-red-400 sm:px-2 sm:py-1">
                 Sender
               </span>
               <span className="text-red-400">=</span>
-              <span className="rounded bg-red-500/20 px-2 py-1 font-mono text-red-400">
+              <span className="rounded bg-red-500/20 px-1.5 py-0.5 font-mono text-red-400 sm:px-2 sm:py-1">
                 Refund
               </span>
               <span className="text-red-400">=</span>
-              <span className="rounded bg-red-500/20 px-2 py-1 font-mono text-red-400">
+              <span className="rounded bg-red-500/20 px-1.5 py-0.5 font-mono text-red-400 sm:px-2 sm:py-1">
                 LINKED!
               </span>
             </div>
-            <p className="mt-3 text-center text-xs text-red-400/70">
+            <p className="mt-2 text-center text-[10px] text-red-400/70 sm:mt-3 sm:text-xs">
               Anyone can trace funds back to you
             </p>
           </div>
 
           {/* What's Exposed */}
-          <div className="mt-4 space-y-2">
-            <p className="text-xs font-medium uppercase tracking-wider text-gray-500">
+          <div className="mt-3 space-y-1.5 sm:mt-4 sm:space-y-2">
+            <p className="text-[10px] font-medium uppercase tracking-wider text-gray-500 sm:text-xs">
               Chain Analysis Sees
             </p>
-            <ul className="space-y-1.5 text-sm text-red-400">
-              <li className="flex items-center gap-2">
-                <CrossIcon className="h-3 w-3" />
-                Your wallet address
+            <ul className="space-y-1 text-xs text-red-400 sm:space-y-1.5 sm:text-sm">
+              <li className="flex items-center gap-1.5 sm:gap-2">
+                <CrossIcon className="h-2.5 w-2.5 flex-shrink-0 sm:h-3 sm:w-3" />
+                <span>Your wallet address</span>
               </li>
-              <li className="flex items-center gap-2">
-                <CrossIcon className="h-3 w-3" />
-                Transaction amounts
+              <li className="flex items-center gap-1.5 sm:gap-2">
+                <CrossIcon className="h-2.5 w-2.5 flex-shrink-0 sm:h-3 sm:w-3" />
+                <span>Transaction amounts</span>
               </li>
-              <li className="flex items-center gap-2">
-                <CrossIcon className="h-3 w-3" />
-                Complete transaction history
+              <li className="flex items-center gap-1.5 sm:gap-2">
+                <CrossIcon className="h-2.5 w-2.5 flex-shrink-0 sm:h-3 sm:w-3" />
+                <span>Complete transaction history</span>
               </li>
-              <li className="flex items-center gap-2">
-                <CrossIcon className="h-3 w-3" />
-                Shielded pool activity linked
+              <li className="flex items-center gap-1.5 sm:gap-2">
+                <CrossIcon className="h-2.5 w-2.5 flex-shrink-0 sm:h-3 sm:w-3" />
+                <span>Shielded pool activity linked</span>
               </li>
             </ul>
           </div>
         </div>
 
+        {/* Mobile divider between Before and After */}
+        <div className="flex items-center justify-center py-2 lg:hidden">
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gray-700 to-transparent" />
+          <span className="px-4 text-xs text-gray-500">VS</span>
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gray-700 to-transparent" />
+        </div>
+
         {/* AFTER SIP (Protected) */}
         <div
-          className={`rounded-2xl border-2 p-6 transition-all duration-500 ${
+          className={`rounded-xl border-2 p-4 transition-all duration-500 sm:rounded-2xl sm:p-6 ${
             isShielded
               ? 'border-green-500/40 bg-gradient-to-b from-green-950/20 to-gray-900/50'
               : 'border-gray-700 bg-gray-900/50'
           }`}
         >
-          <div className="mb-6 flex items-center gap-3">
+          <div className="mb-4 flex items-center gap-2 sm:mb-6 sm:gap-3">
             <div
-              className={`flex h-12 w-12 items-center justify-center rounded-xl transition-colors ${
+              className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg transition-colors sm:h-12 sm:w-12 sm:rounded-xl ${
                 isShielded ? 'bg-green-500/20' : 'bg-gray-700'
               }`}
             >
               <ShieldIcon
-                className={`h-6 w-6 ${isShielded ? 'text-green-400' : 'text-gray-400'}`}
+                className={`h-5 w-5 sm:h-6 sm:w-6 ${isShielded ? 'text-green-400' : 'text-gray-400'}`}
               />
             </div>
-            <div>
+            <div className="min-w-0">
               <h3
-                className={`text-xl font-bold ${
+                className={`text-lg font-bold sm:text-xl ${
                   isShielded ? 'text-green-400' : 'text-gray-400'
                 }`}
               >
                 After SIP
               </h3>
               <p
-                className={`text-sm ${
+                className={`text-xs sm:text-sm ${
                   isShielded ? 'text-green-400/70' : 'text-gray-500'
                 }`}
               >
@@ -224,34 +231,34 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
           </div>
 
           {/* Transaction Flow */}
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             <p className="text-xs font-medium uppercase tracking-wider text-gray-500">
               Transaction Flow
             </p>
 
             {/* Sender */}
             <div
-              className={`flex items-center justify-between rounded-lg bg-gray-800/50 p-3 transition-all duration-500 ${
+              className={`flex flex-wrap items-center justify-between gap-2 rounded-lg bg-gray-800/50 p-2.5 transition-all duration-500 sm:p-3 ${
                 animationStep === 0 && isShielded ? 'ring-2 ring-green-500/50' : ''
               }`}
             >
-              <span className="text-sm text-gray-400">Sender</span>
-              <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-400 sm:text-sm">Sender</span>
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 {isShielded ? (
                   <>
-                    <code className="font-mono text-sm text-green-400">
+                    <code className="font-mono text-xs text-green-400 sm:text-sm">
                       ••••••••••••
                     </code>
-                    <span className="rounded bg-green-500/20 px-1.5 py-0.5 text-xs font-medium text-green-400">
+                    <span className="rounded bg-green-500/20 px-1.5 py-0.5 text-[10px] font-medium text-green-400 sm:text-xs">
                       HIDDEN
                     </span>
                   </>
                 ) : (
                   <>
-                    <code className="font-mono text-sm text-gray-400">
+                    <code className="font-mono text-xs text-gray-400 sm:text-sm">
                       0x742d...35Cc
                     </code>
-                    <span className="rounded bg-gray-600 px-1.5 py-0.5 text-xs text-gray-300">
+                    <span className="rounded bg-gray-600 px-1.5 py-0.5 text-[10px] text-gray-300 sm:text-xs">
                       visible
                     </span>
                   </>
@@ -262,9 +269,9 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
             {/* Arrow down */}
             <div className="flex justify-center">
               <ArrowDown
-                className={`h-6 w-6 transition-all duration-500 ${
+                className={`h-5 w-5 transition-all duration-500 sm:h-6 sm:w-6 ${
                   animationStep === 1 && isShielded
-                    ? 'text-green-400 scale-125'
+                    ? 'scale-125 text-green-400'
                     : 'text-gray-600'
                 }`}
               />
@@ -272,13 +279,13 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
 
             {/* Shielded Pool */}
             <div
-              className={`flex items-center justify-between rounded-lg p-3 transition-all duration-500 ${
+              className={`flex flex-wrap items-center justify-between gap-2 rounded-lg p-2.5 transition-all duration-500 sm:p-3 ${
                 isShielded ? 'bg-green-950/30' : 'bg-gray-800/50'
               } ${animationStep === 1 && isShielded ? 'ring-2 ring-green-500/50' : ''}`}
             >
-              <span className="text-sm text-gray-400">Shielded Pool</span>
+              <span className="text-xs text-gray-400 sm:text-sm">Shielded Pool</span>
               <span
-                className={`text-sm ${isShielded ? 'text-green-400' : 'text-gray-500'}`}
+                className={`text-xs sm:text-sm ${isShielded ? 'text-green-400' : 'text-gray-500'}`}
               >
                 {isShielded ? '(privacy enforced)' : '(privacy should be here)'}
               </span>
@@ -287,9 +294,9 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
             {/* Arrow down */}
             <div className="flex justify-center">
               <ArrowDown
-                className={`h-6 w-6 transition-all duration-500 ${
+                className={`h-5 w-5 transition-all duration-500 sm:h-6 sm:w-6 ${
                   animationStep === 2 && isShielded
-                    ? 'text-green-400 scale-125'
+                    ? 'scale-125 text-green-400'
                     : 'text-gray-600'
                 }`}
               />
@@ -297,7 +304,7 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
 
             {/* Refund Address - THE FIX */}
             <div
-              className={`flex items-center justify-between rounded-lg border-2 border-dashed p-3 transition-all duration-500 ${
+              className={`flex flex-wrap items-center justify-between gap-2 rounded-lg border-2 border-dashed p-2.5 transition-all duration-500 sm:p-3 ${
                 isShielded
                   ? 'border-green-500/50 bg-green-950/30'
                   : 'border-gray-600 bg-gray-800/50'
@@ -307,23 +314,23 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
                   : ''
               }`}
             >
-              <span className="text-sm text-gray-400">Refund</span>
-              <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-400 sm:text-sm">Refund</span>
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 {isShielded ? (
                   <>
-                    <code className="font-mono text-sm text-green-400">
+                    <code className="font-mono text-xs text-green-400 sm:text-sm">
                       0x8f2a...9b1c
                     </code>
-                    <span className="rounded bg-green-500 px-1.5 py-0.5 text-xs font-bold text-white">
+                    <span className="rounded bg-green-500 px-1.5 py-0.5 text-[10px] font-bold text-white sm:text-xs">
                       NEW!
                     </span>
                   </>
                 ) : (
                   <>
-                    <code className="font-mono text-sm text-gray-400">
+                    <code className="font-mono text-xs text-gray-400 sm:text-sm">
                       0x742d...35Cc
                     </code>
-                    <span className="rounded bg-gray-600 px-1.5 py-0.5 text-xs text-gray-300">
+                    <span className="rounded bg-gray-600 px-1.5 py-0.5 text-[10px] text-gray-300 sm:text-xs">
                       same
                     </span>
                   </>
@@ -334,27 +341,27 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
 
           {/* Unlinkability Visualization */}
           <div
-            className={`mt-6 rounded-xl border p-4 transition-colors ${
+            className={`mt-4 rounded-lg border p-3 transition-colors sm:mt-6 sm:rounded-xl sm:p-4 ${
               isShielded
                 ? 'border-green-500/30 bg-green-950/20'
                 : 'border-gray-700 bg-gray-800/30'
             }`}
           >
-            <div className="mb-3 flex items-center gap-2">
+            <div className="mb-2 flex items-center gap-2 sm:mb-3">
               <UnlinkIcon
-                className={`h-4 w-4 ${isShielded ? 'text-green-400' : 'text-gray-500'}`}
+                className={`h-3.5 w-3.5 sm:h-4 sm:w-4 ${isShielded ? 'text-green-400' : 'text-gray-500'}`}
               />
               <span
-                className={`text-sm font-semibold ${
+                className={`text-xs font-semibold sm:text-sm ${
                   isShielded ? 'text-green-400' : 'text-gray-500'
                 }`}
               >
                 {isShielded ? 'No Linkability' : 'Linkable (transparent)'}
               </span>
             </div>
-            <div className="flex items-center justify-center gap-2 text-xs">
+            <div className="flex flex-wrap items-center justify-center gap-1.5 text-[10px] sm:gap-2 sm:text-xs">
               <span
-                className={`rounded px-2 py-1 font-mono ${
+                className={`rounded px-1.5 py-0.5 font-mono sm:px-2 sm:py-1 ${
                   isShielded
                     ? 'bg-green-500/20 text-green-400'
                     : 'bg-gray-700 text-gray-400'
@@ -366,7 +373,7 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
                 {isShielded ? '≠' : '='}
               </span>
               <span
-                className={`rounded px-2 py-1 font-mono ${
+                className={`rounded px-1.5 py-0.5 font-mono sm:px-2 sm:py-1 ${
                   isShielded
                     ? 'bg-green-500/20 text-green-400'
                     : 'bg-gray-700 text-gray-400'
@@ -378,7 +385,7 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
                 =
               </span>
               <span
-                className={`rounded px-2 py-1 font-mono ${
+                className={`rounded px-1.5 py-0.5 font-mono sm:px-2 sm:py-1 ${
                   isShielded
                     ? 'bg-green-500/20 text-green-400'
                     : 'bg-gray-700 text-gray-400'
@@ -388,7 +395,7 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
               </span>
             </div>
             <p
-              className={`mt-3 text-center text-xs ${
+              className={`mt-2 text-center text-[10px] sm:mt-3 sm:text-xs ${
                 isShielded ? 'text-green-400/70' : 'text-gray-500'
               }`}
             >
@@ -399,36 +406,36 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
           </div>
 
           {/* What's Protected */}
-          <div className="mt-4 space-y-2">
-            <p className="text-xs font-medium uppercase tracking-wider text-gray-500">
+          <div className="mt-3 space-y-1.5 sm:mt-4 sm:space-y-2">
+            <p className="text-[10px] font-medium uppercase tracking-wider text-gray-500 sm:text-xs">
               Chain Analysis Sees
             </p>
             {isShielded ? (
-              <ul className="space-y-1.5 text-sm text-green-400">
-                <li className="flex items-center gap-2">
-                  <CheckIcon className="h-3 w-3" />
-                  Intent exists (not who created it)
+              <ul className="space-y-1 text-xs text-green-400 sm:space-y-1.5 sm:text-sm">
+                <li className="flex items-center gap-1.5 sm:gap-2">
+                  <CheckIcon className="h-2.5 w-2.5 flex-shrink-0 sm:h-3 sm:w-3" />
+                  <span>Intent exists (not who created it)</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <CheckIcon className="h-3 w-3" />
-                  Commitment (not actual amount)
+                <li className="flex items-center gap-1.5 sm:gap-2">
+                  <CheckIcon className="h-2.5 w-2.5 flex-shrink-0 sm:h-3 sm:w-3" />
+                  <span>Commitment (not actual amount)</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <CheckIcon className="h-3 w-3" />
-                  Stealth address (not your wallet)
+                <li className="flex items-center gap-1.5 sm:gap-2">
+                  <CheckIcon className="h-2.5 w-2.5 flex-shrink-0 sm:h-3 sm:w-3" />
+                  <span>Stealth address (not your wallet)</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <CheckIcon className="h-3 w-3" />
-                  Nothing linkable
+                <li className="flex items-center gap-1.5 sm:gap-2">
+                  <CheckIcon className="h-2.5 w-2.5 flex-shrink-0 sm:h-3 sm:w-3" />
+                  <span>Nothing linkable</span>
                 </li>
               </ul>
             ) : (
-              <ul className="space-y-1.5 text-sm text-gray-400">
-                <li className="flex items-center gap-2">
-                  <CrossIcon className="h-3 w-3 text-gray-500" />
-                  Everything (transparent mode)
+              <ul className="space-y-1 text-xs text-gray-400 sm:space-y-1.5 sm:text-sm">
+                <li className="flex items-center gap-1.5 sm:gap-2">
+                  <CrossIcon className="h-2.5 w-2.5 flex-shrink-0 text-gray-500 sm:h-3 sm:w-3" />
+                  <span>Everything (transparent mode)</span>
                 </li>
-                <li className="flex items-center gap-2">
+                <li className="flex items-center gap-1.5 sm:gap-2">
                   <span className="text-xs">Toggle to Shielded for privacy</span>
                 </li>
               </ul>
@@ -437,8 +444,8 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
 
           {/* Compliant Mode Note */}
           {privacyLevel === PrivacyLevel.COMPLIANT && (
-            <div className="mt-4 rounded-lg border border-blue-500/30 bg-blue-950/20 p-3">
-              <p className="text-sm text-blue-300">
+            <div className="mt-3 rounded-lg border border-blue-500/30 bg-blue-950/20 p-2.5 sm:mt-4 sm:p-3">
+              <p className="text-xs text-blue-300 sm:text-sm">
                 <strong>Compliant Mode:</strong> Auditors with your viewing key can
                 verify transactions, but public cannot link them.
               </p>
@@ -448,37 +455,37 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
       </div>
 
       {/* Technical Summary */}
-      <div className="rounded-xl border border-purple-500/30 bg-purple-950/10 p-6">
-        <h4 className="mb-4 text-lg font-semibold text-purple-300">
+      <div className="rounded-lg border border-purple-500/30 bg-purple-950/10 p-4 sm:rounded-xl sm:p-6">
+        <h4 className="mb-3 text-base font-semibold text-purple-300 sm:mb-4 sm:text-lg">
           How SIP Fixes This
         </h4>
-        <div className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-lg bg-gray-800/50 p-4">
-            <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-purple-500/20">
-              <span className="text-sm font-bold text-purple-400">1</span>
+        <div className="grid gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="rounded-lg bg-gray-800/50 p-3 sm:p-4">
+            <div className="mb-2 flex h-7 w-7 items-center justify-center rounded-lg bg-purple-500/20 sm:h-8 sm:w-8">
+              <span className="text-xs font-bold text-purple-400 sm:text-sm">1</span>
             </div>
-            <h5 className="font-medium text-gray-200">Stealth Addresses</h5>
-            <p className="mt-1 text-xs text-gray-400">
+            <h5 className="text-sm font-medium text-gray-200 sm:text-base">Stealth Addresses</h5>
+            <p className="mt-1 text-[11px] leading-relaxed text-gray-400 sm:text-xs">
               Each refund gets a unique, one-time address that cannot be linked to
               your wallet.
             </p>
           </div>
-          <div className="rounded-lg bg-gray-800/50 p-4">
-            <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-purple-500/20">
-              <span className="text-sm font-bold text-purple-400">2</span>
+          <div className="rounded-lg bg-gray-800/50 p-3 sm:p-4">
+            <div className="mb-2 flex h-7 w-7 items-center justify-center rounded-lg bg-purple-500/20 sm:h-8 sm:w-8">
+              <span className="text-xs font-bold text-purple-400 sm:text-sm">2</span>
             </div>
-            <h5 className="font-medium text-gray-200">Pedersen Commitments</h5>
-            <p className="mt-1 text-xs text-gray-400">
+            <h5 className="text-sm font-medium text-gray-200 sm:text-base">Pedersen Commitments</h5>
+            <p className="mt-1 text-[11px] leading-relaxed text-gray-400 sm:text-xs">
               Amounts are hidden using cryptographic commitments - verifiable but
               not readable.
             </p>
           </div>
-          <div className="rounded-lg bg-gray-800/50 p-4">
-            <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-purple-500/20">
-              <span className="text-sm font-bold text-purple-400">3</span>
+          <div className="rounded-lg bg-gray-800/50 p-3 sm:col-span-2 sm:p-4 lg:col-span-1">
+            <div className="mb-2 flex h-7 w-7 items-center justify-center rounded-lg bg-purple-500/20 sm:h-8 sm:w-8">
+              <span className="text-xs font-bold text-purple-400 sm:text-sm">3</span>
             </div>
-            <h5 className="font-medium text-gray-200">Viewing Keys</h5>
-            <p className="mt-1 text-xs text-gray-400">
+            <h5 className="text-sm font-medium text-gray-200 sm:text-base">Viewing Keys</h5>
+            <p className="mt-1 text-[11px] leading-relaxed text-gray-400 sm:text-xs">
               Optional selective disclosure for compliance - privacy with
               auditability when needed.
             </p>
