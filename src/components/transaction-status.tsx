@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import type { SwapStatus } from '@/hooks'
 import type { NetworkId } from '@/lib'
 import { NETWORKS } from '@/lib'
+import { TransactionTimeline } from './transaction-timeline'
 
 interface TransactionStatusProps {
   status: SwapStatus
@@ -112,24 +113,13 @@ export function TransactionStatus({
             </div>
           </div>
 
-          {/* Progress steps */}
-          <div className="mt-4 flex items-center justify-between text-xs">
-            <StatusStep
-              label="Prepare"
-              isActive={status === 'confirming'}
-              isComplete={status !== 'confirming'}
-            />
-            <StatusDivider isComplete={status !== 'confirming'} />
-            <StatusStep
-              label="Sign"
-              isActive={status === 'signing'}
-              isComplete={status === 'pending'}
-            />
-            <StatusDivider isComplete={status === 'pending'} />
-            <StatusStep
-              label={isShielded ? 'Shield' : 'Submit'}
-              isActive={status === 'pending'}
-              isComplete={false}
+          {/* Full transaction timeline */}
+          <div className="mt-4 pt-4 border-t border-purple-500/20">
+            <TransactionTimeline
+              status={status}
+              isShielded={isShielded}
+              isProduction={false}
+              startTime={startedAt || undefined}
             />
           </div>
 
@@ -230,13 +220,14 @@ export function TransactionStatus({
             </div>
           )}
 
-          {/* Production progress steps */}
-          <div className="mt-4 flex items-center justify-between text-xs">
-            <StatusStep label="Intent" isActive={false} isComplete={true} />
-            <StatusDivider isComplete={true} />
-            <StatusStep label="Deposit" isActive={true} isComplete={false} />
-            <StatusDivider isComplete={false} />
-            <StatusStep label="Settle" isActive={false} isComplete={false} />
+          {/* Full transaction timeline */}
+          <div className="mt-4 pt-4 border-t border-amber-500/20">
+            <TransactionTimeline
+              status={status}
+              isShielded={isShielded}
+              isProduction={true}
+              startTime={startedAt || undefined}
+            />
           </div>
         </div>
       )}
@@ -259,13 +250,14 @@ export function TransactionStatus({
             </div>
           </div>
 
-          {/* Production progress steps */}
-          <div className="mt-4 flex items-center justify-between text-xs">
-            <StatusStep label="Intent" isActive={false} isComplete={true} />
-            <StatusDivider isComplete={true} />
-            <StatusStep label="Deposit" isActive={false} isComplete={true} />
-            <StatusDivider isComplete={true} />
-            <StatusStep label="Settle" isActive={true} isComplete={false} />
+          {/* Full transaction timeline */}
+          <div className="mt-4 pt-4 border-t border-blue-500/20">
+            <TransactionTimeline
+              status={status}
+              isShielded={isShielded}
+              isProduction={true}
+              startTime={startedAt || undefined}
+            />
           </div>
 
           {/* Timer */}
@@ -442,46 +434,6 @@ export function TransactionStatus({
   )
 }
 
-function StatusStep({
-  label,
-  isActive,
-  isComplete,
-}: {
-  label: string
-  isActive: boolean
-  isComplete: boolean
-}) {
-  return (
-    <div className="flex flex-col items-center gap-1">
-      <div
-        className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium ${
-          isComplete
-            ? 'bg-purple-500 text-white'
-            : isActive
-              ? 'border-2 border-purple-500 text-purple-400'
-              : 'border border-purple-500/30 text-purple-500/50'
-        }`}
-      >
-        {isComplete ? <CheckIcon className="h-3 w-3" /> : null}
-      </div>
-      <span
-        className={`${
-          isActive ? 'text-purple-300' : isComplete ? 'text-purple-400' : 'text-purple-500/50'
-        }`}
-      >
-        {label}
-      </span>
-    </div>
-  )
-}
-
-function StatusDivider({ isComplete }: { isComplete: boolean }) {
-  return (
-    <div
-      className={`h-0.5 flex-1 mx-2 ${isComplete ? 'bg-purple-500' : 'bg-purple-500/30'}`}
-    />
-  )
-}
 
 /**
  * Live countdown timer with progress bar

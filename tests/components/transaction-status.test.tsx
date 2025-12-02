@@ -49,14 +49,16 @@ describe('TransactionStatus', () => {
 
     it('should show progress steps', () => {
       render(<TransactionStatus {...defaultProps} status="signing" />)
-      expect(screen.getByText('Prepare')).toBeInTheDocument()
-      expect(screen.getByText('Sign')).toBeInTheDocument()
-      expect(screen.getByText('Submit')).toBeInTheDocument()
+      // New timeline component shows full step names
+      expect(screen.getByText('Quote received')).toBeInTheDocument()
+      expect(screen.getByText('Confirm in wallet')).toBeInTheDocument()
+      expect(screen.getByText('Signing transaction')).toBeInTheDocument()
     })
 
-    it('should show Shield step when shielded', () => {
+    it('should show Shielding step when shielded', () => {
       render(<TransactionStatus {...defaultProps} status="pending" isShielded />)
-      expect(screen.getByText('Shield')).toBeInTheDocument()
+      // Shielded flow shows "Shielding" step with active styling
+      expect(screen.getByText('Shielding')).toBeInTheDocument()
     })
   })
 
