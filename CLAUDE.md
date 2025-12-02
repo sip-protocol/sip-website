@@ -16,7 +16,7 @@
 ```bash
 pnpm install              # Install dependencies
 pnpm dev                  # Dev server (localhost:3000)
-pnpm test -- --run        # Run tests (92 tests)
+pnpm test -- --run        # Run tests (123 tests)
 pnpm build                # Build for production
 pnpm typecheck            # Type check
 ```
@@ -28,22 +28,28 @@ pnpm typecheck            # Type check
 | Path | Description |
 |------|-------------|
 | `src/app/` | Next.js app router pages |
+| `src/app/sdk/` | SDK showcase page with syntax highlighting |
+| `src/app/grants/` | Grant pitch pages (Superteam, Solana Foundation) |
+| `src/app/pitch-deck/` | Investor pitch deck |
 | `src/components/` | React components (swap UI, wallet) |
 | `src/hooks/use-swap.ts` | Swap execution logic |
 | `src/hooks/use-quote.ts` | Quote fetching logic |
 | `src/stores/wallet-store.ts` | Wallet connection state |
 | `src/stores/toast-store.ts` | Toast notifications |
-| `tests/` | Test suites (92 tests) |
+| `tests/` | Test suites (123 tests) |
 
 ---
 
 ## Features
 
-- Wallet connection (Solana, Ethereum)
+- Wallet connection (Solana, Ethereum, Hardware wallets)
 - Quote fetching from NEAR Intents
 - Swap execution with privacy toggle
 - Transaction status tracking
 - Toast notifications
+- SDK showcase with interactive demos
+- Grant pitch pages with architecture diagrams
+- Pitch deck for investors
 
 ---
 
@@ -56,6 +62,7 @@ pnpm typecheck            # Type check
 | useQuote hook | 12 | `tests/hooks/use-quote.test.tsx` |
 | useSwap hook | 24 | `tests/hooks/use-swap.test.tsx` |
 | TransactionStatus | 21 | `tests/components/transaction-status.test.tsx` |
+| SwapCard | 31 | `tests/components/swap-card.test.tsx` |
 
 ---
 
@@ -79,4 +86,4 @@ pnpm typecheck            # Type check
 
 ---
 
-**Last Updated:** 2025-11-28
+**Last Updated:** 2025-12-02
