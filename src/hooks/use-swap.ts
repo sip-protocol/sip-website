@@ -44,10 +44,14 @@ export interface SwapResult {
   depositAmount: string | null
   /** Viewing key for compliant mode swaps (auditor access) */
   viewingKey: string | null
+  /** Unique swap ID for tracking */
+  swapId: string | null
   /** Execute the swap */
   execute: (params: SwapParams) => Promise<void>
   /** Reset the swap state */
   reset: () => void
+  /** Cancel the swap (before deposit) */
+  cancel: () => void
 }
 
 // Token decimals mapping
@@ -93,6 +97,7 @@ export function useSwap(): SwapResult {
   const [depositAddress, setDepositAddress] = useState<string | null>(null)
   const [depositAmount, setDepositAmount] = useState<string | null>(null)
   const [viewingKey, setViewingKey] = useState<string | null>(null)
+  const [swapId, setSwapId] = useState<string | null>(null)
   const currentSwapId = useRef<string | null>(null)
 
   const reset = useCallback(() => {
@@ -103,7 +108,21 @@ export function useSwap(): SwapResult {
     setDepositAddress(null)
     setDepositAmount(null)
     setViewingKey(null)
+    setSwapId(null)
+    currentSwapId.current = null
   }, [])
+
+  const cancel = useCallback(() => {
+    // Only allow cancel before deposit is made
+    if (status === 'confirming' || status === 'signing') {
+      // Update swap history to failed if exists
+      if (currentSwapId.current) {
+        updateSwapHistory(currentSwapId.current, { status: 'failed' })
+      }
+      reset()
+      toast.info('Swap Cancelled', 'Your swap has been cancelled')
+    }
+  }, [status, reset, updateSwapHistory])
 
   const execute = useCallback(async (params: SwapParams) => {
     // Block execution in preview mode
@@ -147,10 +166,11 @@ export function useSwap(): SwapResult {
       setTxChain(params.fromChain)
 
       // Track swap in history
-      const swapId = `swap-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
-      currentSwapId.current = swapId
+      const newSwapId = `swap-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
+      currentSwapId.current = newSwapId
+      setSwapId(newSwapId)
       addSwap({
-        id: swapId,
+        id: newSwapId,
         fromToken: params.fromToken,
         toToken: params.toToken,
         fromChain: params.fromChain,
@@ -309,8 +329,10 @@ export function useSwap(): SwapResult {
     depositAddress,
     depositAmount,
     viewingKey,
+    swapId,
     execute,
     reset,
+    cancel,
   }
 }
 

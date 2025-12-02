@@ -23,8 +23,12 @@ interface TransactionStatusProps {
   depositToken?: string | null
   /** Estimated completion time in seconds */
   estimatedTime?: number
+  /** Unique swap ID for tracking */
+  swapId?: string | null
   onReset: () => void
   onRetry: () => void
+  /** Cancel the current swap (before deposit) */
+  onCancel?: () => void
 }
 
 /**
@@ -44,8 +48,10 @@ export function TransactionStatus({
   depositAmount,
   depositToken,
   estimatedTime = 60,
+  swapId,
   onReset,
   onRetry,
+  onCancel,
 }: TransactionStatusProps) {
   const isSuccess = status === 'success'
   const isError = status === 'error'
@@ -111,6 +117,16 @@ export function TransactionStatus({
                 {getStatusDescription(status, isShielded)}
               </p>
             </div>
+            {/* Cancel button (pre-deposit) */}
+            {onCancel && status === 'confirming' && (
+              <button
+                onClick={onCancel}
+                className="rounded-lg px-3 py-1.5 text-sm text-gray-400 transition-colors hover:bg-gray-700/50 hover:text-white"
+                data-testid="cancel-swap-button"
+              >
+                Cancel
+              </button>
+            )}
           </div>
 
           {/* Full transaction timeline */}
@@ -422,12 +438,58 @@ export function TransactionStatus({
               <p className="text-sm text-red-400/80">{error}</p>
             </div>
           </div>
-          <button
-            onClick={onRetry}
-            className="mt-3 w-full rounded-lg border border-red-500/30 px-4 py-2 text-sm font-medium text-red-300 transition-colors hover:bg-red-500/10"
-          >
-            Try Again
-          </button>
+
+          {/* Refund notice for post-deposit failures */}
+          {depositAddress && (
+            <div className="mt-3 rounded-lg bg-amber-500/10 border border-amber-500/20 p-3">
+              <div className="flex items-start gap-2">
+                <RefundIcon className="h-4 w-4 text-amber-400 flex-shrink-0 mt-0.5" />
+                <div className="text-sm">
+                  <p className="font-medium text-amber-300">About Your Deposit</p>
+                  <p className="text-amber-400/80 mt-1">
+                    If you already sent funds, they will be automatically refunded to your wallet within 24 hours.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Recovery Actions */}
+          <div className="mt-4 space-y-2">
+            <button
+              onClick={onRetry}
+              className="w-full rounded-lg bg-purple-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-purple-500"
+              data-testid="retry-swap-button"
+            >
+              Retry Swap
+            </button>
+            <button
+              onClick={onReset}
+              className="w-full rounded-lg border border-gray-600 px-4 py-2.5 text-sm font-medium text-gray-300 transition-colors hover:bg-gray-800"
+              data-testid="new-swap-button"
+            >
+              Start New Swap
+            </button>
+            <a
+              href="https://discord.gg/sip-protocol"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-700 px-4 py-2.5 text-sm font-medium text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
+              data-testid="get-help-button"
+            >
+              <HelpIcon className="h-4 w-4" />
+              Get Help
+            </a>
+          </div>
+
+          {/* Transaction ID for support */}
+          {swapId && (
+            <div className="mt-4 pt-3 border-t border-red-500/20">
+              <p className="text-xs text-gray-500">
+                Transaction ID: <span className="font-mono text-gray-400">{swapId}</span>
+              </p>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -510,11 +572,26 @@ function TransactionTimer({
         </span>
       </div>
 
-      {/* Overtime warning */}
+      {/* Overtime warning with help options */}
       {isOvertime && elapsed > estimatedTime * 1.5 && (
-        <p className="mt-2 text-xs text-yellow-400/80 bg-yellow-500/10 rounded-lg px-2 py-1.5">
-          Don&apos;t worry, your transaction is still processing. Cross-chain swaps can sometimes take longer during high network activity.
-        </p>
+        <div className="mt-2 bg-yellow-500/10 rounded-lg p-3" data-testid="stuck-transaction-warning">
+          <p className="text-xs text-yellow-400/80">
+            Don&apos;t worry, your transaction is still processing. Cross-chain swaps can sometimes take longer during high network activity.
+          </p>
+          {elapsed > estimatedTime * 2 && (
+            <div className="mt-2 flex gap-2">
+              <a
+                href="https://discord.gg/sip-protocol"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 text-center rounded bg-yellow-500/20 px-2 py-1.5 text-xs font-medium text-yellow-300 transition-colors hover:bg-yellow-500/30"
+                data-testid="stuck-get-help"
+              >
+                Get Help
+              </a>
+            </div>
+          )}
+        </div>
       )}
     </div>
   )
@@ -695,6 +772,22 @@ function WarningIcon({ className }: { className?: string }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+    </svg>
+  )
+}
+
+function RefundIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+    </svg>
+  )
+}
+
+function HelpIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
     </svg>
   )
 }

@@ -137,11 +137,11 @@ describe('TransactionStatus', () => {
       expect(screen.getByText('Transaction was rejected by user')).toBeInTheDocument()
     })
 
-    it('should call onRetry when Try Again button clicked', () => {
+    it('should call onRetry when Retry Swap button clicked', () => {
       const onRetry = vi.fn()
       render(<TransactionStatus {...errorProps} onRetry={onRetry} />)
 
-      fireEvent.click(screen.getByText('Try Again'))
+      fireEvent.click(screen.getByText('Retry Swap'))
       expect(onRetry).toHaveBeenCalledTimes(1)
     })
   })

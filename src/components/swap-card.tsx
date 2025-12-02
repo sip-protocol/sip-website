@@ -133,7 +133,7 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
   } = useQuote(quoteParams)
 
   // Swap execution
-  const { status, txHash, explorerUrl, txChain, error: swapError, execute, reset } = useSwap()
+  const { status, txHash, explorerUrl, txChain, error: swapError, swapId, depositAddress, execute, reset, cancel } = useSwap()
 
   const isTransparent = privacyLevel === PrivacyLevel.TRANSPARENT
   const isShielded = privacyLevel === PrivacyLevel.SHIELDED
@@ -567,8 +567,11 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
         isShielded={hasPrivacy}
         isCompliant={isCompliant}
         estimatedTime={estimatedTime}
+        swapId={swapId}
+        depositAddress={depositAddress}
         onReset={handleReset}
         onRetry={reset}
+        onCancel={cancel}
       />
 
       {/* High Price Impact Warning */}
