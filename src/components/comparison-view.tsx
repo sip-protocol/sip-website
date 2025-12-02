@@ -1,6 +1,5 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { PrivacyLevel } from '@/types'
 
 interface ComparisonViewProps {
@@ -12,18 +11,11 @@ interface ComparisonViewProps {
  *
  * Shows "Before SIP" (vulnerable) vs "After SIP" (protected) side-by-side.
  * Demonstrates the refund address linkability vulnerability discovered by ZachXBT.
+ *
+ * Animation is now pure CSS (GPU-accelerated) instead of React state updates.
  */
 export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
   const isShielded = privacyLevel !== PrivacyLevel.TRANSPARENT
-  const [animationStep, setAnimationStep] = useState(0)
-
-  // Animate the fund flow
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setAnimationStep((prev) => (prev + 1) % 4)
-    }, 1500)
-    return () => clearInterval(interval)
-  }, [])
 
   return (
     <div className="space-y-6">
@@ -72,12 +64,8 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
               Transaction Flow
             </p>
 
-            {/* Sender */}
-            <div
-              className={`flex flex-wrap items-center justify-between gap-2 rounded-lg bg-gray-800/50 p-2.5 transition-all duration-500 sm:p-3 ${
-                animationStep === 0 ? 'ring-2 ring-red-500/50' : ''
-              }`}
-            >
+            {/* Sender - CSS animation step 0 (0s delay) */}
+            <div className="animate-flow-sender flex flex-wrap items-center justify-between gap-2 rounded-lg bg-gray-800/50 p-2.5 sm:p-3">
               <span className="text-xs text-gray-400 sm:text-sm">Sender</span>
               <div className="flex items-center gap-1.5 sm:gap-2">
                 <code className="font-mono text-xs text-red-400 sm:text-sm">0x742d...35Cc</code>
@@ -88,44 +76,26 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
               </div>
             </div>
 
-            {/* Arrow down */}
+            {/* Arrow down - CSS animation step 1 (1.5s delay) */}
             <div className="flex justify-center">
-              <ArrowDown
-                className={`h-5 w-5 transition-all duration-500 sm:h-6 sm:w-6 ${
-                  animationStep === 1 ? 'scale-125 text-red-400' : 'text-gray-600'
-                }`}
-              />
+              <ArrowDown className="animate-flow-arrow1 h-5 w-5 text-gray-600 sm:h-6 sm:w-6" />
             </div>
 
-            {/* Shielded Pool */}
-            <div
-              className={`flex flex-wrap items-center justify-between gap-2 rounded-lg bg-gray-800/50 p-2.5 transition-all duration-500 sm:p-3 ${
-                animationStep === 1 ? 'ring-2 ring-red-500/50' : ''
-              }`}
-            >
+            {/* Shielded Pool - CSS animation step 1 (1.5s delay) */}
+            <div className="animate-flow-pool flex flex-wrap items-center justify-between gap-2 rounded-lg bg-gray-800/50 p-2.5 sm:p-3">
               <span className="text-xs text-gray-400 sm:text-sm">Shielded Pool</span>
               <span className="text-xs text-gray-500 sm:text-sm">
                 (privacy should be here)
               </span>
             </div>
 
-            {/* Arrow down */}
+            {/* Arrow down - CSS animation step 2 (3s delay) */}
             <div className="flex justify-center">
-              <ArrowDown
-                className={`h-5 w-5 transition-all duration-500 sm:h-6 sm:w-6 ${
-                  animationStep === 2 ? 'scale-125 text-red-400' : 'text-gray-600'
-                }`}
-              />
+              <ArrowDown className="animate-flow-arrow2 h-5 w-5 text-gray-600 sm:h-6 sm:w-6" />
             </div>
 
-            {/* Refund Address - THE PROBLEM */}
-            <div
-              className={`relative flex flex-wrap items-center justify-between gap-2 rounded-lg border-2 border-dashed border-red-500/50 bg-red-950/30 p-2.5 transition-all duration-500 sm:p-3 ${
-                animationStep === 2 || animationStep === 3
-                  ? 'ring-2 ring-red-500'
-                  : ''
-              }`}
-            >
+            {/* Refund Address - THE PROBLEM - CSS animation step 2-3 (3s delay) */}
+            <div className="animate-flow-refund relative flex flex-wrap items-center justify-between gap-2 rounded-lg border-2 border-dashed border-red-500/50 bg-red-950/30 p-2.5 sm:p-3">
               <span className="text-xs text-gray-400 sm:text-sm">Refund</span>
               <div className="flex items-center gap-1.5 sm:gap-2">
                 <code className="font-mono text-xs text-red-400 sm:text-sm">0x742d...35Cc</code>
@@ -238,10 +208,10 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
               Transaction Flow
             </p>
 
-            {/* Sender */}
+            {/* Sender - CSS animation (shielded uses green, transparent no animation) */}
             <div
-              className={`flex flex-wrap items-center justify-between gap-2 rounded-lg bg-gray-800/50 p-2.5 transition-all duration-500 sm:p-3 ${
-                animationStep === 0 && isShielded ? 'ring-2 ring-green-500/50' : ''
+              className={`flex flex-wrap items-center justify-between gap-2 rounded-lg bg-gray-800/50 p-2.5 sm:p-3 ${
+                isShielded ? 'animate-flow-sender-green' : ''
               }`}
             >
               <span className="text-xs text-gray-400 sm:text-sm">Sender</span>
@@ -269,22 +239,20 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
               </div>
             </div>
 
-            {/* Arrow down */}
+            {/* Arrow down - CSS animation */}
             <div className="flex justify-center">
               <ArrowDown
-                className={`h-5 w-5 transition-all duration-500 sm:h-6 sm:w-6 ${
-                  animationStep === 1 && isShielded
-                    ? 'scale-125 text-green-400'
-                    : 'text-gray-600'
+                className={`h-5 w-5 sm:h-6 sm:w-6 ${
+                  isShielded ? 'animate-flow-arrow1-green text-gray-600' : 'text-gray-600'
                 }`}
               />
             </div>
 
-            {/* Shielded Pool */}
+            {/* Shielded Pool - CSS animation */}
             <div
-              className={`flex flex-wrap items-center justify-between gap-2 rounded-lg p-2.5 transition-all duration-500 sm:p-3 ${
-                isShielded ? 'bg-green-950/30' : 'bg-gray-800/50'
-              } ${animationStep === 1 && isShielded ? 'ring-2 ring-green-500/50' : ''}`}
+              className={`flex flex-wrap items-center justify-between gap-2 rounded-lg p-2.5 sm:p-3 ${
+                isShielded ? 'bg-green-950/30 animate-flow-pool-green' : 'bg-gray-800/50'
+              }`}
             >
               <span className="text-xs text-gray-400 sm:text-sm">Shielded Pool</span>
               <span
@@ -294,27 +262,21 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
               </span>
             </div>
 
-            {/* Arrow down */}
+            {/* Arrow down - CSS animation */}
             <div className="flex justify-center">
               <ArrowDown
-                className={`h-5 w-5 transition-all duration-500 sm:h-6 sm:w-6 ${
-                  animationStep === 2 && isShielded
-                    ? 'scale-125 text-green-400'
-                    : 'text-gray-600'
+                className={`h-5 w-5 sm:h-6 sm:w-6 ${
+                  isShielded ? 'animate-flow-arrow2-green text-gray-600' : 'text-gray-600'
                 }`}
               />
             </div>
 
-            {/* Refund Address - THE FIX */}
+            {/* Refund Address - THE FIX - CSS animation */}
             <div
-              className={`flex flex-wrap items-center justify-between gap-2 rounded-lg border-2 border-dashed p-2.5 transition-all duration-500 sm:p-3 ${
+              className={`flex flex-wrap items-center justify-between gap-2 rounded-lg border-2 border-dashed p-2.5 sm:p-3 ${
                 isShielded
-                  ? 'border-green-500/50 bg-green-950/30'
+                  ? 'border-green-500/50 bg-green-950/30 animate-flow-refund-green'
                   : 'border-gray-600 bg-gray-800/50'
-              } ${
-                (animationStep === 2 || animationStep === 3) && isShielded
-                  ? 'ring-2 ring-green-500'
-                  : ''
               }`}
             >
               <span className="text-xs text-gray-400 sm:text-sm">Refund</span>
