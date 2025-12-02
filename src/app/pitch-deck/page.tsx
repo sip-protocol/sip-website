@@ -6,6 +6,7 @@ import { FounderProfile } from '@/components/founder-profile'
 import { VideoDemo } from '@/components/video-demo'
 import { ZachXBTTweet } from '@/components/zachxbt-tweet'
 import { HowItWorks } from '@/components/how-it-works'
+import { CypherpunkManifesto, CypherpunkAscii } from '@/components/cypherpunk-manifesto'
 
 export default function PitchDeckPage() {
   return (
@@ -25,11 +26,11 @@ export default function PitchDeckPage() {
             SIP Protocol
           </h1>
           <p className="mt-4 text-xl sm:text-2xl text-gray-300">
-            The Privacy Standard for Web3
+            Privacy by Default. Freedom by Design.
           </p>
           <p className="mt-6 text-lg text-gray-400 max-w-2xl mx-auto">
             One toggle to shield sender, amount, and recipient across any chain.
-            Like HTTPS for the internet — but for blockchain transactions.
+            We don&apos;t ask permission to be private.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
@@ -109,12 +110,29 @@ export default function PitchDeckPage() {
         </div>
       </section>
 
+      {/* Cypherpunk Philosophy Section */}
+      <section className="py-20 border-b border-green-500/20 bg-gradient-to-b from-green-900/10 via-gray-900/50 to-transparent relative overflow-hidden">
+        {/* ASCII art background */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
+          <CypherpunkAscii />
+        </div>
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative">
+          <SectionHeader
+            badge="Why We Build"
+            title="The Cypherpunk Vision"
+          />
+          <div className="mt-10">
+            <CypherpunkManifesto />
+          </div>
+        </div>
+      </section>
+
       {/* Solution Section */}
       <section className="py-16 border-b border-gray-800/50 bg-gradient-to-b from-purple-900/5 to-transparent">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <SectionHeader
             badge="The Solution"
-            title="Privacy as a Standard, Not a Feature"
+            title="Permissionless Privacy for Everyone"
           />
           <div className="mt-10 grid gap-6 md:grid-cols-3">
             <SolutionCard
@@ -130,7 +148,7 @@ export default function PitchDeckPage() {
             <SolutionCard
               icon={<KeyIcon />}
               title="Viewing Keys"
-              description="Selective disclosure for compliance. Share keys with auditors without revealing to the public."
+              description="You control who sees what. Share access on your terms, revoke it when you choose."
             />
           </div>
           <div className="mt-10 p-6 rounded-2xl bg-gray-900/50 border border-gray-800 text-center">
@@ -463,9 +481,9 @@ export default function PitchDeckPage() {
       {/* Footer CTA */}
       <section className="py-16 border-t border-gray-800/50 bg-gradient-to-t from-purple-900/10 to-transparent">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold">Ready to add privacy?</h2>
+          <h2 className="text-3xl font-bold">Join the Privacy Revolution</h2>
           <p className="mt-4 text-lg text-gray-400">
-            Integrate SIP Protocol in minutes. One SDK, any chain, full privacy.
+            Privacy shouldn&apos;t be a privilege. One SDK, any chain, freedom by default.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
