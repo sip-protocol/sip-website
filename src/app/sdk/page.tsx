@@ -235,7 +235,7 @@ await shareWithAuditor(viewingKey, auditorPublicKey)`}
             <NetworkCard
               name="Hardware Wallets"
               description="Ledger, Trezor integration"
-              status="live"
+              status="coming"
               network="All chains"
               icon={<HardwareIcon className="h-6 w-6" />}
             />

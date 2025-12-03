@@ -280,16 +280,16 @@ export function ZachXBTCaseStudy() {
               </ul>
             </div>
 
-            {/* Link to ZachXBT thread */}
+            {/* Link to ZachXBT profile */}
             <div className="text-center">
               <a
-                href="https://twitter.com/zachxbt/status/1234567890"
+                href="https://twitter.com/zachxbt"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-purple-400 transition-colors"
               >
                 <span>📎</span>
-                Read ZachXBT&apos;s original thread on address linkability
+                Learn more about ZachXBT&apos;s crypto tracing work
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>

@@ -66,7 +66,7 @@ export default function PitchDeckPage() {
           <div className="mt-10">
             <VideoDemo
               config={{
-                youtubeId: 'dQw4w9WgXcQ', // TODO: Replace with actual SIP demo video ID
+                youtubeId: '', // TODO: Replace with actual SIP demo video ID (see Issue #90)
                 title: 'SIP Protocol Demo',
               }}
               caption="One toggle to shield sender, amount, and recipient"
@@ -218,7 +218,7 @@ export default function PitchDeckPage() {
             </div>
             <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
               <span className="px-4 py-2 rounded-full text-sm font-medium bg-amber-500/20 text-amber-400 border border-amber-500/30">
-                Powered by Halo2 Heritage
+                Built on Zcash Privacy Heritage
               </span>
               <span className="px-4 py-2 rounded-full text-sm font-medium bg-green-500/20 text-green-400 border border-green-500/30">
                 Battle-tested Since 2016
@@ -276,14 +276,14 @@ export default function PitchDeckPage() {
                 />
                 <ZcashTimelineItem
                   year="2020"
-                  title="Halo2 Proving System"
+                  title="Noir/Barretenberg Proving"
                   description="No trusted setup required. Efficient recursive proofs. Foundation for modern ZK."
                   side="left"
                 />
                 <ZcashTimelineItem
                   year="2022"
                   title="NU5 & Orchard"
-                  description="Unified addresses. Halo2 in production. Strongest privacy guarantees."
+                  description="Unified addresses. Battle-tested cryptography. Strongest privacy guarantees."
                   side="right"
                 />
                 <ZcashTimelineItem
@@ -317,8 +317,8 @@ export default function PitchDeckPage() {
                 status="Implemented"
               />
               <ZcashFeature
-                title="Halo2 Proof Composition"
-                description="Future: Compose proofs from Zcash's Halo2 with other systems. Leverage Zcash's proving heritage."
+                title="Future: Proof Composition"
+                description="Research phase: Compose proofs from multiple systems including Zcash's Halo2 and Noir circuits."
                 status="Planned"
               />
             </div>

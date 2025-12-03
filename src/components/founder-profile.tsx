@@ -105,12 +105,12 @@ const defaultConfig: FounderProfileProps = {
     followers: 26,
     commits: 1573,
     prs: 117,
-    badge: '868 Tests',
+    badge: '1,419 Tests',
   },
   projects: [
     {
       name: 'sip-protocol',
-      description: 'Privacy layer for cross-chain transactions — 745 SDK tests, 123 demo tests',
+      description: 'Privacy layer for cross-chain transactions — 1,293 SDK tests, 126 demo tests',
       url: 'https://github.com/sip-protocol/sip-protocol',
       stars: 1,
       language: 'TypeScript',
@@ -136,7 +136,7 @@ const defaultConfig: FounderProfileProps = {
   ],
   techStack: ['TypeScript', 'Rust', 'Noir', 'React', 'Solana', 'NEAR', 'Zcash', 'Docker'],
   quote: {
-    text: '"One person. 868 tests. Zero shortcuts."',
+    text: '"One person. 1,419 tests. Zero shortcuts."',
     subtitle: '— Pure execution, no committee decisions',
   },
   originStory: {
