@@ -103,7 +103,7 @@ const defaultConfig: FounderProfileProps = {
     repositories: 27,
     stars: 206,
     followers: 26,
-    commits: 1649,
+    commits: 4500,
     prs: 117,
     badge: '1,419 Tests',
   },
