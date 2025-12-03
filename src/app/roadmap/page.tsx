@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+import { SDK_VERSION } from '@/lib/constants'
 import {
   Shield,
   Zap,
@@ -214,7 +215,7 @@ function Phase1Section() {
       id: 'M6',
       title: 'npm Publish',
       status: 'complete',
-      description: '@sip-protocol/sdk v0.1.9 on npm registry',
+      description: `${SDK_VERSION.full} on npm registry`,
       icon: Zap,
     },
     {

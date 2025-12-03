@@ -11,7 +11,7 @@ import { ZachXBTCaseStudy } from '@/components/zachxbt-case-study'
 import { TechnicalDeepDive } from '@/components/technical-deep-dive'
 import { CompetitiveAdvantage } from '@/components/competitive-advantage'
 import { SDKPlayground } from '@/components/sdk-playground'
-import { TEST_COUNTS } from '@/lib/constants'
+import { TEST_COUNTS, SDK_VERSION } from '@/lib/constants'
 
 export default function PitchDeckPage() {
   return (
@@ -393,7 +393,7 @@ export default function PitchDeckPage() {
           />
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             <StatCard value={TEST_COUNTS.totalDisplay} label="Tests Passing" sublabel={TEST_COUNTS.detailDisplay} verifyUrl="https://github.com/sip-protocol/sip-protocol/actions" />
-            <StatCard value="v0.1.9" label="SDK Version" sublabel="Published on npm" verifyUrl="https://www.npmjs.com/package/@sip-protocol/sdk" />
+            <StatCard value={SDK_VERSION.display} label="SDK Version" sublabel="Published on npm" verifyUrl={SDK_VERSION.npmUrl} />
             <StatCard value="2" label="Curve Support" sublabel="secp256k1 + ed25519" verifyUrl="https://github.com/sip-protocol/sip-protocol/blob/main/packages/sdk/src/stealth.ts" />
             <StatCard value="3" label="ZK Circuits" sublabel="Noir compiled" verifyUrl="https://github.com/sip-protocol/circuits" />
           </div>

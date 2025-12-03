@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { SDK_VERSION } from '@/lib/constants'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { PrivacyLevel } from '@/types'
@@ -21,7 +22,7 @@ export default function SDKShowcasePage() {
           <div className="text-center">
             <div className="inline-flex items-center gap-2 mb-4">
               <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
-                SDK v0.1.9
+                {`SDK ${SDK_VERSION.display}`}
               </span>
               <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20">
                 Production Ready

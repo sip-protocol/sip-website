@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect, useRef, type KeyboardEvent } from 're
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { useZcashRpc } from '@/hooks/use-zcash-rpc'
+import { SDK_VERSION } from '@/lib/constants'
 
 // Dynamic SDK import for viewing key generation
 const loadSDK = () => import('@sip-protocol/sdk')
@@ -815,7 +816,7 @@ console.log('Fee paid:', result.fee, 'ZEC')`}
       {/* Footer - SDK Version */}
       <div className="mt-6 flex items-center justify-between border-t border-gray-700 pt-4">
         <span className="text-xs text-gray-500">
-          Powered by @sip-protocol/sdk v0.1.9
+          {`Powered by ${SDK_VERSION.full}`}
         </span>
         <a
           href="https://docs.sip-protocol.org/sdk/zcash"

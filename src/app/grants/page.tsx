@@ -14,7 +14,7 @@ import {
   ExternalLink,
   Sparkles,
 } from 'lucide-react'
-import { TEST_COUNTS } from '@/lib/constants'
+import { TEST_COUNTS, SDK_VERSION } from '@/lib/constants'
 
 export default function GrantsPage() {
   return (
@@ -86,7 +86,7 @@ function HeroSection() {
           >
             {[
               { value: TEST_COUNTS.totalDisplay, label: 'Tests Passing' },
-              { value: 'v0.1.9', label: 'npm Published' },
+              { value: SDK_VERSION.display, label: 'npm Published' },
               { value: 'M8', label: 'Phase 1: 95%' },
               { value: '100%', label: 'Open Source' },
             ].map((stat) => (

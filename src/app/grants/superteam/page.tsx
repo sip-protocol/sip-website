@@ -20,7 +20,7 @@ import {
   ExternalLink,
   DollarSign,
 } from 'lucide-react'
-import { TEST_COUNTS } from '@/lib/constants'
+import { TEST_COUNTS, SDK_VERSION } from '@/lib/constants'
 
 export default function SuperteamPitchPage() {
   return (
@@ -297,7 +297,7 @@ function SolutionSection() {
 function TractionSection() {
   const metrics = [
     { value: TEST_COUNTS.totalDisplay, label: 'Tests Passing', detail: TEST_COUNTS.detailDisplay },
-    { value: 'Published', label: 'npm Package', detail: '@sip-protocol/sdk v0.1.9' },
+    { value: 'Published', label: 'npm Package', detail: SDK_VERSION.full },
     { value: 'Live', label: 'Demo Deployed', detail: 'sip-protocol.org' },
     { value: 'M8', label: 'Current Milestone', detail: 'Phase 1: 95% complete' },
   ]

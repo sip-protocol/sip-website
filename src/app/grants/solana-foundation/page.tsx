@@ -28,7 +28,7 @@ import {
   Blocks,
   Sparkles,
 } from 'lucide-react'
-import { TEST_COUNTS } from '@/lib/constants'
+import { TEST_COUNTS, SDK_VERSION } from '@/lib/constants'
 
 export default function SolanaFoundationPitchPage() {
   return (
@@ -176,7 +176,7 @@ function HeroSection() {
             <div className="space-y-6">
               {[
                 { label: 'Tests Passing', value: TEST_COUNTS.totalDisplay, detail: TEST_COUNTS.detailDisplay },
-                { label: 'npm Package', value: 'Published', detail: '@sip-protocol/sdk v0.1.9' },
+                { label: 'npm Package', value: 'Published', detail: SDK_VERSION.full },
                 { label: 'Phase 1', value: '95%', detail: 'M1-M8 in progress' },
                 { label: 'Status', value: 'Live', detail: 'sip-protocol.org' },
               ].map((item) => (
@@ -602,7 +602,7 @@ function TractionSection() {
               {[
                 { value: TEST_COUNTS.totalDisplay, label: 'Tests Passing' },
                 { value: '100%', label: 'Pass Rate' },
-                { value: 'v0.1.9', label: 'npm Published' },
+                { value: SDK_VERSION.display, label: 'npm Published' },
                 { value: 'M8', label: 'Phase 1: 95%' },
               ].map((metric) => (
                 <div key={metric.label} className="text-center p-4 rounded-xl bg-gray-800/50">
@@ -1318,7 +1318,7 @@ function CTASection() {
               <div className="flex flex-wrap justify-center gap-8">
                 {[
                   { value: TEST_COUNTS.totalDisplay, label: 'Tests' },
-                  { value: 'v0.1.9', label: 'npm' },
+                  { value: SDK_VERSION.display, label: 'npm' },
                   { value: 'Live', label: 'Demo' },
                   { value: 'MIT', label: 'License' },
                 ].map((stat) => (
