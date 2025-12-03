@@ -98,9 +98,9 @@ async function initializeProofProvider(): Promise<ProofProvider> {
     }
   }
 
-  // SSR fallback - mock provider (warning goes to server logs, not browser console)
+  // SSR fallback - mock provider (silent to avoid warning in server logs)
   const sdk = await getSDK()
-  proofProvider = new sdk.MockProofProvider()
+  proofProvider = new sdk.MockProofProvider({ silent: true })
 
   return proofProvider
 }
