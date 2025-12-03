@@ -566,8 +566,8 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
         </div>
       )}
 
-      {/* Stealth Address Visualization */}
-      {hasPrivacy && amount && parseFloat(amount) > 0 && (
+      {/* Stealth Address Visualization - hidden for Zcash (uses z-addresses instead) */}
+      {hasPrivacy && amount && parseFloat(amount) > 0 && !isZecDestination && (
         <div className="mb-4">
           <StealthAddressDisplay
             toChain={toToken.chain}

@@ -143,9 +143,12 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
 
       // Generate stealth meta-address for shielded/compliant modes
       // Use appropriate curve based on target chain (ed25519 for Solana/NEAR, secp256k1 for EVM)
+      // NOTE: Skip stealth address generation for Zcash - it uses its own z-address format
       let recipientMetaAddress: string | undefined
       let refundStealthAddress: string | undefined // For cross-curve swaps
-      if (params.privacyLevel !== PrivacyLevel.TRANSPARENT) {
+      const isZcashDestination = params.toChain === 'zcash'
+
+      if (params.privacyLevel !== PrivacyLevel.TRANSPARENT && !isZcashDestination) {
         const isOutputEd25519 = sdk.isEd25519Chain(params.toChain as ChainId)
         const isInputEd25519 = sdk.isEd25519Chain(params.fromChain as ChainId)
 
@@ -220,6 +223,26 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
         return
       }
       logger.debug('Fetching quotes', 'useQuote')
+
+      // For Zcash destinations, create a mock quote based on exchange rates
+      // since Zcash uses z-addresses (not stealth addresses)
+      if (isZcashDestination) {
+        const exchangeRate = getExchangeRateSync(params.fromToken, params.toToken)
+        const outputAmount = BigInt(Math.floor(parseFloat(params.amount) * exchangeRate * (10 ** toDecimals)))
+        const mockQuote = {
+          outputAmount,
+          fee: outputAmount / 100n, // 1% fee estimate
+          estimatedTime: 60, // 1 minute estimate for Zcash
+          solver: 'zcash-native',
+        }
+        setQuote(mockQuote)
+        setFetchedAt(Date.now())
+        setFreshness('fresh')
+        setExpiresIn(Math.round(QUOTE_EXPIRY_DURATION / 1000))
+        logger.debug('Zcash quote generated from exchange rate', 'Quote')
+        return
+      }
+
       // Note: recipientMetaAddress as 2nd arg, senderAddress as 3rd arg for refunds
       // Priority:
       // 1. If wallet connected and chain matches input → use wallet address for refunds
