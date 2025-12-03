@@ -24,6 +24,7 @@ export default function AboutPage() {
       <MissionSection />
       <HowItWorksSection />
       <RoadmapSection />
+      <TeamSection />
       <CommunitySection />
       <LinksSection />
     </>
@@ -399,6 +400,102 @@ function RoadmapSection() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function TeamSection() {
+  const team = [
+    {
+      name: 'RECTOR',
+      role: 'Founder & Lead Developer',
+      bio: 'Senior software engineer with 10+ years experience building privacy-focused and cryptographic systems. Previously worked on enterprise blockchain solutions and decentralized identity protocols.',
+      links: {
+        github: 'https://github.com/rz1989s',
+        twitter: 'https://x.com/rz1989s',
+      },
+    },
+  ]
+
+  return (
+    <section className="py-24 border-t border-gray-800/50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl sm:text-4xl font-bold">
+            Meet the Team
+          </h2>
+          <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
+            Building the privacy layer that Web3 deserves
+          </p>
+        </div>
+
+        <div className="flex justify-center">
+          {team.map((member, index) => (
+            <motion.div
+              key={member.name}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="max-w-md p-8 rounded-2xl bg-gray-900/50 border border-gray-800 text-center"
+            >
+              {/* Avatar placeholder */}
+              <div className="flex justify-center mb-6">
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-3xl font-bold text-white">
+                  {member.name.charAt(0)}
+                </div>
+              </div>
+
+              <h3 className="text-xl font-bold">{member.name}</h3>
+              <p className="text-purple-400 text-sm mt-1">{member.role}</p>
+              <p className="text-gray-400 text-sm mt-4 leading-relaxed">{member.bio}</p>
+
+              {/* Social links */}
+              <div className="flex justify-center gap-4 mt-6">
+                {member.links.github && (
+                  <a
+                    href={member.links.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white transition-colors"
+                    aria-label="GitHub"
+                  >
+                    <Github className="h-5 w-5" />
+                  </a>
+                )}
+                {member.links.twitter && (
+                  <a
+                    href={member.links.twitter}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white transition-colors"
+                    aria-label="Twitter/X"
+                  >
+                    <ExternalLink className="h-5 w-5" />
+                  </a>
+                )}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Join the team CTA */}
+        <div className="mt-12 text-center">
+          <p className="text-gray-400">
+            Interested in contributing to privacy infrastructure?
+          </p>
+          <a
+            href="https://github.com/sip-protocol/sip-protocol/issues"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 mt-4 text-purple-400 hover:text-purple-300 transition-colors"
+          >
+            <Github className="h-4 w-4" />
+            <span>Check out open issues on GitHub</span>
+            <ArrowRight className="h-4 w-4" />
+          </a>
         </div>
       </div>
     </section>
