@@ -43,6 +43,71 @@ export class DemoPage {
     disconnect: Locator
   }
 
+  // Zcash recipient
+  readonly zcash: {
+    recipientContainer: Locator
+    recipientInput: Locator
+    validationError: Locator
+  }
+
+  // Stealth address display
+  readonly stealthAddress: {
+    container: Locator
+    address: Locator
+    copyButton: Locator
+    howItWorks: Locator
+  }
+
+  // Pedersen commitment display
+  readonly commitment: {
+    container: Locator
+    value: Locator
+    copyButton: Locator
+    howItWorks: Locator
+  }
+
+  // Viewing key (Compliant mode)
+  readonly viewingKey: {
+    container: Locator
+    revealButton: Locator
+    copyButton: Locator
+    downloadButton: Locator
+    confirmCheckbox: Locator
+    continueButton: Locator
+  }
+
+  // Quote details
+  readonly quoteDetails: {
+    container: Locator
+    rate: Locator
+    fee: Locator
+    slippage: Locator
+    estimatedTime: Locator
+    minimumReceived: Locator
+    route: Locator
+    privacy: Locator
+  }
+
+  // Privacy Level Comparison section
+  readonly privacyComparison: {
+    container: Locator
+    transparentCard: Locator
+    shieldedCard: Locator
+    compliantCard: Locator
+    transparentButton: Locator
+    shieldedButton: Locator
+    compliantButton: Locator
+  }
+
+  // Educational sections
+  readonly educational: {
+    comparisonView: Locator
+    transactionProof: Locator
+    pedersenDemo: Locator
+    zcashShowcase: Locator
+    howItWorks: Locator
+  }
+
   constructor(page: Page) {
     this.page = page
 
@@ -81,12 +146,80 @@ export class DemoPage {
       viewExplorer: page.locator('[data-testid="view-explorer"]'),
       disconnect: page.locator('[data-testid="disconnect-wallet"]'),
     }
+
+    // Zcash recipient
+    this.zcash = {
+      recipientContainer: page.locator('[data-testid="zec-recipient-section"]'),
+      recipientInput: page.locator('[data-testid="zec-recipient-input"]'),
+      validationError: page.locator('[data-testid="zec-error-message"]'),
+    }
+
+    // Stealth address display
+    this.stealthAddress = {
+      container: page.locator('[data-testid="stealth-address"]'),
+      address: page.locator('[data-testid="stealth-address"] code'),
+      copyButton: page.locator('[data-testid="stealth-address"] button:has-text("Copy")'),
+      howItWorks: page.locator('[data-testid="stealth-address"] button:has-text("How it works")'),
+    }
+
+    // Pedersen commitment display
+    this.commitment = {
+      container: page.locator('[data-testid="pedersen-commitment"]'),
+      value: page.locator('[data-testid="pedersen-commitment"] code'),
+      copyButton: page.locator('[data-testid="pedersen-commitment"] button:has-text("Copy")'),
+      howItWorks: page.locator('[data-testid="pedersen-commitment"] button:has-text("How it works")'),
+    }
+
+    // Viewing key (Compliant mode)
+    this.viewingKey = {
+      container: page.locator('[data-testid="viewing-key"]'),
+      revealButton: page.locator('button:has-text("Reveal")'),
+      copyButton: page.locator('[data-testid="viewing-key"] button:has-text("Copy")'),
+      downloadButton: page.locator('button:has-text("Download")'),
+      confirmCheckbox: page.locator('input[type="checkbox"]'),
+      continueButton: page.locator('button:has-text("Continue")'),
+    }
+
+    // Quote details
+    this.quoteDetails = {
+      container: page.locator('[data-testid="quote-details"]'),
+      rate: page.locator('text=Rate').locator('..').locator('xpath=following-sibling::*'),
+      fee: page.locator('text=Solver Fee').locator('..').locator('xpath=following-sibling::*'),
+      slippage: page.locator('text=Slippage').locator('..'),
+      estimatedTime: page.locator('text=Est. time').locator('..').locator('xpath=following-sibling::*'),
+      minimumReceived: page.locator('text=Minimum received').locator('..').locator('xpath=following-sibling::*'),
+      route: page.locator('text=Route').locator('..').locator('xpath=following-sibling::*'),
+      privacy: page.locator('text=Privacy').first().locator('..').locator('xpath=following-sibling::*'),
+    }
+
+    // Privacy Level Comparison section
+    this.privacyComparison = {
+      container: page.locator('[data-testid="privacy-comparison"]'),
+      transparentCard: page.locator('[data-testid="privacy-card-transparent"]'),
+      shieldedCard: page.locator('[data-testid="privacy-card-shielded"]'),
+      compliantCard: page.locator('[data-testid="privacy-card-compliant"]'),
+      transparentButton: page.locator('button:has-text("Transparent")').first(),
+      shieldedButton: page.locator('button:has-text("Shielded")').first(),
+      compliantButton: page.locator('button:has-text("Compliant")').first(),
+    }
+
+    // Educational sections
+    this.educational = {
+      comparisonView: page.locator('text=Before vs After SIP').locator('..').locator('..'),
+      transactionProof: page.locator('text=Real Cryptographic Proof').locator('..').locator('..'),
+      pedersenDemo: page.locator('text=Pedersen Commitments').first().locator('..').locator('..'),
+      zcashShowcase: page.locator('text=Zcash Integration').locator('..').locator('..'),
+      howItWorks: page.locator('text=How It Works').first().locator('..').locator('..'),
+    }
   }
 
   // Navigation
   async goto() {
     await this.page.goto('/demo')
-    await this.page.waitForLoadState('networkidle')
+    // Use 'load' instead of 'networkidle' - more reliable with Next.js
+    await this.page.waitForLoadState('load')
+    // Wait for swap card to be visible (ensures app is hydrated)
+    await this.swapCard.container.waitFor({ state: 'visible', timeout: 10000 })
   }
 
   // Privacy toggle actions
@@ -212,5 +345,79 @@ export class DemoPage {
 
   async expectPrivacyInfoHidden() {
     await expect(this.swapCard.privacyInfo).toBeHidden()
+  }
+
+  // Zcash actions
+  async enterZcashAddress(address: string) {
+    await this.zcash.recipientInput.fill(address)
+  }
+
+  async expectZcashFieldVisible() {
+    await expect(this.zcash.recipientContainer).toBeVisible()
+  }
+
+  async expectZcashFieldHidden() {
+    await expect(this.zcash.recipientContainer).toBeHidden()
+  }
+
+  async expectZcashValidationError(errorText?: string | RegExp) {
+    await expect(this.zcash.validationError).toBeVisible()
+    if (errorText) {
+      await expect(this.zcash.validationError).toContainText(errorText)
+    }
+  }
+
+  async expectNoZcashValidationError() {
+    await expect(this.zcash.validationError).toBeHidden()
+  }
+
+  // Crypto display assertions
+  async expectStealthAddressVisible() {
+    await expect(this.stealthAddress.container).toBeVisible()
+  }
+
+  async expectCommitmentVisible() {
+    await expect(this.commitment.container).toBeVisible()
+  }
+
+  async expectViewingKeyVisible() {
+    await expect(this.viewingKey.container).toBeVisible()
+  }
+
+  // Quote details assertions
+  async expectQuoteDetailsVisible() {
+    await expect(this.page.locator('text=Rate').first()).toBeVisible()
+  }
+
+  async expectRouteText(route: string | RegExp) {
+    await expect(this.page.locator('text=Route').locator('..').locator('..').locator('div').last()).toContainText(route)
+  }
+
+  // Educational section navigation
+  async scrollToSection(section: 'comparison' | 'proof' | 'pedersen' | 'zcash' | 'howItWorks') {
+    const sectionMap = {
+      comparison: this.educational.comparisonView,
+      proof: this.educational.transactionProof,
+      pedersen: this.educational.pedersenDemo,
+      zcash: this.educational.zcashShowcase,
+      howItWorks: this.educational.howItWorks,
+    }
+    await sectionMap[section].scrollIntoViewIfNeeded()
+  }
+
+  // Keyboard navigation
+  async pressKey(key: string) {
+    await this.page.keyboard.press(key)
+  }
+
+  async tabToElement(selector: string, maxTabs = 50) {
+    for (let i = 0; i < maxTabs; i++) {
+      await this.page.keyboard.press('Tab')
+      const focused = await this.page.locator(':focus').getAttribute('data-testid')
+      if (focused?.includes(selector)) {
+        return true
+      }
+    }
+    return false
   }
 }

@@ -76,6 +76,23 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
   const [zecRecipient, setZecRecipient] = useState('') // ZEC recipient address (z-addr or t-addr)
   const [showSettings, setShowSettings] = useState(false)
 
+  // Prevent same-token selection by auto-swapping
+  const handleFromTokenSelect = (token: Token) => {
+    if (token.symbol === toToken.symbol) {
+      // Swap tokens to prevent same-token selection
+      setToToken(fromToken)
+    }
+    setFromToken(token)
+  }
+
+  const handleToTokenSelect = (token: Token) => {
+    if (token.symbol === fromToken.symbol) {
+      // Swap tokens to prevent same-token selection
+      setFromToken(toToken)
+    }
+    setToToken(token)
+  }
+
   // Wallet state
   const { isConnected, openModal } = useWalletStore()
 
@@ -336,7 +353,7 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
           />
           <TokenSelector
             token={fromToken}
-            onSelect={setFromToken}
+            onSelect={handleFromTokenSelect}
             tokens={fromTokens}
             testId="from-token"
           />
@@ -389,7 +406,7 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
           </div>
           <TokenSelector
             token={toToken}
-            onSelect={setToToken}
+            onSelect={handleToTokenSelect}
             tokens={toTokens}
             testId="to-token"
           />
