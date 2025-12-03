@@ -98,7 +98,7 @@ const TOKEN_DECIMALS: Record<string, number> = {
  */
 export function useQuote(params: QuoteParams | null): QuoteResult {
   const { client, isProductionMode } = useSIP()
-  const { address } = useWalletStore()
+  const { address, chain: connectedChain } = useWalletStore()
   const [quote, setQuote] = useState<Quote | ProductionQuote | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -142,11 +142,49 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
       }
 
       // Generate stealth meta-address for shielded/compliant modes
+      // Use appropriate curve based on target chain (ed25519 for Solana/NEAR, secp256k1 for EVM)
       let recipientMetaAddress: string | undefined
+      let refundStealthAddress: string | undefined // For cross-curve swaps
       if (params.privacyLevel !== PrivacyLevel.TRANSPARENT) {
-        const stealth = sdk.generateStealthMetaAddress(params.toChain as ChainId)
-        recipientMetaAddress = stealth.metaAddress as unknown as string
-        logger.debug('Stealth address generated', 'useQuote')
+        const isOutputEd25519 = sdk.isEd25519Chain(params.toChain as ChainId)
+        const isInputEd25519 = sdk.isEd25519Chain(params.fromChain as ChainId)
+
+        // Generate recipient stealth for output chain
+        const recipientStealth = isOutputEd25519
+          ? sdk.generateEd25519StealthMetaAddress(params.toChain as ChainId)
+          : sdk.generateStealthMetaAddress(params.toChain as ChainId)
+        recipientMetaAddress = recipientStealth.metaAddress as unknown as string
+        logger.debug(`Stealth address generated (${isOutputEd25519 ? 'ed25519' : 'secp256k1'})`, 'useQuote')
+
+        // For cross-curve swaps (e.g., ETH→SOL), generate a separate refund stealth address
+        // for the input chain curve since we can't derive it from the output meta-address
+        if (isOutputEd25519 !== isInputEd25519) {
+          const refundMetaObj = isInputEd25519
+            ? sdk.generateEd25519StealthMetaAddress(params.fromChain as ChainId)
+            : sdk.generateStealthMetaAddress(params.fromChain as ChainId)
+          // Generate the actual stealth address (not just meta-address)
+          const refundStealth = isInputEd25519
+            ? sdk.generateEd25519StealthAddress(refundMetaObj.metaAddress)
+            : sdk.generateStealthAddress(refundMetaObj.metaAddress)
+          const rawStealthAddress = refundStealth.stealthAddress?.address as string | undefined
+
+          // Convert stealth public key to chain-specific address format
+          if (rawStealthAddress) {
+            const hexAddress = rawStealthAddress as `0x${string}`
+            if (isInputEd25519) {
+              // For Solana/NEAR, convert ed25519 public key to chain address
+              if (params.fromChain === 'solana') {
+                refundStealthAddress = sdk.ed25519PublicKeyToSolanaAddress(hexAddress)
+              } else if (params.fromChain === 'near') {
+                refundStealthAddress = sdk.ed25519PublicKeyToNearAddress(hexAddress)
+              }
+            } else {
+              // For EVM chains, convert secp256k1 public key to Ethereum address
+              refundStealthAddress = sdk.publicKeyToEthAddress(hexAddress)
+            }
+            logger.debug(`Cross-curve: refund stealth generated (${isInputEd25519 ? 'ed25519' : 'secp256k1'}): ${refundStealthAddress?.slice(0, 10)}...`, 'useQuote')
+          }
+        }
       }
 
       // Build CreateIntentParams (needed for both demo and production modes)
@@ -182,8 +220,20 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
         return
       }
       logger.debug('Fetching quotes', 'useQuote')
-      // Note: recipientMetaAddress is passed as second argument, not inside intentParams
-      const quotes = await client.getQuotes(intentParams, recipientMetaAddress)
+      // Note: recipientMetaAddress as 2nd arg, senderAddress as 3rd arg for refunds
+      // Priority:
+      // 1. If wallet connected and chain matches input → use wallet address for refunds
+      // 2. Else if cross-curve swap → use generated stealth address for refunds
+      // 3. Otherwise → let SDK generate from recipient meta-address (same curve)
+      let refundAddress: string | undefined
+      if (address && connectedChain === params.fromChain) {
+        refundAddress = address
+        logger.debug('Using connected wallet for refunds', 'useQuote')
+      } else if (refundStealthAddress) {
+        refundAddress = refundStealthAddress
+        logger.debug('Using stealth address for cross-curve refunds', 'useQuote')
+      }
+      const quotes = await client.getQuotes(intentParams, recipientMetaAddress, refundAddress)
 
       if (quotes.length > 0) {
         setQuote(quotes[0])
@@ -212,7 +262,7 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
     } finally {
       setIsLoading(false)
     }
-  }, [client, isProductionMode, params, address])
+  }, [client, isProductionMode, params, address, connectedChain])
 
   // Prefetch prices on mount for accurate rate display
   useEffect(() => {

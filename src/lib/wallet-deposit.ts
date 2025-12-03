@@ -128,7 +128,7 @@ async function sendEthereumDeposit(
   // Create adapter - will pick up existing wallet connection
   const adapter = sdk.createEthereumAdapter({
     wallet: walletType as 'metamask' | 'coinbase' | 'walletconnect',
-    chainId: 11155111, // Sepolia testnet
+    chainId: 1, // Ethereum mainnet
   })
 
   // Reconnect to pick up existing session

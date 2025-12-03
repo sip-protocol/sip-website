@@ -105,12 +105,12 @@ export function WalletModal() {
 
         if (solanaAddress) {
           connect(walletType, chain, solanaAddress)
-          toast.success('Wallet Connected', `Connected to ${walletName} on Solana Devnet`)
+          toast.success('Wallet Connected', `Connected to ${walletName} on Solana`)
         }
       } else if (chain === 'ethereum') {
         const adapter = sdk.createEthereumAdapter({
           wallet: walletType as EthereumWalletName,
-          chainId: 11155111, // Sepolia testnet
+          chainId: 1, // Ethereum mainnet
         })
 
         await adapter.connect()
@@ -118,7 +118,7 @@ export function WalletModal() {
 
         if (address) {
           connect(walletType, chain, address)
-          toast.success('Wallet Connected', `Connected to ${walletName} on Sepolia`)
+          toast.success('Wallet Connected', `Connected to ${walletName} on Ethereum`)
         }
       } else if (chain === 'near') {
         // Use NEAR wallet hook for connection
@@ -126,7 +126,7 @@ export function WalletModal() {
 
         if (accountId) {
           connect(walletType, chain, accountId)
-          toast.success('Wallet Connected', `Connected to ${walletName} on NEAR Testnet`)
+          toast.success('Wallet Connected', `Connected to ${walletName} on NEAR`)
         } else if (nearWallet.error) {
           throw new Error(nearWallet.error)
         }

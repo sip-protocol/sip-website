@@ -1,7 +1,8 @@
 /**
  * Network Configuration
  *
- * Testnet configurations for Solana Devnet, Ethereum Sepolia, and NEAR Testnet.
+ * Mainnet configurations for production use with real NEAR Intents API.
+ * Note: testnet field is kept for reference but not actively used.
  */
 
 export type NetworkId =
@@ -59,15 +60,16 @@ export interface TokenConfig {
 }
 
 /**
- * Testnet Network Configurations
+ * Network Configurations (Mainnet for production demo)
  */
 export const NETWORKS: Record<NetworkId, NetworkConfig> = {
   solana: {
     id: 'solana',
     name: 'Solana',
     testnet: 'Devnet',
-    rpcEndpoint: 'https://api.devnet.solana.com',
-    wsEndpoint: 'wss://api.devnet.solana.com',
+    // Using reliable public mainnet RPC for balance display
+    rpcEndpoint: 'https://solana-rpc.publicnode.com',
+    wsEndpoint: 'wss://solana-rpc.publicnode.com',
     explorerUrl: 'https://solscan.io',
     faucetUrl: 'https://faucet.solana.com/',
     nativeToken: 'SOL',
@@ -78,10 +80,11 @@ export const NETWORKS: Record<NetworkId, NetworkConfig> = {
     id: 'ethereum',
     name: 'Ethereum',
     testnet: 'Sepolia',
-    chainId: 11155111,
-    rpcEndpoint: 'https://rpc.sepolia.org',
-    wsEndpoint: 'wss://sepolia.drpc.org',
-    explorerUrl: 'https://sepolia.etherscan.io',
+    chainId: 1, // Mainnet chain ID
+    // Using reliable public mainnet RPC for balance display
+    rpcEndpoint: 'https://ethereum-rpc.publicnode.com',
+    wsEndpoint: 'wss://ethereum-rpc.publicnode.com',
+    explorerUrl: 'https://etherscan.io',
     faucetUrl: 'https://sepoliafaucet.com/',
     nativeToken: 'ETH',
     decimals: 18,

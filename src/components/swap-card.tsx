@@ -52,26 +52,23 @@ const fromTokens: Token[] = [
   { symbol: 'APT', name: 'Aptos', chain: 'aptos', icon: '🌀' },
 ]
 
-// Tokens available as DESTINATION (all supported chains)
+// Tokens available as DESTINATION (NEAR Intents supported chains)
+// See: https://api.defuse.org/v1/supported-assets for full list
+// Note: Simplified list for demo - L2 tokens have same symbol (ETH) which
+// would require refactoring selection logic. Full support planned for v0.3.
 const toTokens: Token[] = [
   { symbol: 'ETH', name: 'Ethereum', chain: 'ethereum', icon: 'Ξ' },
+  { symbol: 'USDC', name: 'USD Coin', chain: 'ethereum', icon: '💵' },
   { symbol: 'SOL', name: 'Solana', chain: 'solana', icon: '◎' },
   { symbol: 'NEAR', name: 'NEAR', chain: 'near', icon: 'Ⓝ' },
   { symbol: 'ZEC', name: 'Zcash', chain: 'zcash', icon: '🛡️' },
-  { symbol: 'BTC', name: 'Bitcoin', chain: 'bitcoin', icon: '₿' },
-  { symbol: 'ARB', name: 'Arbitrum', chain: 'arbitrum', icon: '🔷' },
-  { symbol: 'BASE', name: 'Base', chain: 'base', icon: '🔵' },
-  { symbol: 'OP', name: 'Optimism', chain: 'optimism', icon: '🔴' },
   { symbol: 'POL', name: 'Polygon', chain: 'polygon', icon: '💜' },
-  { symbol: 'BNB', name: 'BNB Chain', chain: 'bsc', icon: '🟡' },
-  { symbol: 'AVAX', name: 'Avalanche', chain: 'avalanche', icon: '🔺' },
-  { symbol: 'APT', name: 'Aptos', chain: 'aptos', icon: '🌀' },
 ]
 
 export function SwapCard({ privacyLevel }: SwapCardProps) {
   // Default to ETH→SOL: Cross-chain swap demo
   const [fromToken, setFromToken] = useState(fromTokens[0]) // ETH
-  const [toToken, setToToken] = useState(toTokens[1]) // SOL
+  const [toToken, setToToken] = useState(toTokens[2]) // SOL (index 2 after ETH, USDC)
   const [amount, setAmount] = useState('')
   const [zecRecipient, setZecRecipient] = useState('') // ZEC recipient address (z-addr or t-addr)
   const [showSettings, setShowSettings] = useState(false)
@@ -544,15 +541,21 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
 
       {/* Privacy info */}
       {hasPrivacy && (
-        <div className="mb-4 rounded-lg border border-purple-500/30 bg-purple-500/10 p-3" data-testid="privacy-info">
+        <div className="mb-4 rounded-lg border border-purple-500/30 bg-gradient-to-r from-purple-500/10 via-yellow-500/5 to-purple-500/10 p-3" data-testid="privacy-info">
           <div className="flex items-start gap-2">
             {isCompliant ? (
               <KeyIcon className="mt-0.5 h-4 w-4 flex-shrink-0 text-purple-400" />
             ) : (
               <ShieldIcon className="mt-0.5 h-4 w-4 flex-shrink-0 text-purple-400" />
             )}
-            <div className="text-sm">
-              <p className="font-medium text-purple-300">Privacy Protected</p>
+            <div className="text-sm flex-1">
+              <div className="flex items-center justify-between">
+                <p className="font-medium text-purple-300">Privacy Protected</p>
+                <span className="flex items-center gap-1 text-[10px] text-yellow-500">
+                  <ZcashIcon className="h-3 w-3" />
+                  Zcash Tech
+                </span>
+              </div>
               <p className="text-purple-400/80">
                 {isCompliant
                   ? 'Transaction hidden with viewing key for auditors'
@@ -764,6 +767,60 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
       {/* Recent Swaps History */}
       <div className="mt-6">
         <RecentSwaps />
+      </div>
+
+      {/* Powered By: Zcash + NEAR Intents */}
+      <div className="mt-6 pt-4 border-t border-gray-800" data-testid="powered-by-section">
+        <div className="text-center mb-3">
+          <span className="text-xs text-gray-500 uppercase tracking-wider font-medium">Powered by</span>
+        </div>
+        <div className="flex items-center justify-center gap-6">
+          {/* Zcash */}
+          <a
+            href="https://z.cash"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-800/50 transition-colors group"
+            aria-label="Powered by Zcash privacy technology"
+          >
+            <ZcashLogo className="h-6 w-6 text-yellow-500 group-hover:text-yellow-400 transition-colors" />
+            <div className="text-left">
+              <div className="text-sm font-semibold text-gray-300 group-hover:text-white transition-colors">Zcash</div>
+              <div className="text-[10px] text-gray-500 group-hover:text-gray-400 transition-colors">Privacy Layer</div>
+            </div>
+          </a>
+
+          {/* Divider */}
+          <div className="h-8 w-px bg-gray-700" aria-hidden="true" />
+
+          {/* NEAR Intents */}
+          <a
+            href="https://near.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-800/50 transition-colors group"
+            aria-label="Powered by NEAR Intents settlement"
+          >
+            <NearLogo className="h-6 w-6 text-cyan-400 group-hover:text-cyan-300 transition-colors" />
+            <div className="text-left">
+              <div className="text-sm font-semibold text-gray-300 group-hover:text-white transition-colors">NEAR Intents</div>
+              <div className="text-[10px] text-gray-500 group-hover:text-gray-400 transition-colors">Settlement Layer</div>
+            </div>
+          </a>
+        </div>
+
+        {/* Tech Stack Badges */}
+        <div className="flex items-center justify-center gap-2 mt-4 flex-wrap">
+          <span className="px-2 py-1 text-[10px] font-medium rounded-full bg-yellow-500/10 text-yellow-500 border border-yellow-500/20">
+            Shielded Transactions
+          </span>
+          <span className="px-2 py-1 text-[10px] font-medium rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">
+            Stealth Addresses
+          </span>
+          <span className="px-2 py-1 text-[10px] font-medium rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+            Cross-Chain
+          </span>
+        </div>
       </div>
     </div>
   )
@@ -1033,6 +1090,36 @@ function ZcashIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v2h3v2h-5.5l5.5 4v2h-2v2H9v-2H6v-2h5.5L6 11V9h2V7z" />
+    </svg>
+  )
+}
+
+function ZcashLogo({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 32 32" fill="none">
+      <circle cx="16" cy="16" r="16" fill="currentColor" fillOpacity="0.15" />
+      <path
+        d="M16 6L16 10M16 22L16 26M10 16H14L18 12H22M10 20H14L18 16H22M10 12H22"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function NearLogo({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 32 32" fill="none">
+      <circle cx="16" cy="16" r="16" fill="currentColor" fillOpacity="0.15" />
+      <path
+        d="M10 22V10L16 18V10M16 22V14L22 22V10"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   )
 }

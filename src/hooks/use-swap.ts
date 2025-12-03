@@ -204,9 +204,13 @@ export function useSwap(): SwapResult {
       }
 
       // Generate stealth meta-address for shielded/compliant modes
+      // Use appropriate curve based on target chain (ed25519 for Solana/NEAR, secp256k1 for EVM)
       let recipientMetaAddress: string | undefined
       if (params.privacyLevel !== PrivacyLevel.TRANSPARENT) {
-        const stealth = sdk.generateStealthMetaAddress(params.toChain as ChainId)
+        const isEd25519 = sdk.isEd25519Chain(params.toChain as ChainId)
+        const stealth = isEd25519
+          ? sdk.generateEd25519StealthMetaAddress(params.toChain as ChainId)
+          : sdk.generateStealthMetaAddress(params.toChain as ChainId)
         recipientMetaAddress = stealth.metaAddress as unknown as string
       }
 

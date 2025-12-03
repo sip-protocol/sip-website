@@ -66,8 +66,9 @@ function Tooltip({
  * ed25519: Solana, NEAR (native chain curve)
  * secp256k1: Ethereum, Zcash, Arbitrum (EVM and Bitcoin-derived)
  *
- * Note: Currently SDK only supports secp256k1 stealth addresses.
- * Ed25519 support is in development (see SDK source).
+ * SDK fully supports both curves with dedicated functions:
+ * - generateEd25519StealthMetaAddress() for Solana/NEAR
+ * - generateStealthMetaAddress() for EVM chains
  */
 function getCurveForChain(chain: NetworkId): 'ed25519' | 'secp256k1' {
   if (chain === 'solana' || chain === 'near') {
@@ -79,10 +80,9 @@ function getCurveForChain(chain: NetworkId): 'ed25519' | 'secp256k1' {
 /**
  * Generate real stealth address using @sip-protocol/sdk
  *
- * Uses EIP-5564 compatible secp256k1 stealth addresses.
- * The SDK generates cryptographically valid addresses using:
- * - secp256k1 elliptic curve (same as Bitcoin/Ethereum)
- * - Proper key derivation and shared secret computation
+ * Uses the appropriate curve based on target chain:
+ * - ed25519 for Solana/NEAR (native chain curve)
+ * - secp256k1 for EVM chains (EIP-5564 compatible)
  */
 async function generateRealStealthAddress(chain: NetworkId): Promise<{
   stealthAddress: string
@@ -91,19 +91,23 @@ async function generateRealStealthAddress(chain: NetworkId): Promise<{
 }> {
   const sdk = await loadSDK()
 
-  // Generate stealth meta-address using SDK (secp256k1)
-  // This creates a real cryptographic keypair
-  const { metaAddress } = sdk.generateStealthMetaAddress(chain as ChainId)
+  const curve = getCurveForChain(chain)
+  const isEd25519 = curve === 'ed25519'
+
+  // Generate stealth meta-address using appropriate curve
+  const { metaAddress } = isEd25519
+    ? sdk.generateEd25519StealthMetaAddress(chain as ChainId)
+    : sdk.generateStealthMetaAddress(chain as ChainId)
 
   // Derive an actual stealth address from the meta-address
-  // This simulates what a sender would do
-  const { stealthAddress } = sdk.generateStealthAddress(metaAddress)
+  const { stealthAddress } = isEd25519
+    ? sdk.generateEd25519StealthAddress(metaAddress)
+    : sdk.generateStealthAddress(metaAddress)
 
   return {
     stealthAddress: stealthAddress.address,
     ephemeralKey: stealthAddress.ephemeralPublicKey,
-    // Note: SDK currently generates secp256k1, curve shown is what chain uses natively
-    curve: getCurveForChain(chain),
+    curve,
   }
 }
 
