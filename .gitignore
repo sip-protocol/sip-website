@@ -37,3 +37,4 @@ npm-debug.log*
 playwright-report/
 playwright/.cache/
 test-results/
+.strategy/
