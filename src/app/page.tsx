@@ -193,13 +193,21 @@ function FeaturesSection() {
 
 function ChainSection() {
   const chains = [
+    // Active in SDK
     { name: 'NEAR', color: 'from-[#00C08B] to-[#00C08B]' },
     { name: 'Ethereum', color: 'from-[#627EEA] to-[#627EEA]' },
     { name: 'Solana', color: 'from-[#9945FF] to-[#14F195]' },
-    { name: 'Arbitrum', color: 'from-[#28A0F0] to-[#28A0F0]' },
-    { name: 'Aptos', color: 'from-[#4CC9F0] to-[#4CC9F0]' },
     { name: 'Zcash', color: 'from-[#F4B728] to-[#F4B728]' },
+    // In SDK ChainId (coming)
+    { name: 'Arbitrum', color: 'from-[#28A0F0] to-[#28A0F0]' },
+    { name: 'Optimism', color: 'from-[#FF0420] to-[#FF0420]' },
+    { name: 'Base', color: 'from-[#0052FF] to-[#0052FF]' },
+    { name: 'Polygon', color: 'from-[#8247E5] to-[#8247E5]' },
     { name: 'Bitcoin', color: 'from-[#F7931A] to-[#F7931A]' },
+    // Aspirational (future research)
+    { name: 'Aptos', color: 'from-[#4CC9F0] to-[#4CC9F0]' },
+    { name: 'Sui', color: 'from-[#6FBCF0] to-[#6FBCF0]' },
+    { name: 'Mina', color: 'from-[#E39B3E] to-[#E39B3E]' },
   ]
 
   return (
