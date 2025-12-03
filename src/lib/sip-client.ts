@@ -76,20 +76,30 @@ let providerInitPromise: Promise<ProofProvider> | null = null
 
 /**
  * Initialize the proof provider
- * Uses MockProofProvider for demo (NoirProofProvider requires WASM which breaks SSR)
  *
- * NOTE: NoirProofProvider is NOT exported from main SDK entry to avoid WASM bundling.
- * For real ZK proofs in browser, import BrowserNoirProvider from '@sip-protocol/sdk/browser'
+ * Uses BrowserNoirProvider for real ZK proofs in browser environments.
+ * Falls back to MockProofProvider (silent) for SSR to avoid WASM issues.
  */
 async function initializeProofProvider(): Promise<ProofProvider> {
   if (proofProvider) {
     return proofProvider
   }
 
-  const sdk = await getSDK()
+  // Browser environment - use real Noir proofs
+  if (typeof window !== 'undefined') {
+    try {
+      const { BrowserNoirProvider } = await import('@sip-protocol/sdk/browser')
+      proofProvider = new BrowserNoirProvider()
+      await proofProvider.initialize()
+      return proofProvider
+    } catch (error) {
+      // Fallback to mock if Noir fails (e.g., WASM not supported)
+      console.warn('[SIP] BrowserNoirProvider failed, falling back to mock:', error)
+    }
+  }
 
-  // Use MockProofProvider for demo - it simulates proofs without WASM
-  // For production with real ZK proofs, use BrowserNoirProvider in client components
+  // SSR fallback - mock provider (warning goes to server logs, not browser console)
+  const sdk = await getSDK()
   proofProvider = new sdk.MockProofProvider()
 
   return proofProvider
@@ -109,9 +119,12 @@ export function getProofProvider(): Promise<ProofProvider> {
  * Get base configuration for demo/testnet environment
  */
 async function getSIPConfigAsync(sdk: typeof import('@sip-protocol/sdk')): Promise<SIPConfig> {
+  // Get the initialized proof provider (real Noir in browser, mock for SSR)
+  const provider = await getProofProvider()
+
   const baseConfig: SIPConfig = {
     network: 'testnet',
-    proofProvider: new sdk.MockProofProvider(),
+    proofProvider: provider,
   }
 
   // Enable production mode for real NEAR 1Click swaps

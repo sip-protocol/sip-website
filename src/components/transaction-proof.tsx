@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import type { ChainId } from '@sip-protocol/types'
+import { getProofProvider } from '@/lib/sip-client'
 
 // Dynamic SDK import
 const loadSDK = () => import('@sip-protocol/sdk')
@@ -75,15 +76,12 @@ async function generateProofData(amount: number): Promise<TransactionData> {
 }
 
 /**
- * Generate ZK proof artifacts using MockProofProvider
- * Shows what real proofs would look like in production
+ * Generate ZK proof artifacts using BrowserNoirProvider (or mock fallback)
+ * Uses real Noir proofs in browser environment
  */
 async function generateZKProofs(intentHash: string): Promise<ZKProofData> {
-  const sdk = await loadSDK()
-
-  // Use MockProofProvider to generate realistic proof structures
-  const mockProvider = new sdk.MockProofProvider()
-  await mockProvider.initialize()
+  // Get the initialized proof provider (real Noir in browser, mock for SSR)
+  const proofProvider = await getProofProvider()
 
   // Generate realistic proof data (blinding factors)
   const blindingFactor = new Uint8Array(32)
@@ -102,7 +100,7 @@ async function generateZKProofs(intentHash: string): Promise<ZKProofData> {
   crypto.getRandomValues(oracleSig)
 
   // Generate Funding Proof
-  const fundingResult = await mockProvider.generateFundingProof({
+  const fundingResult = await proofProvider.generateFundingProof({
     balance: BigInt(100_000_000), // 1 ETH in wei (scaled)
     minimumRequired: BigInt(10_000_000), // 0.1 ETH
     blindingFactor,
@@ -112,7 +110,7 @@ async function generateZKProofs(intentHash: string): Promise<ZKProofData> {
   })
 
   // Generate Validity Proof
-  const validityResult = await mockProvider.generateValidityProof({
+  const validityResult = await proofProvider.generateValidityProof({
     intentHash: intentHash as `0x${string}`,
     senderAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f8a12B',
     senderBlinding: blindingFactor,
@@ -124,10 +122,11 @@ async function generateZKProofs(intentHash: string): Promise<ZKProofData> {
   })
 
   // Generate nullifier from nonce (prevents double-spending)
+  const sdk = await loadSDK()
   const nullifier = sdk.hash(Array.from(nonce).map(b => b.toString(16).padStart(2, '0')).join(''))
 
   // Generate Fulfillment Proof
-  const fulfillmentResult = await mockProvider.generateFulfillmentProof({
+  const fulfillmentResult = await proofProvider.generateFulfillmentProof({
     intentHash: intentHash as `0x${string}`,
     outputAmount: BigInt(99_500_000), // Slightly less due to slippage
     outputBlinding: blindingFactor,
