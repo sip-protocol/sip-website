@@ -16,7 +16,7 @@
 ```bash
 pnpm install              # Install dependencies
 pnpm dev                  # Dev server (localhost:3000)
-pnpm test -- --run        # Run tests (123 tests)
+pnpm test -- --run        # Run tests (126 tests)
 pnpm build                # Build for production
 pnpm typecheck            # Type check
 ```
@@ -36,7 +36,9 @@ pnpm typecheck            # Type check
 | `src/hooks/use-quote.ts` | Quote fetching logic |
 | `src/stores/wallet-store.ts` | Wallet connection state |
 | `src/stores/toast-store.ts` | Toast notifications |
-| `tests/` | Test suites (123 tests) |
+| `src/lib/sip-client.ts` | SDK client with BrowserNoirProvider |
+| `src/app/about/page.tsx` | About page with team section |
+| `tests/` | Test suites (126 tests) |
 
 ---
 
@@ -45,11 +47,13 @@ pnpm typecheck            # Type check
 - Wallet connection (Solana, Ethereum, Hardware wallets)
 - Quote fetching from NEAR Intents
 - Swap execution with privacy toggle
+- **Real ZK proofs** via BrowserNoirProvider (Noir circuits)
 - Transaction status tracking
 - Toast notifications
 - SDK showcase with interactive demos
 - Grant pitch pages with architecture diagrams
 - Pitch deck for investors
+- Team/About page for credibility
 
 ---
 
@@ -86,4 +90,4 @@ pnpm typecheck            # Type check
 
 ---
 
-**Last Updated:** 2025-12-02
+**Last Updated:** 2025-12-03
