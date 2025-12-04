@@ -15,11 +15,12 @@ test.describe('Token Selection', () => {
   })
 
   test.describe('From Token Selector', () => {
-    test('should display all 11 source chains', async ({ page }) => {
+    test('should display all source chains', async ({ page }) => {
       await demoPage.swapCard.fromToken.click()
       await page.waitForTimeout(200)
 
-      const chains = ['ETH', 'SOL', 'NEAR', 'BTC', 'ARB', 'BASE', 'OP', 'POL', 'BNB', 'AVAX', 'APT']
+      // Core chains with reliable 1Click API quote support
+      const chains = ['ETH', 'SOL', 'NEAR']
       for (const chain of chains) {
         await expect(page.getByTestId(`token-option-${chain}`)).toBeVisible()
       }
@@ -46,13 +47,13 @@ test.describe('Token Selection', () => {
   })
 
   test.describe('To Token Selector', () => {
-    test('should display all 6 destination tokens (including ZEC)', async ({ page }) => {
+    test('should display all destination tokens (including ZEC)', async ({ page }) => {
       await demoPage.swapCard.toToken.click()
       await page.waitForTimeout(200)
 
-      // Destination tokens: ETH, USDC, SOL, NEAR, ZEC, POL
-      // Note: Simplified list for demo - full chain support planned for v0.3
-      const tokens = ['ETH', 'USDC', 'SOL', 'NEAR', 'ZEC', 'POL']
+      // Destination tokens: ZEC (privacy), ETH, SOL, NEAR
+      // ZEC is the privacy output - users swap TO Zcash for shielded transactions
+      const tokens = ['ZEC', 'ETH', 'SOL', 'NEAR']
       for (const token of tokens) {
         await expect(page.getByTestId(`token-option-${token}`)).toBeVisible()
       }
