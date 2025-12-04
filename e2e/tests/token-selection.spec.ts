@@ -46,13 +46,15 @@ test.describe('Token Selection', () => {
   })
 
   test.describe('To Token Selector', () => {
-    test('should display all 12 destination chains (including ZEC)', async ({ page }) => {
+    test('should display all 6 destination tokens (including ZEC)', async ({ page }) => {
       await demoPage.swapCard.toToken.click()
       await page.waitForTimeout(200)
 
-      const chains = ['ETH', 'SOL', 'NEAR', 'ZEC', 'BTC', 'ARB', 'BASE', 'OP', 'POL', 'BNB', 'AVAX', 'APT']
-      for (const chain of chains) {
-        await expect(page.getByTestId(`token-option-${chain}`)).toBeVisible()
+      // Destination tokens: ETH, USDC, SOL, NEAR, ZEC, POL
+      // Note: Simplified list for demo - full chain support planned for v0.3
+      const tokens = ['ETH', 'USDC', 'SOL', 'NEAR', 'ZEC', 'POL']
+      for (const token of tokens) {
+        await expect(page.getByTestId(`token-option-${token}`)).toBeVisible()
       }
     })
 
@@ -107,17 +109,17 @@ test.describe('Token Selection', () => {
       await expect(page.locator('text=Solana → Ethereum')).toBeVisible()
     })
 
-    test('should update route display for ETH → BTC', async ({ page }) => {
+    test('should update route display for ETH → ZEC', async ({ page }) => {
       await demoPage.swapCard.fromToken.click()
       await page.getByTestId('token-option-ETH').click()
 
       await demoPage.swapCard.toToken.click()
-      await page.getByTestId('token-option-BTC').click()
+      await page.getByTestId('token-option-ZEC').click()
 
       await demoPage.enterAmount('0.1')
       await demoPage.waitForQuote()
 
-      await expect(page.locator('text=Ethereum → Bitcoin')).toBeVisible()
+      await expect(page.locator('text=Ethereum → Zcash')).toBeVisible()
     })
   })
 
