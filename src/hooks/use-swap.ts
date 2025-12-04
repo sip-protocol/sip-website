@@ -2,7 +2,12 @@
 
 import { useState, useCallback, useRef } from 'react'
 import { PrivacyLevel, type Quote, type ChainId } from '@sip-protocol/types'
-import { secp256k1 } from '@noble/curves/secp256k1'
+// Use crypto API for random key generation (works in both browser and Node)
+function generateRandomPrivateKey(): Uint8Array {
+  const privateKey = new Uint8Array(32)
+  crypto.getRandomValues(privateKey)
+  return privateKey
+}
 
 // ProductionQuote extends Quote with depositAddress for production mode
 interface ProductionQuote extends Quote {
@@ -251,7 +256,7 @@ export function useSwap(): SwapResult {
       // Generate a secp256k1 private key for ZK proof signatures
       // The SDK will generate proper ECDSA signatures internally using this key
       // In production, this would come from a derived key or the user's wallet
-      const senderSecret = secp256k1.utils.randomPrivateKey()
+      const senderSecret = generateRandomPrivateKey()
 
       const intent = await client.createIntent({
         input: {
