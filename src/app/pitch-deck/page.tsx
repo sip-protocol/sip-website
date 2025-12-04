@@ -66,7 +66,7 @@ export default function PitchDeckPage() {
           <div className="mt-10">
             <VideoDemo
               config={{
-                youtubeId: '', // TODO: Replace with actual SIP demo video ID (see Issue #90)
+                youtubeId: '1RUZvXx7QdM',
                 title: 'SIP Protocol Demo',
               }}
               caption="One toggle to shield sender, amount, and recipient"

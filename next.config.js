@@ -29,14 +29,84 @@ const nextConfig = {
     NEXT_PUBLIC_GIT_BRANCH: process.env.GIT_BRANCH || 'local',
   },
   async headers() {
+    // Base security headers (all pages)
+    const baseHeaders = [
+      {
+        key: 'X-Frame-Options',
+        value: 'DENY',
+      },
+      {
+        key: 'X-Content-Type-Options',
+        value: 'nosniff',
+      },
+      {
+        key: 'Referrer-Policy',
+        value: 'strict-origin-when-cross-origin',
+      },
+      {
+        key: 'Permissions-Policy',
+        value: 'camera=(), microphone=(), geolocation=()',
+      },
+    ]
+
+    // CSP for pages WITH YouTube embeds (pitch-deck, grants)
+    const cspWithYouTube = {
+      key: 'Content-Security-Policy',
+      value: [
+        "default-src 'self'",
+        "script-src 'self' 'unsafe-eval' 'unsafe-inline' 'wasm-unsafe-eval'",
+        "style-src 'self' 'unsafe-inline'",
+        "img-src 'self' data: blob: https://avatars.githubusercontent.com https://img.youtube.com https://i.ytimg.com",
+        "font-src 'self'",
+        "connect-src 'self' https://api.1click.fi https://*.chaindefuser.com https://api.coingecko.com https://*.solana.com https://*.helius-rpc.com https://*.publicnode.com https://crs.aztec.network https://*.aztec.network wss://*.solana.com wss://*.helius-rpc.com wss://*.publicnode.com wss://*.chaindefuser.com blob: data:",
+        "frame-src 'self' https://www.youtube.com https://youtube.com https://www.youtube-nocookie.com https://youtube-nocookie.com",
+        "frame-ancestors 'none'",
+        "base-uri 'self'",
+        "form-action 'self'",
+        "worker-src 'self' blob:",
+      ].join('; '),
+    }
+
+    // CSP for pages WITHOUT YouTube (stricter, with COOP/COEP for WASM)
+    const cspStrict = {
+      key: 'Content-Security-Policy',
+      value: [
+        "default-src 'self'",
+        "script-src 'self' 'unsafe-eval' 'unsafe-inline' 'wasm-unsafe-eval'",
+        "style-src 'self' 'unsafe-inline'",
+        "img-src 'self' data: blob: https://avatars.githubusercontent.com https://img.youtube.com",
+        "font-src 'self'",
+        "connect-src 'self' https://api.1click.fi https://*.chaindefuser.com https://api.coingecko.com https://*.solana.com https://*.helius-rpc.com https://*.publicnode.com https://crs.aztec.network https://*.aztec.network wss://*.solana.com wss://*.helius-rpc.com wss://*.publicnode.com wss://*.chaindefuser.com blob: data:",
+        "frame-src 'self'",
+        "frame-ancestors 'none'",
+        "base-uri 'self'",
+        "form-action 'self'",
+        "worker-src 'self' blob:",
+      ].join('; '),
+    }
+
     return [
+      // All other pages - strict COOP/COEP for WASM support (FIRST - gets overridden by specific routes)
       {
         source: '/:path*',
         headers: [
+          ...baseHeaders,
+          // COOP/COEP headers for SharedArrayBuffer (required for WASM multi-threading)
           {
-            key: 'X-Frame-Options',
-            value: 'DENY',
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin',
           },
+          {
+            key: 'Cross-Origin-Embedder-Policy',
+            value: 'credentialless',
+          },
+          cspStrict,
+        ],
+      },
+      // Pages with YouTube embeds - relaxed CSP with YouTube allowed
+      {
+        source: '/pitch-deck',
+        headers: [
           {
             key: 'X-Content-Type-Options',
             value: 'nosniff',
@@ -46,8 +116,12 @@ const nextConfig = {
             value: 'strict-origin-when-cross-origin',
           },
           {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=()',
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'unsafe-none',
+          },
+          {
+            key: 'Cross-Origin-Embedder-Policy',
+            value: 'unsafe-none',
           },
           {
             key: 'Content-Security-Policy',
@@ -55,9 +129,46 @@ const nextConfig = {
               "default-src 'self'",
               "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
               "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: https://avatars.githubusercontent.com https://img.youtube.com",
+              "img-src 'self' data: blob: https: *",
               "font-src 'self'",
-              "connect-src 'self' https://api.1click.fi https://*.solana.com https://*.helius-rpc.com wss://*.solana.com",
+              "connect-src 'self' https: wss:",
+              "frame-src 'self' https://www.youtube.com https://youtube.com https://www.youtube-nocookie.com https://youtube-nocookie.com",
+              "frame-ancestors 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+            ].join('; '),
+          },
+        ],
+      },
+      {
+        source: '/grants',
+        headers: [
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'unsafe-none',
+          },
+          {
+            key: 'Cross-Origin-Embedder-Policy',
+            value: 'unsafe-none',
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: blob: https: *",
+              "font-src 'self'",
+              "connect-src 'self' https: wss:",
+              "frame-src 'self' https://www.youtube.com https://youtube.com https://www.youtube-nocookie.com https://youtube-nocookie.com",
               "frame-ancestors 'none'",
               "base-uri 'self'",
               "form-action 'self'",
@@ -93,6 +204,15 @@ const nextConfig = {
         asyncWebAssembly: true,
         topLevelAwait: true,
       }
+
+      // Suppress bb.js topLevelAwait warning (we explicitly enable it above)
+      config.ignoreWarnings = [
+        ...(config.ignoreWarnings || []),
+        {
+          module: /@aztec\/bb\.js/,
+          message: /topLevelAwait/,
+        },
+      ]
     }
 
     return config

@@ -19,6 +19,8 @@ export interface QuoteParams {
   toToken: string
   amount: string
   privacyLevel: PrivacyLevel
+  /** Destination address where funds will be sent (required for all non-ZEC swaps) */
+  destinationAddress?: string
 }
 
 /** Quote freshness status */
@@ -144,11 +146,19 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
       // Generate stealth meta-address for shielded/compliant modes
       // Use appropriate curve based on target chain (ed25519 for Solana/NEAR, secp256k1 for EVM)
       // NOTE: Skip stealth address generation for Zcash - it uses its own z-address format
+      // NOTE: When explicit destinationAddress is provided, use TRANSPARENT mode for API
+      //       but privacy features still work on sender side (Pedersen commitments, etc.)
+      //       This is "sender-shielded" mode - sender privacy, explicit recipient
       let recipientMetaAddress: string | undefined
       let refundStealthAddress: string | undefined // For cross-curve swaps
       const isZcashDestination = params.toChain === 'zcash'
+      const hasExplicitDestination = !!params.destinationAddress
 
-      if (params.privacyLevel !== PrivacyLevel.TRANSPARENT && !isZcashDestination) {
+      // For API calls: use TRANSPARENT when destination provided (SDK requires stealth for shielded)
+      // Privacy UI elements (commitments, etc.) still work client-side
+      const effectivePrivacyLevel = hasExplicitDestination ? PrivacyLevel.TRANSPARENT : params.privacyLevel
+
+      if (effectivePrivacyLevel !== PrivacyLevel.TRANSPARENT && !isZcashDestination) {
         const isOutputEd25519 = sdk.isEd25519Chain(params.toChain as ChainId)
         const isInputEd25519 = sdk.isEd25519Chain(params.fromChain as ChainId)
 
@@ -211,8 +221,12 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
           minAmount: minOutputBigInt,
           maxSlippage: 0.01, // 1%
         },
-        privacy: params.privacyLevel,
+        privacy: effectivePrivacyLevel, // Use effective level (TRANSPARENT when destination provided)
         viewingKey: viewingKeyObj?.key as `0x${string}` | undefined,
+      }
+
+      if (hasExplicitDestination && params.privacyLevel !== PrivacyLevel.TRANSPARENT) {
+        logger.debug(`Sender-shielded mode: using TRANSPARENT for API, destination=${params.destinationAddress?.slice(0, 10)}...`, 'useQuote')
       }
 
       // Get quotes from SDK
@@ -259,7 +273,12 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
         refundAddress = refundStealthAddress
         logger.debug('Using stealth address for cross-curve refunds', 'useQuote')
       }
-      const quotes = await client.getQuotes(intentParams, recipientMetaAddress, refundAddress)
+      // Pass destinationAddress for ALL modes - this is where funds will be sent
+      // SDK signature: getQuotes(params, recipientMetaAddress?, senderAddress?, transparentRecipient?)
+      // Even in shielded mode, we need to tell 1Click API where to send the funds
+      // The "privacy" is on the sender side (hidden identity), recipient is always explicit
+      const recipientAddress = params.destinationAddress || undefined
+      const quotes = await client.getQuotes(intentParams, recipientMetaAddress, refundAddress, recipientAddress)
 
       if (quotes.length > 0) {
         setQuote(quotes[0])

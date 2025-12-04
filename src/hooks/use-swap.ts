@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef } from 'react'
 import { PrivacyLevel, type Quote, type ChainId } from '@sip-protocol/types'
+import { secp256k1 } from '@noble/curves/secp256k1'
 
 // ProductionQuote extends Quote with depositAddress for production mode
 interface ProductionQuote extends Quote {
@@ -23,15 +24,23 @@ export interface SwapParams {
   amount: string
   privacyLevel: PrivacyLevel
   quote: Quote | null
+  /** Destination address where funds will be sent (required for all non-ZEC swaps) */
+  destinationAddress?: string
 }
 
 export interface SwapResult {
-  /** Transaction hash */
+  /** Transaction hash (settlement/destination chain) */
   txHash: string | null
-  /** Explorer URL for the transaction */
+  /** Explorer URL for the settlement transaction */
   explorerUrl: string | null
-  /** Chain the transaction was submitted on */
+  /** Deposit transaction hash (source chain - e.g., Solana) */
+  depositTxHash: string | null
+  /** Explorer URL for the deposit transaction */
+  depositExplorerUrl: string | null
+  /** Chain the deposit transaction was submitted on */
   txChain: NetworkId | null
+  /** Destination chain for the settlement transaction */
+  settlementChain: NetworkId | null
   /** Current swap status */
   status: SwapStatus
   /** Error message if any */
@@ -40,6 +49,8 @@ export interface SwapResult {
   depositAddress: string | null
   /** Amount to deposit (human readable) */
   depositAmount: string | null
+  /** Token symbol being deposited (e.g., 'SOL', 'ETH') */
+  depositToken: string | null
   /** Viewing key for compliant mode swaps (auditor access) */
   viewingKey: string | null
   /** Unique swap ID for tracking */
@@ -99,10 +110,13 @@ export function useSwap(): SwapResult {
 
   const [status, setStatus] = useState<SwapStatus>('idle')
   const [txHash, setTxHash] = useState<string | null>(null)
+  const [depositTxHash, setDepositTxHash] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [txChain, setTxChain] = useState<NetworkId | null>(null)
+  const [settlementChain, setSettlementChain] = useState<NetworkId | null>(null)
   const [depositAddress, setDepositAddress] = useState<string | null>(null)
   const [depositAmount, setDepositAmount] = useState<string | null>(null)
+  const [depositToken, setDepositToken] = useState<string | null>(null)
   const [viewingKey, setViewingKey] = useState<string | null>(null)
   const [swapId, setSwapId] = useState<string | null>(null)
   const currentSwapId = useRef<string | null>(null)
@@ -110,10 +124,13 @@ export function useSwap(): SwapResult {
   const reset = useCallback(() => {
     setStatus('idle')
     setTxHash(null)
+    setDepositTxHash(null)
     setError(null)
     setTxChain(null)
+    setSettlementChain(null)
     setDepositAddress(null)
     setDepositAmount(null)
+    setDepositToken(null)
     setViewingKey(null)
     setSwapId(null)
     currentSwapId.current = null
@@ -203,21 +220,39 @@ export function useSwap(): SwapResult {
         setViewingKey(viewingKeyObj.key) // Store for UI display
       }
 
-      // Generate stealth meta-address for shielded/compliant modes
-      // Use appropriate curve based on target chain (ed25519 for Solana/NEAR, secp256k1 for EVM)
+      // For shielded/compliant modes with explicit destination address:
+      // - Privacy is "sender-shielded" (hidden sender identity via Pedersen commitments)
+      // - Funds are delivered to the user's actual destination address (not a random stealth)
+      // - Use TRANSPARENT privacy level for API when destination provided (SDK requirement)
+      // Only generate random stealth address if NO destination address is provided
+      const hasExplicitDestination = !!params.destinationAddress
+      const effectivePrivacyLevel = hasExplicitDestination ? PrivacyLevel.TRANSPARENT : params.privacyLevel
+
       let recipientMetaAddress: string | undefined
-      if (params.privacyLevel !== PrivacyLevel.TRANSPARENT) {
+      if (effectivePrivacyLevel !== PrivacyLevel.TRANSPARENT) {
         const isEd25519 = sdk.isEd25519Chain(params.toChain as ChainId)
         const stealth = isEd25519
           ? sdk.generateEd25519StealthMetaAddress(params.toChain as ChainId)
           : sdk.generateStealthMetaAddress(params.toChain as ChainId)
-        recipientMetaAddress = stealth.metaAddress as unknown as string
+        // Encode the meta-address object to string format: sip:<chain>:<spendingKey>:<viewingKey>
+        recipientMetaAddress = sdk.encodeStealthMetaAddress(stealth.metaAddress)
+        logger.warn('No destination address provided for shielded mode - using random stealth (funds may be lost!)', 'useSwap')
+      }
+
+      if (hasExplicitDestination && params.privacyLevel !== PrivacyLevel.TRANSPARENT) {
+        logger.debug(`Sender-shielded mode: destination=${params.destinationAddress?.slice(0, 10)}...`, 'useSwap')
       }
 
       // Create the shielded intent
       if (!client) {
         throw new Error('SIP client not ready')
       }
+
+      // Generate a secp256k1 private key for ZK proof signatures
+      // The SDK will generate proper ECDSA signatures internally using this key
+      // In production, this would come from a derived key or the user's wallet
+      const senderSecret = secp256k1.utils.randomPrivateKey()
+
       const intent = await client.createIntent({
         input: {
           asset: {
@@ -238,18 +273,73 @@ export function useSwap(): SwapResult {
           minAmount: params.quote.outputAmount,
           maxSlippage: 0.01,
         },
-        privacy: params.privacyLevel,
-        // For private modes, provide stealth meta-address
+        privacy: effectivePrivacyLevel, // Use effective level (TRANSPARENT when destination provided)
         recipientMetaAddress,
         viewingKey: viewingKeyObj?.key as `0x${string}` | undefined,
+      }, {
+        // Provide senderSecret - SDK will generate proper ECDSA signatures internally
+        // This ensures signatures match the intentHash computed by the SDK
+        senderSecret: senderSecret,
       })
 
       setStatus('signing')
 
+      // For production mode, capture deposit address from quote before execution
+      // The quote should have depositAddress from getQuotes() call
+      if (isProductionMode) {
+        const prodQuote = params.quote as ProductionQuote
+        if (prodQuote.depositAddress) {
+          setDepositAddress(prodQuote.depositAddress)
+          setDepositAmount(params.amount)
+          setDepositToken(params.fromToken)
+          logger.debug(`Deposit address captured: ${prodQuote.depositAddress?.slice(0, 10)}...`, 'Swap')
+        } else {
+          logger.warn('Production mode quote missing depositAddress', 'Swap')
+        }
+      }
+
       // Create deposit callback for production mode
-      const depositCallback = walletType
-        ? createDepositCallback(params.fromChain, walletType, params.fromToken)
+      // Determine effective wallet type (use stored type or fallback to detection)
+      let effectiveWalletType = walletType
+      if (!effectiveWalletType && params.fromChain) {
+        // Fallback: detect wallet based on chain if store value is missing
+        // This handles edge cases like page refresh or race conditions
+        if (params.fromChain === 'solana') {
+          const sdk = await getSDK()
+          const detected = sdk.detectSolanaWallets?.() ?? []
+          effectiveWalletType = detected[0] as typeof walletType || 'phantom' // Default to phantom
+        } else if (params.fromChain === 'ethereum') {
+          const sdk = await getSDK()
+          const detected = sdk.detectEthereumWallets?.() ?? []
+          effectiveWalletType = detected[0] as typeof walletType || 'metamask' // Default to metamask
+        }
+        logger.debug(`Wallet type fallback: detected ${effectiveWalletType} for ${params.fromChain}`, 'Swap')
+      }
+
+      logger.debug(`Deposit callback state: wallet=${effectiveWalletType}, prod=${isProductionMode}`, 'Swap')
+
+      // Set settlement chain for destination tracking
+      setSettlementChain(params.toChain)
+
+      const baseDepositCallback = effectiveWalletType
+        ? createDepositCallback(params.fromChain, effectiveWalletType, params.fromToken)
         : undefined
+
+      // Wrap deposit callback to capture the deposit tx hash
+      const depositCallback = baseDepositCallback
+        ? async (depositAddress: string, amount: string): Promise<string> => {
+            const txHash = await baseDepositCallback(depositAddress, amount)
+            // Capture the deposit tx hash for display
+            setDepositTxHash(txHash)
+            logger.debug(`Deposit tx captured: ${txHash?.slice(0, 16)}...`, 'Swap')
+            return txHash
+          }
+        : undefined
+
+      if (!depositCallback && isProductionMode) {
+        logger.warn(`No deposit callback - cannot prompt wallet for deposit`, 'Swap')
+        toast.warning('Wallet Detection', 'Could not detect wallet for automatic deposit. You may need to send manually.')
+      }
 
       // Status update handler
       const handleStatusUpdate = (status: OneClickSwapStatus) => {
@@ -326,19 +416,28 @@ export function useSwap(): SwapResult {
     }
   }, [client, isConnected, address, chain, walletType, isProductionMode, swapMode, addSwap, updateSwapHistory])
 
-  // Generate explorer URL based on the transaction chain
-  const explorerUrl = txHash && txChain
-    ? getTransactionUrl(txChain, txHash)
+  // Generate explorer URL for settlement transaction (destination chain - e.g., NEAR)
+  const explorerUrl = txHash && settlementChain
+    ? getTransactionUrl(settlementChain, txHash)
+    : null
+
+  // Generate explorer URL for deposit transaction (source chain - e.g., Solana)
+  const depositExplorerUrl = depositTxHash && txChain
+    ? getTransactionUrl(txChain, depositTxHash)
     : null
 
   return {
     txHash,
     explorerUrl,
+    depositTxHash,
+    depositExplorerUrl,
     txChain,
+    settlementChain,
     status,
     error,
     depositAddress,
     depositAmount,
+    depositToken,
     viewingKey,
     swapId,
     execute,

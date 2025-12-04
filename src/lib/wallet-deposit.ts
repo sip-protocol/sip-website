@@ -6,9 +6,22 @@
  */
 
 import type { NetworkId } from './networks'
+import {
+  Connection,
+  PublicKey,
+  Transaction,
+  SystemProgram,
+} from '@solana/web3.js'
 
 // Dynamic SDK import to avoid SSR issues with WASM
 const loadSDK = () => import('@sip-protocol/sdk')
+
+// Solana RPC endpoints
+// Use env var for custom RPC, fallback to Helius
+const SOLANA_RPC = {
+  devnet: 'https://api.devnet.solana.com',
+  mainnet: process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://mainnet.helius-rpc.com/?api-key=142fb48a-aa24-4083-99c8-249df5400b30',
+}
 
 export interface DepositParams {
   /** Chain to send from */
@@ -61,6 +74,8 @@ export async function sendDeposit(params: DepositParams): Promise<string> {
 
 /**
  * Send SOL or SPL tokens to a deposit address
+ *
+ * Builds a proper Solana Transaction object for the SDK adapter.
  */
 async function sendSolanaDeposit(
   walletType: string,
@@ -71,9 +86,10 @@ async function sendSolanaDeposit(
   const sdk = await loadSDK()
 
   // Create adapter - will pick up existing wallet connection
+  // Use mainnet-beta since 1Click API works on mainnet
   const adapter = sdk.createSolanaAdapter({
     wallet: walletType as 'phantom' | 'solflare' | 'backpack',
-    cluster: 'devnet', // Using devnet for testnet
+    cluster: 'mainnet-beta',
   })
 
   // Reconnect to pick up existing session
@@ -88,15 +104,43 @@ async function sendSolanaDeposit(
     throw new Error('Only native SOL deposits are currently supported')
   }
 
-  // Build transfer transaction
-  // For Solana, we need to construct a native SOL transfer
-  // The data field should contain the transaction parameters
+  // Get the sender's public key from the adapter
+  // SDK uses `address` property getter, not getAddress() method
+  const senderAddress = adapter.address
+  if (!senderAddress) {
+    throw new Error('No wallet address available')
+  }
+
+  // Convert addresses to PublicKey objects
+  // SDK Solana adapter stores addresses in base58 format (not hex)
+  const senderPubkey = new PublicKey(senderAddress)
+  const recipientPubkey = new PublicKey(depositAddress)
+
+  // Convert amount from lamports string to number
+  const lamports = BigInt(amount)
+
+  // Create connection to get recent blockhash (mainnet since 1Click uses mainnet)
+  const connection = new Connection(SOLANA_RPC.mainnet, 'confirmed')
+  const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('confirmed')
+
+  // Build the SOL transfer transaction
+  const transaction = new Transaction({
+    feePayer: senderPubkey,
+    blockhash,
+    lastValidBlockHeight,
+  }).add(
+    SystemProgram.transfer({
+      fromPubkey: senderPubkey,
+      toPubkey: recipientPubkey,
+      lamports: lamports,
+    })
+  )
+
+  // Sign and send via the SDK adapter
+  // Pass the actual Transaction object, not a simple params object
   const receipt = await adapter.signAndSendTransaction({
     chain: 'solana',
-    data: {
-      to: depositAddress,
-      lamports: amount,
-    },
+    data: transaction,
     metadata: {
       sendOptions: {
         skipPreflight: false,
@@ -109,8 +153,7 @@ async function sendSolanaDeposit(
     throw new Error('Transaction failed - no hash returned')
   }
 
-  // Solana returns base58-encoded signatures, we need to return as-is or convert
-  // The SDK returns it as hex string prefixed with 0x
+  // SDK returns txHash as base58 (Phantom) or hex (other wallets)
   return receipt.txHash
 }
 

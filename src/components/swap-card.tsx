@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo, useCallback, useRef, useEffect, type KeyboardEvent } from 'react'
+import Image from 'next/image'
 import { PrivacyLevel } from '@sip-protocol/types'
 import { useQuote, useSwap, useBalance, getStatusMessage } from '@/hooks'
 import { useWalletStore, useSwapModeStore, useSettingsStore } from '@/stores'
@@ -34,43 +35,33 @@ interface Token {
   symbol: string
   name: string
   chain: NetworkId
-  icon: string
+  logo: string
 }
 
 // Tokens available as SOURCE (chains with wallet deposit support)
+// Reduced to core chains for reliable 1Click API quotes
 const fromTokens: Token[] = [
-  { symbol: 'ETH', name: 'Ethereum', chain: 'ethereum', icon: 'Ξ' },
-  { symbol: 'SOL', name: 'Solana', chain: 'solana', icon: '◎' },
-  { symbol: 'NEAR', name: 'NEAR', chain: 'near', icon: 'Ⓝ' },
-  { symbol: 'BTC', name: 'Bitcoin', chain: 'bitcoin', icon: '₿' },
-  { symbol: 'ARB', name: 'Arbitrum', chain: 'arbitrum', icon: '🔷' },
-  { symbol: 'BASE', name: 'Base', chain: 'base', icon: '🔵' },
-  { symbol: 'OP', name: 'Optimism', chain: 'optimism', icon: '🔴' },
-  { symbol: 'POL', name: 'Polygon', chain: 'polygon', icon: '💜' },
-  { symbol: 'BNB', name: 'BNB Chain', chain: 'bsc', icon: '🟡' },
-  { symbol: 'AVAX', name: 'Avalanche', chain: 'avalanche', icon: '🔺' },
-  { symbol: 'APT', name: 'Aptos', chain: 'aptos', icon: '🌀' },
+  { symbol: 'ETH', name: 'Ethereum', chain: 'ethereum', logo: '/tokens/eth.png' },
+  { symbol: 'SOL', name: 'Solana', chain: 'solana', logo: '/tokens/sol.png' },
+  { symbol: 'NEAR', name: 'NEAR', chain: 'near', logo: '/tokens/near.png' },
 ]
 
 // Tokens available as DESTINATION (NEAR Intents supported chains)
-// See: https://api.defuse.org/v1/supported-assets for full list
-// Note: Simplified list for demo - L2 tokens have same symbol (ETH) which
-// would require refactoring selection logic. Full support planned for v0.3.
+// ZEC is the privacy output - users swap TO Zcash for shielded transactions
 const toTokens: Token[] = [
-  { symbol: 'ETH', name: 'Ethereum', chain: 'ethereum', icon: 'Ξ' },
-  { symbol: 'USDC', name: 'USD Coin', chain: 'ethereum', icon: '💵' },
-  { symbol: 'SOL', name: 'Solana', chain: 'solana', icon: '◎' },
-  { symbol: 'NEAR', name: 'NEAR', chain: 'near', icon: 'Ⓝ' },
-  { symbol: 'ZEC', name: 'Zcash', chain: 'zcash', icon: '🛡️' },
-  { symbol: 'POL', name: 'Polygon', chain: 'polygon', icon: '💜' },
+  { symbol: 'ZEC', name: 'Zcash', chain: 'zcash', logo: '/tokens/zec.png' },
+  { symbol: 'ETH', name: 'Ethereum', chain: 'ethereum', logo: '/tokens/eth.png' },
+  { symbol: 'SOL', name: 'Solana', chain: 'solana', logo: '/tokens/sol.png' },
+  { symbol: 'NEAR', name: 'NEAR', chain: 'near', logo: '/tokens/near.png' },
 ]
 
 export function SwapCard({ privacyLevel }: SwapCardProps) {
   // Default to ETH→SOL: Cross-chain swap demo
   const [fromToken, setFromToken] = useState(fromTokens[0]) // ETH
-  const [toToken, setToToken] = useState(toTokens[2]) // SOL (index 2 after ETH, USDC)
+  const [toToken, setToToken] = useState(toTokens[2]) // SOL (index 2: ZEC, ETH, SOL, NEAR)
   const [amount, setAmount] = useState('')
   const [zecRecipient, setZecRecipient] = useState('') // ZEC recipient address (z-addr or t-addr)
+  const [destinationAddress, setDestinationAddress] = useState('') // Destination address for all swap modes
   const [showSettings, setShowSettings] = useState(false)
 
   // Prevent same-token selection by auto-swapping
@@ -89,6 +80,24 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
     }
     setToToken(token)
   }
+
+  // Flip from/to tokens (swap direction)
+  const handleFlipTokens = useCallback(() => {
+    // Check if the current toToken exists in fromTokens (e.g., ZEC is not a valid source)
+    const newFromToken = fromTokens.find(t => t.symbol === toToken.symbol)
+    const newToToken = toTokens.find(t => t.symbol === fromToken.symbol)
+
+    if (newFromToken && newToToken) {
+      // Both tokens are valid for swapping
+      setFromToken(newFromToken)
+      setToToken(newToToken)
+    } else if (!newFromToken) {
+      // toToken (e.g., ZEC) can't be a source - keep it as destination, just swap to first available
+      const fallbackFrom = fromTokens.find(t => t.symbol !== toToken.symbol) || fromTokens[0]
+      setFromToken(fallbackFrom)
+      // Keep toToken as is since it can't be flipped
+    }
+  }, [fromToken, toToken])
 
   // Wallet state
   const { isConnected, openModal } = useWalletStore()
@@ -138,6 +147,9 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
   // Build quote params
   const quoteParams = useMemo(() => {
     if (!amount || parseFloat(amount) <= 0) return null
+    // Include destination address for all modes (except ZEC which has its own z-address input)
+    // This ensures swaps actually deliver funds to user's wallet in all privacy modes
+    const isZecDest = toToken.symbol === 'ZEC'
     return {
       fromChain: fromToken.chain,
       toChain: toToken.chain,
@@ -145,8 +157,10 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
       toToken: toToken.symbol,
       amount,
       privacyLevel,
+      // Pass destination for all modes - required for funds to arrive at user's wallet
+      destinationAddress: !isZecDest ? destinationAddress.trim() || undefined : undefined,
     }
-  }, [fromToken, toToken, amount, privacyLevel])
+  }, [fromToken, toToken, amount, privacyLevel, destinationAddress])
 
   // Fetch quote
   const {
@@ -163,7 +177,23 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
   } = useQuote(quoteParams)
 
   // Swap execution
-  const { status, txHash, explorerUrl, txChain, error: swapError, swapId, depositAddress, execute, reset, cancel } = useSwap()
+  const {
+    status,
+    txHash,
+    explorerUrl,
+    depositTxHash,
+    depositExplorerUrl,
+    txChain,
+    settlementChain,
+    error: swapError,
+    swapId,
+    depositAddress,
+    depositAmount,
+    depositToken,
+    execute,
+    reset,
+    cancel,
+  } = useSwap()
 
   const isTransparent = privacyLevel === PrivacyLevel.TRANSPARENT
   const isShielded = privacyLevel === PrivacyLevel.SHIELDED
@@ -174,15 +204,17 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
   const isError = status === 'error'
   const isZecDestination = toToken.symbol === 'ZEC'
 
-  // Calculate price impact
+  // Calculate price impact (compare quote output vs market rate)
   const priceImpact = useMemo(() => {
-    if (!amount || !outputAmount || !rate) return null
+    if (!amount || !outputAmount) return null
     const inputNum = parseFloat(amount)
     const outputNum = parseFloat(outputAmount)
-    const rateNum = parseFloat(rate)
-    if (inputNum <= 0 || outputNum <= 0 || rateNum <= 0) return null
-    return calculatePriceImpact(inputNum, outputNum, rateNum)
-  }, [amount, outputAmount, rate])
+    if (inputNum <= 0 || outputNum <= 0) return null
+    // Use market rate from CoinGecko, not quote rate
+    const marketRate = getExchangeRateSync(fromToken.symbol, toToken.symbol)
+    if (marketRate <= 0) return null
+    return calculatePriceImpact(inputNum, outputNum, marketRate)
+  }, [amount, outputAmount, fromToken.symbol, toToken.symbol])
 
   // Calculate market rate comparison
   const marketComparison = useMemo(() => {
@@ -216,6 +248,11 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
   const isZecAddressValid = !isZecDestination || (zecValidation?.isValid ?? false)
   const isZecTransparent = zecValidation?.type === 'transparent'
 
+  // Check if destination address is valid (required for all non-ZEC swaps)
+  // Destination is always required to ensure funds arrive at user's wallet
+  const needsDestinationAddress = !isZecDestination
+  const isDestinationAddressValid = !needsDestinationAddress || (destinationAddress.trim().length > 0)
+
   const handleSwap = async () => {
     if (!isConnected) {
       openModal()
@@ -227,6 +264,8 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
     await execute({
       ...quoteParams,
       quote,
+      // Pass destination address for all swaps (ZEC has its own z-address input)
+      destinationAddress: needsDestinationAddress ? destinationAddress.trim() : undefined,
     })
   }
 
@@ -371,8 +410,9 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
       {/* Swap direction */}
       <div className="-my-2 flex justify-center">
         <button
+          onClick={handleFlipTokens}
           aria-label="Swap direction"
-          className="z-10 rounded-xl border border-gray-700 bg-gray-900 p-2 transition-colors hover:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+          className="z-10 rounded-xl border border-gray-700 bg-gray-900 p-2 transition-all hover:border-purple-500 hover:rotate-180 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900"
         >
           <ArrowDownIcon className="h-4 w-4 text-gray-400" />
         </button>
@@ -539,6 +579,35 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
         </div>
       )}
 
+      {/* Destination Address Input for all modes (except ZEC which has z-address input) */}
+      {!isZecDestination && (
+        <div className="mb-4 rounded-xl bg-gray-800/50 p-3 sm:p-4" data-testid="destination-address-section">
+          <div className="mb-2 flex flex-wrap items-center justify-between gap-1 text-sm text-gray-400">
+            <span className="flex items-center gap-1">
+              <WalletIcon className="h-4 w-4 text-cyan-500" />
+              <span className="text-xs sm:text-sm">Destination Address</span>
+            </span>
+            <span className="text-xs text-cyan-500">Required</span>
+          </div>
+
+          <input
+            type="text"
+            value={destinationAddress}
+            onChange={(e) => setDestinationAddress(e.target.value)}
+            placeholder={`Enter ${toToken.name} address to receive funds`}
+            data-testid="destination-address-input"
+            aria-label="Destination address"
+            className="w-full rounded-lg bg-gray-700/50 px-3 py-2 text-sm outline-none placeholder:text-gray-500 transition-all focus:ring-1 focus:ring-cyan-500/50"
+          />
+
+          <p className="mt-2 text-xs text-gray-500">
+            {hasPrivacy
+              ? `Your ${toToken.name} address (swap is private - sender identity hidden)`
+              : `Funds will be sent to this ${toToken.name} address after the swap completes`}
+          </p>
+        </div>
+      )}
+
       {/* Privacy info */}
       {hasPrivacy && (
         <div className="mb-4 rounded-lg border border-purple-500/30 bg-gradient-to-r from-purple-500/10 via-yellow-500/5 to-purple-500/10 p-3" data-testid="privacy-info">
@@ -566,8 +635,9 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
         </div>
       )}
 
-      {/* Stealth Address Visualization - hidden for Zcash (uses z-addresses instead) */}
-      {hasPrivacy && amount && parseFloat(amount) > 0 && !isZecDestination && (
+      {/* Stealth Address Visualization - hidden when explicit destination provided (sender-shielded mode) */}
+      {/* Only show stealth address when NO destination - meaning random stealth will be generated */}
+      {hasPrivacy && amount && parseFloat(amount) > 0 && !isZecDestination && !destinationAddress.trim() && (
         <div className="mb-4">
           <StealthAddressDisplay
             toChain={toToken.chain}
@@ -598,13 +668,18 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
         status={status}
         txHash={txHash}
         explorerUrl={explorerUrl}
+        depositTxHash={depositTxHash}
+        depositExplorerUrl={depositExplorerUrl}
         chain={txChain}
+        settlementChain={settlementChain}
         error={swapError}
         isShielded={hasPrivacy}
         isCompliant={isCompliant}
         estimatedTime={estimatedTime}
         swapId={swapId}
         depositAddress={depositAddress}
+        depositAmount={depositAmount}
+        depositToken={depositToken}
         onReset={handleReset}
         onRetry={reset}
         onCancel={cancel}
@@ -642,15 +717,33 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
       )}
 
       {/* Swap button */}
+      {/* Destination Verification Banner - shows exactly where funds will go */}
+      {!isZecDestination && destinationAddress.trim() && amount && parseFloat(amount) > 0 && !isSuccess && (
+        <div className="mb-4 rounded-xl border-2 border-green-500/50 bg-green-500/10 p-3" data-testid="destination-verification">
+          <div className="flex items-start gap-2">
+            <CheckIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-green-400" />
+            <div className="flex-1 min-w-0">
+              <p className="font-medium text-green-300 text-sm">Funds will be sent to:</p>
+              <p className="mt-1 font-mono text-xs text-green-400 break-all" data-testid="verified-destination">
+                {destinationAddress.trim()}
+              </p>
+              <p className="mt-1 text-xs text-green-400/70">
+                Verify this is YOUR {toToken.name} wallet address before swapping
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {!isSuccess && (
         <button
           onClick={handleSwap}
-          disabled={(!amount || isSwapping || hasInsufficientBalance || !isZecAddressValid) && isConnected}
+          disabled={(!amount || isSwapping || hasInsufficientBalance || !isZecAddressValid || !isDestinationAddressValid) && isConnected}
           data-testid="swap-button"
           className={`min-h-[52px] w-full rounded-xl py-3 text-base font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 sm:py-4 sm:text-lg ${
             !isConnected
               ? 'bg-purple-600 text-white hover:bg-purple-700 active:bg-purple-800'
-              : !amount || hasInsufficientBalance || !isZecAddressValid
+              : !amount || hasInsufficientBalance || !isZecAddressValid || !isDestinationAddressValid
                 ? 'cursor-not-allowed bg-gray-800 text-gray-500'
                 : isSwapping
                   ? 'cursor-wait bg-purple-600/50 text-white'
@@ -665,6 +758,8 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
             <span>Insufficient Balance</span>
           ) : !isZecAddressValid ? (
             <span>Enter Valid Zcash Address</span>
+          ) : !isDestinationAddressValid ? (
+            <span>Enter Destination Address</span>
           ) : isSwapping ? (
             <span className="flex items-center justify-center gap-2">
               <LoadingSpinner />
@@ -938,7 +1033,7 @@ function TokenSelector({
         aria-label={`${label}: ${token.symbol} (${token.name}). Click to change`}
         className="flex min-h-[44px] items-center gap-1.5 rounded-xl bg-gray-700/50 px-2.5 py-2 font-medium transition-colors hover:bg-gray-700 active:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 sm:gap-2 sm:px-3"
       >
-        <span className="text-base sm:text-lg" aria-hidden="true">{token.icon}</span>
+        <Image src={token.logo} alt={token.symbol} width={24} height={24} className="h-5 w-5 sm:h-6 sm:w-6 rounded-full" />
         <span className="text-sm sm:text-base">{token.symbol}</span>
         <ChevronDownIcon className="h-4 w-4 text-gray-400" aria-hidden="true" />
       </button>
@@ -983,7 +1078,7 @@ function TokenSelector({
                       : 'hover:bg-gray-800'
                 }`}
               >
-                <span className="text-base sm:text-lg" aria-hidden="true">{t.icon}</span>
+                <Image src={t.logo} alt={t.symbol} width={24} height={24} className="h-5 w-5 sm:h-6 sm:w-6 rounded-full" />
                 <div className="min-w-0 flex-1">
                   <div className="font-medium">{t.symbol}</div>
                   <div className="truncate text-xs text-gray-400">{t.name}</div>
@@ -1189,6 +1284,18 @@ function ClockIcon({ className }: { className?: string }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  )
+}
+
+function WalletIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3"
+      />
     </svg>
   )
 }

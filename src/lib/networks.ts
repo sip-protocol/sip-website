@@ -94,8 +94,9 @@ export const NETWORKS: Record<NetworkId, NetworkConfig> = {
     id: 'near',
     name: 'NEAR',
     testnet: 'Testnet',
-    rpcEndpoint: 'https://rpc.testnet.near.org',
-    explorerUrl: 'https://testnet.nearblocks.io',
+    // Using mainnet for production - 1Click API operates on mainnet
+    rpcEndpoint: 'https://rpc.mainnet.near.org',
+    explorerUrl: 'https://nearblocks.io',
     faucetUrl: 'https://near-faucet.io/',
     nativeToken: 'NEAR',
     decimals: 24,
@@ -389,7 +390,7 @@ export function getTransactionUrl(networkId: NetworkId, txHash: string): string 
   const network = NETWORKS[networkId]
   switch (networkId) {
     case 'solana':
-      return `${network.explorerUrl}/tx/${txHash}?cluster=devnet`
+      return `${network.explorerUrl}/tx/${txHash}` // Mainnet (no cluster param needed)
     case 'ethereum':
     case 'arbitrum':
     case 'base':
@@ -417,7 +418,7 @@ export function getAddressUrl(networkId: NetworkId, address: string): string {
   const network = NETWORKS[networkId]
   switch (networkId) {
     case 'solana':
-      return `${network.explorerUrl}/account/${address}?cluster=devnet`
+      return `${network.explorerUrl}/account/${address}` // Mainnet (no cluster param needed)
     case 'ethereum':
     case 'arbitrum':
     case 'base':

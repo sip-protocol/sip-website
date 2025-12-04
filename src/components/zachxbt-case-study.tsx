@@ -2,6 +2,14 @@
 
 import { useState, useCallback } from 'react'
 
+// Deterministic initial addresses to prevent hydration mismatch
+const INITIAL_ALICE_ADDRESS = '0xd704a8b3c2e1f9a6b5d8c7e4f2a1b3c9d8e7f4b0'
+const INITIAL_STEALTH_ADDRESSES = [
+  '0x8a2f3b1c9d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a',
+  '0x1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c',
+  '0x9c8d7e6f5a4b3c2d1e0f9a8b7c6d5e4f3a2b1c0d',
+]
+
 // Generate a realistic-looking address (mock for demo purposes)
 function generateMockAddress(prefix: string = '0x'): string {
   const chars = '0123456789abcdef'
@@ -18,12 +26,8 @@ function truncateAddress(address: string): string {
 }
 
 export function ZachXBTCaseStudy() {
-  const [aliceAddress] = useState(() => generateMockAddress())
-  const [stealthAddresses, setStealthAddresses] = useState<string[]>(() => [
-    generateMockAddress(),
-    generateMockAddress(),
-    generateMockAddress(),
-  ])
+  const [aliceAddress] = useState(INITIAL_ALICE_ADDRESS)
+  const [stealthAddresses, setStealthAddresses] = useState<string[]>(INITIAL_STEALTH_ADDRESSES)
   const [isGenerating, setIsGenerating] = useState(false)
   const [showExplanation, setShowExplanation] = useState(false)
 

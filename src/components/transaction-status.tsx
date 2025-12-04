@@ -8,9 +8,18 @@ import { TransactionTimeline } from './transaction-timeline'
 
 interface TransactionStatusProps {
   status: SwapStatus
+  /** Settlement transaction hash (destination chain - e.g., NEAR) */
   txHash: string | null
+  /** Explorer URL for settlement transaction */
   explorerUrl: string | null
+  /** Deposit transaction hash (source chain - e.g., Solana) */
+  depositTxHash?: string | null
+  /** Explorer URL for deposit transaction */
+  depositExplorerUrl?: string | null
+  /** Source chain (where deposit was made) */
   chain: NetworkId | null
+  /** Destination chain (where settlement happened) */
+  settlementChain?: NetworkId | null
   error: string | null
   isShielded: boolean
   isCompliant?: boolean
@@ -39,7 +48,10 @@ export function TransactionStatus({
   status,
   txHash,
   explorerUrl,
+  depositTxHash,
+  depositExplorerUrl,
   chain,
+  settlementChain,
   error,
   isShielded,
   isCompliant = false,
@@ -161,21 +173,21 @@ export function TransactionStatus({
               </div>
             </div>
             <div className="flex-1">
-              <p className="font-medium text-amber-300">Awaiting Deposit</p>
+              <p className="font-medium text-amber-300">Processing Deposit</p>
               <p className="text-sm text-amber-400/80">
                 {depositAmount && depositToken
-                  ? `Send ${depositAmount} ${depositToken} to complete your swap`
-                  : 'Send tokens to the deposit address to complete swap'}
+                  ? `Confirming ${depositAmount} ${depositToken} on-chain...`
+                  : 'Waiting for deposit confirmation...'}
               </p>
             </div>
           </div>
 
-          {/* Deposit Address - CRITICAL for user to complete swap */}
+          {/* Transaction Details - for transparency */}
           {depositAddress ? (
             <div className="mt-4 rounded-lg bg-amber-950/30 border border-amber-500/20 p-4">
               <div className="flex items-center justify-between mb-2">
                 <p className="text-sm font-medium text-amber-200">
-                  Deposit Address
+                  Transaction Details
                 </p>
                 <span className="text-xs text-amber-400/70 bg-amber-500/10 px-2 py-0.5 rounded">
                   {chain ? NETWORKS[chain]?.name : 'Origin Chain'}
@@ -188,7 +200,7 @@ export function TransactionStatus({
                 <button
                   onClick={copyDepositAddress}
                   className="flex-shrink-0 p-2 rounded-lg hover:bg-amber-500/20 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
-                  aria-label="Copy deposit address"
+                  aria-label="Copy address"
                   title="Copy to clipboard"
                 >
                   {depositCopied ? (
@@ -204,26 +216,22 @@ export function TransactionStatus({
                 </p>
               )}
 
-              {/* Amount reminder */}
+              {/* Amount info */}
               {depositAmount && depositToken && (
                 <div className="mt-3 flex items-center gap-2 text-sm">
-                  <span className="text-amber-400/70">Amount to send:</span>
+                  <span className="text-amber-400/70">Amount:</span>
                   <span className="font-medium text-white">
                     {depositAmount} {depositToken}
                   </span>
                 </div>
               )}
 
-              {/* Warning / Instructions */}
+              {/* Status info */}
               <div className="mt-3 flex items-start gap-2 text-xs text-amber-400/80">
-                <WarningIcon className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                <SpinnerIcon className="h-4 w-4 flex-shrink-0 mt-0.5 animate-spin" />
                 <div>
-                  <p className="font-medium text-amber-300">Important:</p>
-                  <ul className="mt-1 space-y-0.5 list-disc list-inside">
-                    <li>Send exact amount to avoid issues</li>
-                    <li>Swap will complete automatically after deposit confirms</li>
-                    <li>Do not close this page until complete</li>
-                  </ul>
+                  <p className="text-amber-300">Waiting for blockchain confirmation...</p>
+                  <p className="mt-1 text-amber-400/60">This usually takes 15-30 seconds. Please keep this page open.</p>
                 </div>
               </div>
             </div>
@@ -231,7 +239,7 @@ export function TransactionStatus({
             <div className="mt-4 rounded-lg bg-red-500/10 border border-red-500/20 p-3">
               <div className="flex items-center gap-2 text-red-400 text-sm">
                 <WarningIcon className="h-4 w-4" />
-                <span>Deposit address not available. Please try again.</span>
+                <span>Transaction details not available. Please try again.</span>
               </div>
             </div>
           )}
@@ -287,45 +295,82 @@ export function TransactionStatus({
         </div>
       )}
 
-      {/* Success State - with txHash */}
-      {isSuccess && txHash && (
+      {/* Success State - with txHash or depositTxHash */}
+      {isSuccess && (txHash || depositTxHash) && (
         <div className="rounded-xl border border-green-500/30 bg-green-500/10 p-4">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500/20">
               <CheckIcon className="h-5 w-5 text-green-400" />
             </div>
             <div className="flex-1">
-              <p className="font-medium text-green-300">Transaction Submitted!</p>
+              <p className="font-medium text-green-300">Swap Complete!</p>
               <p className="text-sm text-green-400/80">
-                Your {isShielded ? 'shielded ' : ''}swap is being processed
-                {networkName && ` on ${networkName}`}
+                Your {isShielded ? 'shielded ' : ''}cross-chain swap has been processed
               </p>
             </div>
           </div>
 
-          {/* Transaction hash */}
-          <div className="mt-3 rounded-lg bg-green-500/10 px-3 py-2">
-            <p className="text-xs text-green-400/60">Transaction Hash</p>
-            <p className="font-mono text-sm text-green-300 break-all">
-              {truncateHash(txHash)}
-            </p>
+          {/* Transaction links - show both source and destination */}
+          <div className="mt-4 space-y-3">
+            {/* Deposit Transaction (Source Chain - e.g., Solana) */}
+            {depositTxHash && depositExplorerUrl && chain && (
+              <div className="rounded-lg bg-green-500/10 p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs text-green-400/60 flex items-center gap-1">
+                    <ExplorerIcon chain={chain} className="h-3 w-3" />
+                    Source ({NETWORKS[chain]?.name || chain})
+                  </p>
+                </div>
+                <p className="font-mono text-xs text-green-300 break-all mb-2">
+                  {truncateHash(depositTxHash)}
+                </p>
+                <a
+                  href={depositExplorerUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 rounded-lg bg-green-500/20 px-3 py-1.5 text-xs font-medium text-green-300 transition-colors hover:bg-green-500/30"
+                >
+                  View on {getExplorerName(chain)}
+                  <ExternalLinkIcon className="h-3 w-3" />
+                </a>
+              </div>
+            )}
+
+            {/* Settlement Transaction (Destination Chain - e.g., NEAR) */}
+            {txHash && explorerUrl && settlementChain && (
+              <div className="rounded-lg bg-cyan-500/10 p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs text-cyan-400/60 flex items-center gap-1">
+                    <ExplorerIcon chain={settlementChain} className="h-3 w-3" />
+                    Destination ({NETWORKS[settlementChain]?.name || settlementChain})
+                  </p>
+                </div>
+                <p className="font-mono text-xs text-cyan-300 break-all mb-2">
+                  {truncateHash(txHash)}
+                </p>
+                <a
+                  href={explorerUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 rounded-lg bg-cyan-500/20 px-3 py-1.5 text-xs font-medium text-cyan-300 transition-colors hover:bg-cyan-500/30"
+                >
+                  View on {getExplorerName(settlementChain)}
+                  <ExternalLinkIcon className="h-3 w-3" />
+                </a>
+              </div>
+            )}
+
+            {/* Fallback: Show only deposit if no settlement hash */}
+            {depositTxHash && depositExplorerUrl && chain && !txHash && !explorerUrl && (
+              <p className="text-xs text-green-400/70 text-center">
+                Settlement transaction will appear once NEAR confirms the swap
+              </p>
+            )}
           </div>
 
-          {explorerUrl && (
-            <a
-              href={explorerUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-3 flex items-center justify-center gap-2 rounded-lg bg-green-500/20 px-4 py-2 text-sm font-medium text-green-300 transition-colors hover:bg-green-500/30"
-            >
-              {chain && <ExplorerIcon chain={chain} className="h-4 w-4" />}
-              View on {explorerName}
-              <ExternalLinkIcon className="h-4 w-4" />
-            </a>
-          )}
           <button
             onClick={onReset}
-            className="mt-2 w-full rounded-lg border border-green-500/30 px-4 py-2 text-sm font-medium text-green-300 transition-colors hover:bg-green-500/10"
+            className="mt-4 w-full rounded-lg border border-green-500/30 px-4 py-2 text-sm font-medium text-green-300 transition-colors hover:bg-green-500/10"
           >
             New Swap
           </button>
@@ -333,7 +378,7 @@ export function TransactionStatus({
       )}
 
       {/* Success State - shielded/compliant without txHash (privacy protected) */}
-      {isSuccess && !txHash && isShielded && (
+      {isSuccess && !txHash && !depositTxHash && isShielded && (
         <div className="rounded-xl border border-purple-500/30 bg-purple-500/10 p-4">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-500/20">
@@ -403,7 +448,7 @@ export function TransactionStatus({
       )}
 
       {/* Success State - transparent without txHash (processed but no hash) */}
-      {isSuccess && !txHash && !isShielded && (
+      {isSuccess && !txHash && !depositTxHash && !isShielded && (
         <div className="rounded-xl border border-green-500/30 bg-green-500/10 p-4">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500/20">
@@ -643,7 +688,7 @@ function getStatusDescription(status: SwapStatus, isShielded: boolean): string {
         ? 'Applying privacy protections to your transaction...'
         : 'Submitting to the network...'
     case 'awaiting_deposit':
-      return 'Send tokens to the deposit address to complete swap'
+      return 'Confirming your deposit on-chain...'
     case 'processing':
       return 'Your swap is being processed on NEAR'
     default:
