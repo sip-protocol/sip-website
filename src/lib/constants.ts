@@ -31,12 +31,15 @@ export const SDK_VERSION = {
   npmUrl: 'https://www.npmjs.com/package/@sip-protocol/sdk',
 }
 
-// Test counts - updated 2025-12-03
+// Test counts - updated 2025-12-04
 export const TEST_COUNTS = {
-  sdk: 1293,
+  sdk: 2474,
+  react: 57,
+  cli: 33,
+  api: 67,
   website: 126,
   get total() {
-    return this.sdk + this.website
+    return this.sdk + this.react + this.cli + this.api + this.website
   },
   // Formatted strings for display
   get sdkDisplay() {
@@ -49,7 +52,7 @@ export const TEST_COUNTS = {
     return `${this.total.toLocaleString()}+`
   },
   get detailDisplay() {
-    return `${this.sdk.toLocaleString()} SDK + ${this.website} website`
+    return `SDK: ${this.sdk.toLocaleString()} | React: ${this.react} | CLI: ${this.cli} | API: ${this.api} | Website: ${this.website}`
   },
 }
 
@@ -57,7 +60,9 @@ export const TEST_COUNTS = {
 export const PROJECT_METRICS = {
   testsTotal: TEST_COUNTS.totalDisplay,
   testsDetail: TEST_COUNTS.detailDisplay,
-  chains: '10+',
+  chains: '15+',
+  packages: '6',
+  milestones: 'M15',
   proofTime: '<5s',
   proofSize: '~2KB',
 }

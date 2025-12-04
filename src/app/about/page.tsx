@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { TEST_COUNTS } from '@/lib/constants'
+import { FounderProfile } from '@/components/founder-profile'
 
 export default function AboutPage() {
   return (
@@ -407,18 +408,6 @@ function RoadmapSection() {
 }
 
 function TeamSection() {
-  const team = [
-    {
-      name: 'RECTOR',
-      role: 'Founder & Lead Developer',
-      bio: 'Senior software engineer with 10+ years experience building privacy-focused and cryptographic systems. Previously worked on enterprise blockchain solutions and decentralized identity protocols.',
-      links: {
-        github: 'https://github.com/rz1989s',
-        twitter: 'https://x.com/rz1989s',
-      },
-    },
-  ]
-
   return (
     <section className="py-24 border-t border-gray-800/50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -431,55 +420,16 @@ function TeamSection() {
           </p>
         </div>
 
-        <div className="flex justify-center">
-          {team.map((member, index) => (
-            <motion.div
-              key={member.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="max-w-md p-8 rounded-2xl bg-gray-900/50 border border-gray-800 text-center"
-            >
-              {/* Avatar placeholder */}
-              <div className="flex justify-center mb-6">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-3xl font-bold text-white">
-                  {member.name.charAt(0)}
-                </div>
-              </div>
-
-              <h3 className="text-xl font-bold">{member.name}</h3>
-              <p className="text-purple-400 text-sm mt-1">{member.role}</p>
-              <p className="text-gray-400 text-sm mt-4 leading-relaxed">{member.bio}</p>
-
-              {/* Social links */}
-              <div className="flex justify-center gap-4 mt-6">
-                {member.links.github && (
-                  <a
-                    href={member.links.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white transition-colors"
-                    aria-label="GitHub"
-                  >
-                    <Github className="h-5 w-5" />
-                  </a>
-                )}
-                {member.links.twitter && (
-                  <a
-                    href={member.links.twitter}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white transition-colors"
-                    aria-label="Twitter/X"
-                  >
-                    <ExternalLink className="h-5 w-5" />
-                  </a>
-                )}
-              </div>
-            </motion.div>
-          ))}
-        </div>
+        {/* Use the rich FounderProfile component */}
+        <FounderProfile
+          stats={{
+            repositories: 27,
+            stars: 206,
+            followers: 26,
+            commits: 4500,
+            badge: `${TEST_COUNTS.totalDisplay} Tests`,
+          }}
+        />
 
         {/* Join the team CTA */}
         <div className="mt-12 text-center">

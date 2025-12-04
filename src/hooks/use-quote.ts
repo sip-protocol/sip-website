@@ -229,11 +229,14 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
       if (isZcashDestination) {
         const exchangeRate = getExchangeRateSync(params.fromToken, params.toToken)
         const outputAmount = BigInt(Math.floor(parseFloat(params.amount) * exchangeRate * (10 ** toDecimals)))
-        const mockQuote = {
+        const mockQuote: Quote = {
+          quoteId: `zcash-${Date.now()}`,
+          intentId: '',
+          solverId: 'zcash-native',
           outputAmount,
           fee: outputAmount / 100n, // 1% fee estimate
           estimatedTime: 60, // 1 minute estimate for Zcash
-          solver: 'zcash-native',
+          expiry: Date.now() + QUOTE_EXPIRY_DURATION,
         }
         setQuote(mockQuote)
         setFetchedAt(Date.now())
