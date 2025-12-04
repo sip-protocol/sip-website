@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { ZcashRPCClient } from '@sip-protocol/sdk'
+import { zcashRateLimiter, getClientIp } from '@/lib/rate-limiter'
 
 /**
  * Zcash RPC Proxy API
@@ -8,6 +9,8 @@ import { ZcashRPCClient } from '@sip-protocol/sdk'
  * Supports: getbalance, getaddress, getblockcount, validateaddress
  *
  * Enable by setting ZCASH_RPC_* environment variables.
+ *
+ * Rate limit: 10 requests per minute per IP
  */
 
 // Allowed methods for security (whitelist approach)
@@ -62,7 +65,26 @@ function getClient(): ZcashRPCClient | null {
 /**
  * GET /api/zcash - Check if Zcash RPC is configured
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Rate limiting
+  const clientIp = getClientIp(request)
+  if (!zcashRateLimiter.check(clientIp)) {
+    const resetTime = zcashRateLimiter.getResetTime(clientIp)
+    return NextResponse.json(
+      {
+        error: 'Too many requests',
+        message: 'Rate limit exceeded. Please try again later.',
+        resetAt: resetTime
+      },
+      {
+        status: 429,
+        headers: {
+          'Retry-After': resetTime ? Math.ceil((resetTime - Date.now()) / 1000).toString() : '60'
+        }
+      }
+    )
+  }
+
   const client = getClient()
 
   if (!client) {
@@ -97,6 +119,25 @@ export async function GET() {
  * POST /api/zcash - Execute RPC method
  */
 export async function POST(request: NextRequest) {
+  // Rate limiting
+  const clientIp = getClientIp(request)
+  if (!zcashRateLimiter.check(clientIp)) {
+    const resetTime = zcashRateLimiter.getResetTime(clientIp)
+    return NextResponse.json(
+      {
+        error: 'Too many requests',
+        message: 'Rate limit exceeded. Please try again later.',
+        resetAt: resetTime
+      },
+      {
+        status: 429,
+        headers: {
+          'Retry-After': resetTime ? Math.ceil((resetTime - Date.now()) / 1000).toString() : '60'
+        }
+      }
+    )
+  }
+
   const client = getClient()
 
   if (!client) {

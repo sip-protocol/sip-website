@@ -19,6 +19,45 @@ const nextConfig = {
     NEXT_PUBLIC_GIT_COMMIT: process.env.GIT_COMMIT || 'dev',
     NEXT_PUBLIC_GIT_BRANCH: process.env.GIT_BRANCH || 'local',
   },
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()',
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: https://avatars.githubusercontent.com https://img.youtube.com",
+              "font-src 'self'",
+              "connect-src 'self' https://api.1click.fi https://*.solana.com https://*.helius-rpc.com wss://*.solana.com",
+              "frame-ancestors 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+            ].join('; '),
+          },
+        ],
+      },
+    ]
+  },
   // Transpile linked SDK and Ledger packages for pnpm compatibility
   transpilePackages: [
     '@sip-protocol/sdk',

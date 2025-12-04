@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 
@@ -45,6 +46,8 @@ interface TeamSectionProps {
 }
 
 export function TeamSection({ member = teamConfig }: TeamSectionProps) {
+  const [imageError, setImageError] = useState(false)
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -65,19 +68,14 @@ export function TeamSection({ member = teamConfig }: TeamSectionProps) {
           >
             <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 p-0.5">
               <div className="h-full w-full rounded-full bg-gray-900 flex items-center justify-center overflow-hidden">
-                {member.avatar ? (
+                {member.avatar && !imageError ? (
                   <Image
                     src={member.avatar}
                     alt={member.name}
                     width={96}
                     height={96}
                     className="h-full w-full object-cover"
-                    onError={(e) => {
-                      // Fallback to initials if image fails
-                      const target = e.target as HTMLImageElement
-                      target.style.display = 'none'
-                      target.parentElement!.innerHTML = `<span class="text-2xl sm:text-3xl font-bold text-purple-400">${member.name.charAt(0)}</span>`
-                    }}
+                    onError={() => setImageError(true)}
                   />
                 ) : (
                   <span className="text-2xl sm:text-3xl font-bold text-purple-400">
