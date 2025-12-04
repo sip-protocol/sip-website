@@ -1,5 +1,14 @@
 const path = require('path')
 
+// Conditionally require Sentry only if installed
+let withSentryConfig
+try {
+  withSentryConfig = require('@sentry/nextjs').withSentryConfig
+} catch (e) {
+  // Sentry not installed, use passthrough
+  withSentryConfig = (config) => config
+}
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
@@ -90,4 +99,23 @@ const nextConfig = {
   },
 }
 
-module.exports = nextConfig
+// Sentry configuration options
+const sentryWebpackPluginOptions = {
+  // For all available options, see:
+  // https://github.com/getsentry/sentry-webpack-plugin#options
+
+  // Upload source maps in production only
+  silent: true,
+
+  // Automatically upload source maps for error tracking
+  // Only upload if SENTRY_AUTH_TOKEN is set (in CI/CD)
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+
+  // Don't upload source maps if no auth token (local dev)
+  dryRun: !process.env.SENTRY_AUTH_TOKEN,
+}
+
+// Make sure adding Sentry options is the last code to run before exporting
+module.exports = withSentryConfig(nextConfig, sentryWebpackPluginOptions)
