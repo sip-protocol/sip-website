@@ -292,8 +292,9 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
 
   // Prefetch prices on mount for accurate rate display
   useEffect(() => {
-    getUSDPrices().catch(() => {
-      // Silent fail - will use fallback prices
+    getUSDPrices().catch((err) => {
+      // Expected failure: Network issue or API down - fallback prices will be used
+      logger.debug('Price prefetch failed, using fallback prices', 'useQuote')
     })
   }, [])
 

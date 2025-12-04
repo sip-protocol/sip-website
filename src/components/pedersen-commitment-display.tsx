@@ -142,7 +142,9 @@ export function PedersenCommitmentDisplay({
         setBlinding(b)
         setAmountHex(a)
       })
-      .catch(() => {
+      .catch((err) => {
+        // Expected failure: SDK not loaded or invalid amount - clear state for retry
+        console.debug('[Commitment] Generation failed:', err instanceof Error ? err.message : 'Unknown error')
         setCommitment(null)
         setBlinding(null)
         setAmountHex(null)
@@ -156,7 +158,9 @@ export function PedersenCommitmentDisplay({
       setDemoCommitment(c)
       setDemoBlinding(b)
       setIsVerified(null)
-    } catch {
+    } catch (err) {
+      // User-triggered action failed - log for debugging
+      console.error('[Commitment Demo] Generation failed:', err instanceof Error ? err.message : 'Unknown error')
       setDemoCommitment(null)
       setDemoBlinding(null)
     }
@@ -169,7 +173,9 @@ export function PedersenCommitmentDisplay({
       const valid = await verifyRealCommitment(demoCommitment, demoAmount, demoBlinding)
       setIsVerified(valid)
       setTimeout(() => setIsVerified(null), 2000)
-    } catch {
+    } catch (err) {
+      // Verification failed - show error state to user
+      console.error('[Commitment Demo] Verification failed:', err instanceof Error ? err.message : 'Unknown error')
       setIsVerified(false)
       setTimeout(() => setIsVerified(null), 2000)
     }
@@ -194,7 +200,9 @@ export function PedersenCommitmentDisplay({
         c2Result.blinding
       )
       setHomoSum(sumResult.commitment)
-    } catch {
+    } catch (err) {
+      // Homomorphic operation failed - log for debugging
+      console.error('[Commitment Demo] Homomorphic addition failed:', err instanceof Error ? err.message : 'Unknown error')
       setHomoC1(null)
       setHomoC2(null)
       setHomoSum(null)

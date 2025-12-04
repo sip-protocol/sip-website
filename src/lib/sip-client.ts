@@ -56,8 +56,9 @@ export async function getSDK(): Promise<typeof import('@sip-protocol/sdk')> {
  * Call this early (e.g., on page mount) to warm up the cache
  */
 export function preloadSDK(): void {
-  getSDK().catch(() => {
-    // Silent fail - SDK will load on first actual use
+  getSDK().catch((err) => {
+    // Expected failure: SDK preload is opportunistic, will retry on actual use
+    console.debug('[SIP SDK] Preload failed (non-critical):', err instanceof Error ? err.message : 'Unknown error')
   })
 }
 

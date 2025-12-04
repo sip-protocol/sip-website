@@ -167,8 +167,9 @@ async function fetchPricesFromAPI(): Promise<Record<string, number>> {
     }
 
     return prices
-  } catch {
-    // Price fetch failed - use cached or fallback prices
+  } catch (err) {
+    // Expected failure: Network error or API rate limit - use cached or fallback prices
+    console.debug('[Prices] Fetch failed, using cache/fallback:', err instanceof Error ? err.message : 'Unknown error')
     return getCachedOrFallbackPrices()
   }
 }

@@ -188,8 +188,9 @@ export function StealthAddressDisplay({
         setEphemeralKey(key)
         setCurve(curveType)
       })
-      .catch(() => {
-        // Fallback if SDK generation fails
+      .catch((err) => {
+        // Expected failure: SDK not loaded or unsupported chain - clear state for retry
+        console.debug('[Stealth Address] Generation failed:', err instanceof Error ? err.message : 'Unknown error')
         setStealthAddress(null)
         setEphemeralKey(null)
       })

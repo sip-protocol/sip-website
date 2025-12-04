@@ -115,7 +115,9 @@ export function ViewingKeyDisplay({
           setShowGuide(true)
         }
       })
-      .catch(() => {
+      .catch((err) => {
+        // Expected failure: SDK not loaded - clear state for retry
+        console.debug('[Viewing Key] Generation failed:', err instanceof Error ? err.message : 'Unknown error')
         setViewingKey(null)
         setKeyHash(null)
         setKeyPath(null)
