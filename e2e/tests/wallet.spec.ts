@@ -30,12 +30,12 @@ test.describe('Wallet Connection', () => {
     await demoPage.goto()
     await demoPage.swapCard.swapButton.click()
 
-    const phantomOption = page.locator('button').filter({ hasText: /phantom/i })
-    const metamaskOption = page.locator('button').filter({ hasText: /metamask/i })
+    // Wait for modal to appear first by checking for chain tabs
+    await expect(page.locator('[data-testid="wallet-tab-solana"], [data-testid="wallet-tab-ethereum"]').first()).toBeVisible({ timeout: 5000 })
 
-    const hasPhantom = await phantomOption.isVisible().catch(() => false)
-    const hasMetamask = await metamaskOption.isVisible().catch(() => false)
-    expect(hasPhantom || hasMetamask).toBeTruthy()
+    // Look for any wallet option (Phantom on Solana tab, or switch to Ethereum for MetaMask)
+    const walletOption = page.locator('button').filter({ hasText: /phantom|metamask|solflare/i }).first()
+    await expect(walletOption).toBeVisible({ timeout: 3000 })
   })
 
   // Note: Wallet connection tests require SDK-level mocking
