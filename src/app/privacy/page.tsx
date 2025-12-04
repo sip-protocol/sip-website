@@ -18,7 +18,7 @@ export default function PrivacyPage() {
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">1. Introduction</h2>
           <p className="text-gray-300 mb-4">
-            Welcome to SIP Protocol ("we," "our," or "us"). We are committed to protecting your privacy
+            Welcome to SIP Protocol (&ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;). We are committed to protecting your privacy
             and providing transparency about our data practices. This Privacy Policy explains how we collect,
             use, and safeguard information when you use our website and services.
           </p>
@@ -154,7 +154,7 @@ export default function PrivacyPage() {
         </section>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">10. Children's Privacy</h2>
+          <h2 className="text-2xl font-semibold mb-4">10. Children&apos;s Privacy</h2>
           <p className="text-gray-300 mb-4">
             Our services are not directed to individuals under 18 years of age. We do not knowingly collect
             personal information from children. If we become aware that we have collected information from
@@ -176,7 +176,7 @@ export default function PrivacyPage() {
           <p className="text-gray-300 mb-4">
             We may update this Privacy Policy from time to time to reflect changes in our practices,
             technology, legal requirements, or other factors. We will notify you of material changes by
-            posting the updated policy on our website with a new "Last Updated" date. Your continued use
+            posting the updated policy on our website with a new &ldquo;Last Updated&rdquo; date. Your continued use
             of our services after such changes constitutes acceptance of the updated policy.
           </p>
         </section>

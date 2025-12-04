@@ -18,9 +18,9 @@ export default function TermsPage() {
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">1. Acceptance of Terms</h2>
           <p className="text-gray-300 mb-4">
-            Welcome to SIP Protocol ("SIP," "we," "our," or "us"). By accessing or using our website,
-            services, or protocol (collectively, the "Services"), you agree to be bound by these Terms
-            of Service ("Terms"). If you do not agree to these Terms, do not use our Services.
+            Welcome to SIP Protocol (&ldquo;SIP,&rdquo; &ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;). By accessing or using our website,
+            services, or protocol (collectively, the &ldquo;Services&rdquo;), you agree to be bound by these Terms
+            of Service (&ldquo;Terms&rdquo;). If you do not agree to these Terms, do not use our Services.
           </p>
           <p className="text-gray-300 mb-4">
             These Terms constitute a legally binding agreement between you and SIP Protocol. We may update
@@ -43,7 +43,7 @@ export default function TermsPage() {
             <li>Privacy-enhanced transaction routing across blockchain networks</li>
           </ul>
           <p className="text-gray-300 mb-4">
-            The Services are provided on an "as is" and "as available" basis. We reserve the right to
+            The Services are provided on an &ldquo;as is&rdquo; and &ldquo;as available&rdquo; basis. We reserve the right to
             modify, suspend, or discontinue any aspect of the Services at any time without notice.
           </p>
         </section>
@@ -72,7 +72,7 @@ export default function TermsPage() {
           <p className="text-gray-300 mb-4">You agree to use the Services only for lawful purposes. You must not:</p>
           <ul className="list-disc list-inside text-gray-300 mb-4 space-y-2">
             <li>Use the Services to engage in illegal activities, including money laundering, terrorist financing, or sanctions evasion</li>
-            <li>Attempt to gain unauthorized access to the Services or other users' accounts</li>
+            <li>Attempt to gain unauthorized access to the Services or other users&apos; accounts</li>
             <li>Interfere with or disrupt the operation of the Services or servers</li>
             <li>Use the Services to transmit malware, viruses, or other harmful code</li>
             <li>Violate any applicable laws, regulations, or third-party rights</li>
@@ -216,7 +216,7 @@ export default function TermsPage() {
           <p className="text-gray-300 mb-4">
             You agree to indemnify, defend, and hold harmless SIP Protocol and its affiliates, officers,
             directors, employees, and agents from and against any claims, liabilities, damages, losses,
-            costs, and expenses (including reasonable attorneys' fees) arising out of or related to:
+            costs, and expenses (including reasonable attorneys&apos; fees) arising out of or related to:
           </p>
           <ul className="list-disc list-inside text-gray-300 mb-4 space-y-2">
             <li>Your use of the Services</li>
@@ -230,7 +230,7 @@ export default function TermsPage() {
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">11. Disclaimer of Warranties</h2>
           <p className="text-gray-300 mb-4">
-            THE SERVICES ARE PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EITHER
+            THE SERVICES ARE PROVIDED &ldquo;AS IS&rdquo; AND &ldquo;AS AVAILABLE&rdquo; WITHOUT WARRANTIES OF ANY KIND, EITHER
             EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS
             FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.
           </p>
@@ -292,7 +292,7 @@ export default function TermsPage() {
           <h2 className="text-2xl font-semibold mb-4">15. Changes to Terms</h2>
           <p className="text-gray-300 mb-4">
             We may update these Terms from time to time. We will notify you of material changes by posting
-            the updated Terms on our website with a new "Last Updated" date. Your continued use of the
+            the updated Terms on our website with a new &ldquo;Last Updated&rdquo; date. Your continued use of the
             Services after such changes constitutes acceptance of the updated Terms.
           </p>
           <p className="text-gray-300 mb-4">
