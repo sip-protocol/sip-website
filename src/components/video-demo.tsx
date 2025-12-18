@@ -9,7 +9,7 @@ interface VideoConfig {
 
 // Default video configuration - easily updateable
 const defaultVideoConfig: VideoConfig = {
-  youtubeId: 'dQw4w9WgXcQ', // Placeholder - replace with actual SIP demo video
+  youtubeId: '8PRPQThh5-0', // SIP Protocol demo video
   title: 'SIP Protocol Demo',
 }
 
