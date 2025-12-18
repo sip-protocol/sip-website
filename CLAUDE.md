@@ -38,6 +38,7 @@ pnpm typecheck            # Type check
 | `src/stores/toast-store.ts` | Toast notifications |
 | `src/lib/sip-client.ts` | SDK client with BrowserNoirProvider |
 | `src/app/about/page.tsx` | About page with team section |
+| `src/components/video-demo.tsx` | YouTube demo video embed (configurable) |
 | `tests/` | Test suites (126 tests) |
 
 ---
@@ -54,6 +55,7 @@ pnpm typecheck            # Type check
 - Grant pitch pages with architecture diagrams
 - Pitch deck for investors
 - Team/About page for credibility
+- Demo video showcase (YouTube embed)
 
 ---
 
@@ -90,4 +92,4 @@ pnpm typecheck            # Type check
 
 ---
 
-**Last Updated:** 2025-12-03
+**Last Updated:** 2025-12-18
