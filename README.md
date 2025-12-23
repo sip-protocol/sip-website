@@ -2,6 +2,8 @@
 
 > Official website for SIP Protocol — https://sip-protocol.org
 
+**🏆 Winner — [Zypherpunk Hackathon](https://zypherpunk.xyz) NEAR Track ($4,000)**
+
 ---
 
 ## Overview
