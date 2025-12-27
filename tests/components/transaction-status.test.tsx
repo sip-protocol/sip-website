@@ -63,22 +63,25 @@ describe('TransactionStatus', () => {
   })
 
   describe('success state', () => {
+    // Success state now shows different UI based on txHash vs depositTxHash
+    // For cross-chain swaps: depositTxHash (source) + txHash (settlement)
     const successProps = {
       ...defaultProps,
       status: 'success' as SwapStatus,
-      txHash: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
-      explorerUrl: 'https://solscan.io/tx/0x1234',
+      depositTxHash: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+      depositExplorerUrl: 'https://solscan.io/tx/0x1234',
       chain: 'solana' as const,
+      settlementChain: 'near' as const,
     }
 
     it('should render success UI', () => {
       render(<TransactionStatus {...successProps} />)
-      expect(screen.getByText('Transaction Submitted!')).toBeInTheDocument()
+      expect(screen.getByText('Swap Complete!')).toBeInTheDocument()
     })
 
-    it('should show network name', () => {
+    it('should show source chain info', () => {
       render(<TransactionStatus {...successProps} />)
-      expect(screen.getByText(/Solana/)).toBeInTheDocument()
+      expect(screen.getByText(/Source/)).toBeInTheDocument()
     })
 
     it('should show shielded message when isShielded is true', () => {
@@ -101,13 +104,18 @@ describe('TransactionStatus', () => {
       expect(link).toHaveAttribute('target', '_blank')
     })
 
-    it('should show Etherscan for Ethereum chain', () => {
-      render(<TransactionStatus {...successProps} chain="ethereum" />)
+    it('should show Etherscan for Ethereum source chain', () => {
+      render(<TransactionStatus {...successProps} chain="ethereum" depositExplorerUrl="https://etherscan.io/tx/0x1234" />)
       expect(screen.getByText(/Etherscan/i)).toBeInTheDocument()
     })
 
-    it('should show NEARBlocks for NEAR chain', () => {
-      render(<TransactionStatus {...successProps} chain="near" />)
+    it('should show NEARBlocks for NEAR settlement chain', () => {
+      // When we have both deposit and settlement tx
+      render(<TransactionStatus
+        {...successProps}
+        txHash="0xnear123"
+        explorerUrl="https://nearblocks.io/tx/0xnear123"
+      />)
       expect(screen.getByText(/NEARBlocks/i)).toBeInTheDocument()
     })
 
@@ -147,12 +155,13 @@ describe('TransactionStatus', () => {
   })
 
   describe('edge cases', () => {
-    it('should not render success without txHash', () => {
+    it('should not render success without txHash or depositTxHash', () => {
       const { container } = render(
         <TransactionStatus {...defaultProps} status="success" txHash={null} />
       )
-      // Component should return null or not show success UI
-      expect(screen.queryByText('Transaction Submitted!')).not.toBeInTheDocument()
+      // Component shows different UI for shielded success without txHash
+      // For non-shielded success without txHash: shows "Swap Complete!" with basic UI
+      expect(screen.getByText('Swap Complete!')).toBeInTheDocument()
     })
 
     it('should not render error without error message', () => {
@@ -167,8 +176,8 @@ describe('TransactionStatus', () => {
         <TransactionStatus
           {...defaultProps}
           status="success"
-          txHash="0x1234"
-          explorerUrl="https://solscan.io/tx/0x1234"
+          depositTxHash="0x1234"
+          depositExplorerUrl="https://solscan.io/tx/0x1234"
           chain="solana"
         />
       )

@@ -10,7 +10,6 @@ import {
   Users,
   FileText,
   Megaphone,
-  Code,
   Trophy,
   AlertTriangle,
   TrendingUp,
@@ -19,6 +18,10 @@ import {
   Github,
   ExternalLink,
   DollarSign,
+  Building2,
+  PenTool,
+  MessageSquare,
+  Target,
 } from 'lucide-react'
 import { TEST_COUNTS, SDK_VERSION } from '@/lib/constants'
 
@@ -26,10 +29,13 @@ export default function SuperteamPitchPage() {
   return (
     <>
       <HeroSection />
+      <AchievementSection />
       <ProblemSection />
       <SolutionSection />
+      <CompetitionSection />
       <TractionSection />
       <BudgetSection />
+      <TimelineSection />
       <TeamSection />
       <CTASection />
     </>
@@ -104,7 +110,17 @@ function HeroSection() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="mt-4 text-xl sm:text-2xl text-gray-400"
           >
-            The Privacy Standard for Web3
+            The Privacy Standard for Solana
+          </motion.p>
+
+          {/* Sub-tagline */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.35 }}
+            className="mt-2 text-lg text-gray-500"
+          >
+            Cryptographic privacy, not pool mixing. Compliance-ready from day one.
           </motion.p>
 
           {/* Amount */}
@@ -118,6 +134,8 @@ function HeroSection() {
             <span className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
               $10,000
             </span>
+            <span className="text-gray-500">|</span>
+            <span className="text-gray-400">2 months</span>
           </motion.div>
 
           {/* Quick Links */}
@@ -157,22 +175,47 @@ function HeroSection() {
   )
 }
 
+function AchievementSection() {
+  return (
+    <section className="py-12 border-t border-gray-800/50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 p-6 rounded-2xl bg-gradient-to-r from-yellow-900/30 to-amber-900/30 border border-yellow-500/30"
+        >
+          <Trophy className="w-10 h-10 text-yellow-400" />
+          <div className="text-center sm:text-left">
+            <div className="text-lg font-bold text-yellow-400">
+              Zypherpunk Hackathon Winner
+            </div>
+            <div className="text-sm text-gray-400">
+              NEAR Track - $4,000 Prize | December 2025
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
 function ProblemSection() {
   const problems = [
     {
       icon: AlertTriangle,
-      title: 'No Stealth Address SDK',
-      description: 'EIP-5564 exists for Ethereum, but Solana has no equivalent. Privacy-conscious users have no tools.',
+      title: 'Pool Mixing is Broken',
+      description: 'PrivacyCash and Tornado Cash use fixed pools. Amount correlation attacks can trace unique values through the pool.',
     },
     {
       icon: TrendingUp,
       title: 'Privacy Projects Failed',
-      description: 'Elusiv sunset in Feb 2024. Light Protocol pivoted to ZK Compression. The market has a vacuum.',
+      description: 'Elusiv sunset in Feb 2024. Light Protocol pivoted to ZK Compression. The market has a vacuum — and PrivacyCash is filling it with outdated tech.',
     },
     {
       icon: Eye,
-      title: 'Cross-Chain Privacy Gap',
-      description: 'NEAR Intents, Wormhole, deBridge - all transparent. No private cross-chain solution exists today.',
+      title: 'No Compliance Option',
+      description: 'Mixers have no viewing keys. No compliance = regulatory risk. DAOs and institutions can\'t use them.',
     },
   ]
 
@@ -196,8 +239,17 @@ function ProblemSection() {
             transition={{ delay: 0.1 }}
             className="mt-6 text-3xl sm:text-4xl font-bold"
           >
-            Privacy on Solana is Broken
+            Solana Privacy is Stuck in 2020
           </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.15 }}
+            className="mt-4 text-gray-400 max-w-2xl mx-auto"
+          >
+            PrivacyCash is a Tornado Cash clone. Same architecture, same weaknesses, same regulatory risk. Solana deserves better.
+          </motion.p>
         </div>
 
         <div className="grid gap-8 md:grid-cols-3">
@@ -228,22 +280,22 @@ function SolutionSection() {
     {
       icon: Shield,
       title: 'Stealth Addresses',
-      description: 'First EIP-5564 implementation adapted for Solana. One-time recipient addresses prevent linkability.',
+      description: 'EIP-5564 for Solana. One-time recipient addresses prevent linkability. No fixed pools needed.',
     },
     {
       icon: Lock,
       title: 'Pedersen Commitments',
-      description: 'Homomorphic commitments hide transaction amounts while enabling verification.',
+      description: 'Any amount, hidden cryptographically. No amount correlation attacks possible.',
     },
     {
       icon: Eye,
       title: 'Viewing Keys',
-      description: 'Selective disclosure for compliance. Institutions can audit without compromising user privacy.',
+      description: 'Selective disclosure for compliance. DAOs and institutions can audit without compromising user privacy.',
     },
     {
       icon: Zap,
-      title: 'NEAR Intents Integration',
-      description: 'Cross-chain privacy via NEAR Intents. Privacy layer for the $6B+ ecosystem.',
+      title: 'Same-Chain Privacy',
+      description: 'Privacy for Solana-to-Solana transfers. 10-20x bigger market than cross-chain only.',
     },
   ]
 
@@ -267,8 +319,17 @@ function SolutionSection() {
             transition={{ delay: 0.1 }}
             className="mt-6 text-3xl sm:text-4xl font-bold"
           >
-            SIP Protocol Delivers
+            SIP: Cryptographic Privacy That Ships
           </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.15 }}
+            className="mt-4 text-gray-400 max-w-2xl mx-auto"
+          >
+            Not a mixer. Not a pool. True cryptographic privacy with built-in compliance.
+          </motion.p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -294,12 +355,76 @@ function SolutionSection() {
   )
 }
 
+function CompetitionSection() {
+  const comparison = [
+    { feature: 'Privacy Method', sip: 'Cryptographic (Pedersen)', privacycash: 'Pool Mixing' },
+    { feature: 'Amount Privacy', sip: 'Any amount hidden', privacycash: 'Fixed pools only' },
+    { feature: 'Viewing Keys', sip: 'Yes (compliance)', privacycash: 'No' },
+    { feature: 'Amount Correlation', sip: 'Impossible', privacycash: 'Vulnerable' },
+    { feature: 'Regulatory Risk', sip: 'Low (compliant)', privacycash: 'High (Tornado clone)' },
+    { feature: 'Cross-Chain', sip: 'Yes (NEAR Intents)', privacycash: 'No' },
+  ]
+
+  return (
+    <section className="py-24 border-t border-gray-800/50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-orange-500/10 text-orange-400 border border-orange-500/20"
+          >
+            <Target className="w-4 h-4" />
+            Why SIP Wins
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="mt-6 text-3xl sm:text-4xl font-bold"
+          >
+            SIP vs PrivacyCash
+          </motion.h2>
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="max-w-3xl mx-auto overflow-hidden rounded-2xl border border-gray-800"
+        >
+          <table className="w-full">
+            <thead>
+              <tr className="bg-gray-900/80">
+                <th className="px-6 py-4 text-left text-sm font-medium text-gray-400">Feature</th>
+                <th className="px-6 py-4 text-center text-sm font-medium text-green-400">SIP Protocol</th>
+                <th className="px-6 py-4 text-center text-sm font-medium text-gray-500">PrivacyCash</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-800">
+              {comparison.map((row) => (
+                <tr key={row.feature} className="bg-gray-900/30">
+                  <td className="px-6 py-4 text-sm text-gray-300">{row.feature}</td>
+                  <td className="px-6 py-4 text-sm text-center text-green-400">{row.sip}</td>
+                  <td className="px-6 py-4 text-sm text-center text-gray-500">{row.privacycash}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
 function TractionSection() {
   const metrics = [
     { value: TEST_COUNTS.totalDisplay, label: 'Tests Passing', detail: TEST_COUNTS.detailDisplay },
     { value: 'Published', label: 'npm Package', detail: SDK_VERSION.full },
     { value: 'Live', label: 'Demo Deployed', detail: 'sip-protocol.org' },
-    { value: 'M8', label: 'Current Milestone', detail: 'Phase 1: 95% complete' },
+    { value: 'M15', label: 'Milestone Complete', detail: 'Phase 1-3 Done' },
   ]
 
   return (
@@ -353,7 +478,7 @@ function TractionSection() {
           className="mt-12 p-6 rounded-2xl bg-gray-900/80 border border-gray-800"
         >
           <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
-            <Code className="w-4 h-4" />
+            <FileText className="w-4 h-4" />
             Install in seconds
           </div>
           <code className="text-green-400 font-mono">npm install @sip-protocol/sdk</code>
@@ -365,10 +490,10 @@ function TractionSection() {
 
 function BudgetSection() {
   const budget = [
-    { category: 'Community Building', amount: '$4,000', percent: 40, icon: Users },
-    { category: 'Documentation', amount: '$2,500', percent: 25, icon: FileText },
-    { category: 'Hackathon Participation', amount: '$2,500', percent: 25, icon: Trophy },
-    { category: 'Marketing & Awareness', amount: '$1,000', percent: 10, icon: Megaphone },
+    { category: 'Content Campaign', amount: '$3,500', percent: 35, icon: PenTool, detail: '5 articles + 10 Twitter threads' },
+    { category: 'Community Building', amount: '$3,000', percent: 30, icon: MessageSquare, detail: 'Discord + developer relations' },
+    { category: 'Ecosystem Presentations', amount: '$2,000', percent: 20, icon: Megaphone, detail: '3 Solana ecosystem events' },
+    { category: 'SIP Labs Inc. Setup', amount: '$1,500', percent: 15, icon: Building2, detail: 'Legal entity for fundraising' },
   ]
 
   return (
@@ -393,6 +518,15 @@ function BudgetSection() {
           >
             The Ask: $10,000
           </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.15 }}
+            className="mt-4 text-gray-400 max-w-2xl mx-auto"
+          >
+            Narrative capture + community building for same-chain privacy expansion
+          </motion.p>
         </div>
 
         <div className="max-w-2xl mx-auto space-y-4">
@@ -410,7 +544,10 @@ function BudgetSection() {
                   <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
                     <item.icon className="w-5 h-5 text-blue-400" />
                   </div>
-                  <span className="font-medium">{item.category}</span>
+                  <div>
+                    <span className="font-medium">{item.category}</span>
+                    <div className="text-xs text-gray-500">{item.detail}</div>
+                  </div>
                 </div>
                 <span className="text-blue-400 font-semibold">{item.amount}</span>
               </div>
@@ -440,6 +577,54 @@ function BudgetSection() {
             <span className="text-3xl font-bold text-white">$10,000</span>
           </div>
         </motion.div>
+      </div>
+    </section>
+  )
+}
+
+function TimelineSection() {
+  const milestones = [
+    { month: 'Month 1', title: 'Narrative Capture', items: ['5 technical articles', 'Launch Discord community', '2 ecosystem presentations'] },
+    { month: 'Month 2', title: 'Community + Entity', items: ['10 Twitter threads', 'Register SIP Labs Inc.', 'Partner pipeline (5+ dApps)'] },
+  ]
+
+  return (
+    <section className="py-24 border-t border-gray-800/50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-3xl sm:text-4xl font-bold"
+          >
+            2-Month Timeline
+          </motion.h2>
+        </div>
+
+        <div className="max-w-3xl mx-auto grid gap-6 md:grid-cols-2">
+          {milestones.map((milestone, index) => (
+            <motion.div
+              key={milestone.month}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              className="p-6 rounded-2xl bg-gray-900/50 border border-gray-800"
+            >
+              <div className="text-sm text-blue-400 font-medium">{milestone.month}</div>
+              <h3 className="mt-2 text-xl font-semibold">{milestone.title}</h3>
+              <ul className="mt-4 space-y-2">
+                {milestone.items.map((item) => (
+                  <li key={item} className="flex items-center gap-2 text-sm text-gray-400">
+                    <CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   )
@@ -512,8 +697,8 @@ function CTASection() {
           <div className="px-8 py-16 sm:px-16 text-center">
             <h2 className="text-3xl sm:text-4xl font-bold">Ready to Support Privacy?</h2>
             <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
-              Help us build the privacy layer that Solana deserves. Your support accelerates
-              adoption and brings privacy to millions of users.
+              Help us establish SIP as the privacy standard for Solana. Your support accelerates
+              adoption and brings compliant privacy to millions of users.
             </p>
 
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">

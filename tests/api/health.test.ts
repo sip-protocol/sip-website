@@ -4,7 +4,7 @@ import { GET, HEAD } from '@/app/api/health/route'
 // Mock package.json
 vi.mock('../../../../package.json', () => ({
   default: {
-    version: '0.0.0',
+    version: '0.0.1',
     name: 'sip-website',
   },
 }))
@@ -49,7 +49,7 @@ describe('/api/health', () => {
       const response = await GET()
       const data = await response.json()
 
-      expect(data.version).toBe('0.0.0')
+      expect(data.version).toBe('0.0.1')
     })
 
     it('should return valid ISO 8601 timestamp', async () => {

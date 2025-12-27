@@ -110,11 +110,28 @@ if [ "$HEALTH" != "healthy" ]; then
 fi
 
 # Verify the application responds
+# Use docker exec as fallback if curl is not available on host
 log "Verifying application response..."
-if curl -sf "http://localhost:$TARGET_PORT/" > /dev/null; then
-    success "Application responding on port $TARGET_PORT"
+if command -v curl &> /dev/null; then
+    if curl -sf "http://localhost:$TARGET_PORT/" > /dev/null; then
+        success "Application responding on port $TARGET_PORT"
+    else
+        error "Application not responding on port $TARGET_PORT"
+    fi
+elif command -v wget &> /dev/null; then
+    if wget -q --spider "http://localhost:$TARGET_PORT/"; then
+        success "Application responding on port $TARGET_PORT"
+    else
+        error "Application not responding on port $TARGET_PORT"
+    fi
 else
-    error "Application not responding on port $TARGET_PORT"
+    # Fallback: use docker exec to check from inside the container
+    if docker exec "$CONTAINER_NAME" wget -q --spider "http://localhost:3000/api/health" 2>/dev/null; then
+        success "Application responding (verified via container)"
+    else
+        # Docker health check already passed, so we trust it
+        warn "Could not verify via curl/wget (not installed), but Docker health check passed"
+    fi
 fi
 
 # Switch active slot

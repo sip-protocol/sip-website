@@ -208,6 +208,8 @@ describe('useSwap', () => {
         await result.current.execute(defaultParams)
       })
 
+      // Note: When no destinationAddress is provided, effectivePrivacyLevel = privacyLevel
+      // The createIntent is called with the effective privacy level
       expect(mockClient.createIntent).toHaveBeenCalledWith(
         expect.objectContaining({
           input: expect.objectContaining({
@@ -222,7 +224,11 @@ describe('useSwap', () => {
               symbol: 'ETH',
             }),
           }),
+          // Privacy level is passed through when no destination address
           privacy: PrivacyLevel.SHIELDED,
+        }),
+        expect.objectContaining({
+          senderSecret: expect.any(Uint8Array),
         })
       )
     })
@@ -336,7 +342,9 @@ describe('useSwap', () => {
   })
 
   describe('explorerUrl', () => {
-    it('should generate Solana explorer URL', async () => {
+    // Note: explorerUrl is now based on settlementChain (destination), not source chain
+    // depositExplorerUrl is based on txChain (source)
+    it('should generate explorer URL for settlement chain (destination)', async () => {
       mockClient.execute.mockResolvedValue({ txHash: '0xabcd1234' })
 
       const { result } = renderHook(() => useSwap())
@@ -345,23 +353,23 @@ describe('useSwap', () => {
         await result.current.execute(defaultParams)
       })
 
-      expect(result.current.explorerUrl).toContain('solscan.io')
+      // defaultParams has toChain: 'ethereum', so explorer should be etherscan
+      expect(result.current.explorerUrl).toContain('etherscan.io')
       expect(result.current.explorerUrl).toContain('0xabcd1234')
     })
 
-    it('should generate Ethereum explorer URL', async () => {
-      mockWalletState.chain = 'ethereum'
-      mockClient.execute.mockResolvedValue({ txHash: '0xeth123' })
+    it('should generate NEAR explorer URL for NEAR destination', async () => {
+      mockClient.execute.mockResolvedValue({ txHash: '0xnear123' })
 
-      const ethParams = { ...defaultParams, fromChain: 'ethereum' as const }
+      const nearParams = { ...defaultParams, toChain: 'near' as const }
 
       const { result } = renderHook(() => useSwap())
 
       await act(async () => {
-        await result.current.execute(ethParams)
+        await result.current.execute(nearParams)
       })
 
-      expect(result.current.explorerUrl).toContain('etherscan.io')
+      expect(result.current.explorerUrl).toContain('nearblocks.io')
     })
 
     it('should be null when no txHash', () => {

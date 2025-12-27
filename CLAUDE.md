@@ -7,6 +7,19 @@
 
 ---
 
+## Current Focus
+
+**Status:** M15 Complete | M16 Starting (Narrative Capture)
+**Strategy:** Same-chain expansion - privacy for ALL Solana transactions, not just cross-chain
+
+### Phase 4 Priorities (Website)
+- Grant pages updated for Superteam ($10K) and Solana Foundation ($100K)
+- PrivacyCash competitive positioning (pool mixing vs cryptographic privacy)
+- Same-chain messaging throughout marketing site
+- Demo showcases real privacy vs pool-based mixers
+
+---
+
 ## Quick Reference
 
 **Tech Stack:** Next.js 14, React 18, Tailwind CSS, Zustand, Vitest
@@ -29,7 +42,8 @@ pnpm typecheck            # Type check
 |------|-------------|
 | `src/app/` | Next.js app router pages |
 | `src/app/sdk/` | SDK showcase page with syntax highlighting |
-| `src/app/grants/` | Grant pitch pages (Superteam, Solana Foundation) |
+| `src/app/grants/superteam/` | Superteam $10K grant pitch (M16) |
+| `src/app/grants/solana-foundation/` | Solana Foundation $100K grant pitch (M17) |
 | `src/app/pitch-deck/` | Investor pitch deck |
 | `src/components/` | React components (swap UI, wallet) |
 | `src/hooks/use-swap.ts` | Swap execution logic |
@@ -37,9 +51,26 @@ pnpm typecheck            # Type check
 | `src/stores/wallet-store.ts` | Wallet connection state |
 | `src/stores/toast-store.ts` | Toast notifications |
 | `src/lib/sip-client.ts` | SDK client with BrowserNoirProvider |
+| `src/lib/constants.ts` | Test counts, SDK version constants |
 | `src/app/about/page.tsx` | About page with team section |
-| `src/components/video-demo.tsx` | YouTube demo video embed (configurable) |
+| `src/components/video-demo.tsx` | YouTube demo video embed |
 | `tests/` | Test suites (126 tests) |
+
+---
+
+## Grant Pages
+
+### Superteam Microgrant ($10K) - `/grants/superteam`
+- **Focus:** M16 Narrative Capture
+- **Timeline:** 2 months (Jan-Feb 2026)
+- **Deliverables:** Content campaign, community building, ecosystem presence
+- **Key differentiator:** SIP Labs Inc. registration for fundraising readiness
+
+### Solana Foundation Grant ($100K) - `/grants/solana-foundation`
+- **Focus:** M17 Solana Same-Chain Privacy
+- **Timeline:** 6 months (Feb-Aug 2026)
+- **Deliverables:** Same-chain SDK, Jupiter DEX integration, Mobile SDK, Security audit
+- **Key differentiator:** Cryptographic privacy vs pool mixing (PrivacyCash comparison)
 
 ---
 
@@ -78,10 +109,12 @@ pnpm typecheck            # Type check
 - Run `pnpm test -- --run` after changes
 - Use Zustand stores for state management
 - Follow existing component patterns
+- Keep grant pages updated with current milestone status
 
 **DON'T:**
 - Import SDK internals directly (use public API)
 - Skip accessibility in UI components
+- Hard-code test counts (use `src/lib/constants.ts`)
 
 ---
 
@@ -92,4 +125,4 @@ pnpm typecheck            # Type check
 
 ---
 
-**Last Updated:** 2025-12-18
+**Last Updated:** 2025-12-27
