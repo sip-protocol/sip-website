@@ -138,30 +138,36 @@ fi
 echo "$TARGET" > "$ACTIVE_FILE"
 success "Active slot switched to: $TARGET"
 
-# Update nginx config to point to new active upstream
+# Update nginx config to point to new active upstream (optional, requires sudo)
 NGINX_CONF="/etc/nginx/sites-available/sip-protocol.org"
 if [ -f "$NGINX_CONF" ]; then
-    log "Switching nginx to $TARGET upstream..."
+    # Check if we have passwordless sudo access
+    if sudo -n true 2>/dev/null; then
+        log "Switching nginx to $TARGET upstream..."
 
-    # Determine old and new upstream names
-    if [ "$TARGET" = "blue" ]; then
-        OLD_UPSTREAM="sip_green"
-        NEW_UPSTREAM="sip_blue"
+        # Determine old and new upstream names
+        if [ "$TARGET" = "blue" ]; then
+            OLD_UPSTREAM="sip_green"
+            NEW_UPSTREAM="sip_blue"
+        else
+            OLD_UPSTREAM="sip_blue"
+            NEW_UPSTREAM="sip_green"
+        fi
+
+        # Replace upstream references in nginx config
+        sudo sed -i "s|proxy_pass http://$OLD_UPSTREAM;|proxy_pass http://$NEW_UPSTREAM;|g" "$NGINX_CONF"
+        sudo sed -i "s|# ACTIVE_UPSTREAM: $OLD_UPSTREAM|# ACTIVE_UPSTREAM: $NEW_UPSTREAM|g" "$NGINX_CONF"
+
+        # Test and reload nginx
+        if sudo nginx -t 2>/dev/null; then
+            sudo systemctl reload nginx
+            success "Nginx switched to $TARGET"
+        else
+            warn "Nginx config test failed - manual switch may be required"
+        fi
     else
-        OLD_UPSTREAM="sip_blue"
-        NEW_UPSTREAM="sip_green"
-    fi
-
-    # Replace upstream references in nginx config
-    sudo sed -i "s|proxy_pass http://$OLD_UPSTREAM;|proxy_pass http://$NEW_UPSTREAM;|g" "$NGINX_CONF"
-    sudo sed -i "s|# ACTIVE_UPSTREAM: $OLD_UPSTREAM|# ACTIVE_UPSTREAM: $NEW_UPSTREAM|g" "$NGINX_CONF"
-
-    # Test and reload nginx
-    if sudo nginx -t 2>/dev/null; then
-        sudo systemctl reload nginx
-        success "Nginx switched to $TARGET"
-    else
-        error "Nginx config test failed!"
+        warn "No passwordless sudo - nginx switch skipped (container deployed successfully)"
+        log "Manual nginx switch: Update $NGINX_CONF to use sip_$TARGET upstream"
     fi
 fi
 
