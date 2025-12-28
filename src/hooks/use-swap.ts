@@ -2,6 +2,8 @@
 
 import { useState, useCallback, useRef } from 'react'
 import { PrivacyLevel, type Quote, type ChainId } from '@sip-protocol/types'
+import { Connection, PublicKey, Transaction, type VersionedTransaction } from '@solana/web3.js'
+
 // Use crypto API for random key generation (works in both browser and Node)
 function generateRandomPrivateKey(): Uint8Array {
   const privateKey = new Uint8Array(32)
@@ -12,6 +14,11 @@ function generateRandomPrivateKey(): Uint8Array {
 // ProductionQuote extends Quote with depositAddress for production mode
 interface ProductionQuote extends Quote {
   depositAddress?: string
+}
+
+// Same-chain quote marker type
+interface SameChainQuote extends Quote {
+  type: 'same-chain'
 }
 
 import { useSIP } from '@/contexts'
@@ -85,6 +92,49 @@ const TOKEN_DECIMALS: Record<string, number> = {
   BNB: 18,
   AVAX: 18,
   APT: 8,
+}
+
+// Solana token mint addresses (mainnet)
+const SOLANA_TOKEN_MINTS: Record<string, string> = {
+  USDC: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+  USDT: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+  SOL: 'So11111111111111111111111111111111111111112', // Wrapped SOL
+}
+
+/**
+ * Get Solana token mint address
+ */
+function getSolanaTokenMint(symbol: string): string | null {
+  return SOLANA_TOKEN_MINTS[symbol] ?? null
+}
+
+/**
+ * Get Solana wallet from browser window
+ */
+function getSolanaWallet(walletType: string): {
+  signTransaction?: <T extends Transaction | VersionedTransaction>(tx: T) => Promise<T>
+  signAllTransactions?: <T extends Transaction | VersionedTransaction>(txs: T[]) => Promise<T[]>
+} | null {
+  if (typeof window === 'undefined') return null
+
+  // Access wallet provider from window
+  const win = window as {
+    phantom?: { solana?: unknown }
+    solflare?: unknown
+    backpack?: { solana?: unknown }
+  }
+
+  switch (walletType) {
+    case 'phantom':
+      return win.phantom?.solana as ReturnType<typeof getSolanaWallet>
+    case 'solflare':
+      return win.solflare as ReturnType<typeof getSolanaWallet>
+    case 'backpack':
+      return win.backpack?.solana as ReturnType<typeof getSolanaWallet>
+    default:
+      // Try phantom as default
+      return win.phantom?.solana as ReturnType<typeof getSolanaWallet>
+  }
 }
 
 /**
@@ -188,6 +238,131 @@ export function useSwap(): SwapResult {
       return
     }
 
+    // Check if this is a same-chain privacy transfer
+    const isSameChainQuote = (params.quote as SameChainQuote).type === 'same-chain'
+    const isSolanaToSolana = params.fromChain === 'solana' && params.toChain === 'solana'
+
+    // Handle same-chain Solana privacy transfer
+    if (isSameChainQuote && isSolanaToSolana) {
+      try {
+        setStatus('confirming')
+        setError(null)
+        setTxHash(null)
+        setTxChain(params.fromChain)
+        setSettlementChain(params.toChain)
+
+        // Track swap in history
+        const newSwapId = `swap-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
+        currentSwapId.current = newSwapId
+        setSwapId(newSwapId)
+        addSwap({
+          id: newSwapId,
+          fromToken: params.fromToken,
+          toToken: params.toToken,
+          fromChain: params.fromChain,
+          toChain: params.toChain,
+          fromAmount: params.amount,
+          toAmount: params.amount, // 1:1 for same-chain
+          status: 'pending',
+          timestamp: Date.now(),
+          privacyLevel: params.privacyLevel,
+        })
+
+        logger.debug('Executing same-chain Solana privacy transfer', 'useSwap')
+
+        // Solana RPC endpoint (use mainnet or configured RPC)
+        const rpcUrl = process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com'
+        const connection = new Connection(rpcUrl, 'confirmed')
+
+        // Get wallet adapter for signing
+        const sdkModule = await import('@sip-protocol/sdk')
+        const adapter = sdkModule.createSolanaAdapter({
+          wallet: (walletType || 'phantom') as 'phantom' | 'solflare' | 'backpack',
+          cluster: 'mainnet-beta',
+        })
+
+        // Reconnect to get the wallet session
+        await adapter.connect()
+        if (!adapter.isConnected || !adapter.address) {
+          throw new Error('Failed to connect to Solana wallet')
+        }
+
+        const senderPubkey = new PublicKey(adapter.address)
+
+        // Create signTransaction wrapper using the adapter
+        const signTransaction = async <T extends Transaction | VersionedTransaction>(tx: T): Promise<T> => {
+          // Use the wallet's signTransaction directly
+          const wallet = getSolanaWallet(walletType || 'phantom')
+          if (!wallet?.signTransaction) {
+            throw new Error('Wallet does not support signTransaction')
+          }
+          return wallet.signTransaction(tx) as Promise<T>
+        }
+
+        // Calculate amount
+        const fromDecimals = TOKEN_DECIMALS[params.fromToken] ?? 9
+        const amountBigInt = parseAmount(params.amount, fromDecimals)
+
+        // Validate token is supported
+        const tokenMint = getSolanaTokenMint(params.fromToken)
+        if (!tokenMint) {
+          throw new Error(`Unsupported token for same-chain transfer: ${params.fromToken}`)
+        }
+
+        setStatus('signing')
+
+        // Validate recipient meta-address
+        if (!params.destinationAddress) {
+          throw new Error('Recipient SIP address is required for same-chain privacy')
+        }
+
+        // Decode the string meta-address to object format
+        const sdkModule2 = await import('@sip-protocol/sdk')
+        const recipientMetaAddress = sdkModule2.decodeStealthMetaAddress(params.destinationAddress)
+
+        // Execute same-chain privacy transfer via SDK
+        const result = await client!.executeSameChain('solana' as ChainId, {
+          recipientMetaAddress,
+          amount: amountBigInt,
+          token: params.fromToken,
+          connection,
+          sender: senderPubkey,
+          signTransaction,
+        })
+
+        // Update swap history with success
+        if (currentSwapId.current) {
+          updateSwapHistory(currentSwapId.current, {
+            status: 'completed',
+            txHash: result.txHash || undefined,
+            explorerUrl: result.explorerUrl || undefined,
+          })
+        }
+
+        setTxHash(result.txHash)
+        setStatus('success')
+        toast.success(
+          'Private Transfer Complete',
+          `Sent to stealth address: ${result.stealthAddress?.slice(0, 8)}...`
+        )
+
+        return
+      } catch (err) {
+        // Update swap history with failure
+        if (currentSwapId.current) {
+          updateSwapHistory(currentSwapId.current, { status: 'failed' })
+        }
+
+        logger.error('Same-chain transfer failed', err, 'useSwap')
+        const message = err instanceof Error ? err.message : 'Transaction failed'
+        setError(message)
+        setStatus('error')
+        toast.error('Transfer Failed', message)
+        return
+      }
+    }
+
+    // Continue with cross-chain flow for non-same-chain transfers
     try {
       setStatus('confirming')
       setError(null)

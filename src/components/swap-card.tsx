@@ -204,6 +204,9 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
   const isError = status === 'error'
   const isZecDestination = toToken.symbol === 'ZEC'
 
+  // Same-chain privacy detection (Solana → Solana with privacy)
+  const isSameChainPrivacy = fromToken.chain === 'solana' && toToken.chain === 'solana' && fromToken.symbol === toToken.symbol && hasPrivacy
+
   // Calculate price impact (compare quote output vs market rate)
   const priceImpact = useMemo(() => {
     if (!amount || !outputAmount) return null
@@ -337,6 +340,20 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
             <span className="font-medium">Preview Mode</span>
             <span className="text-amber-400/70">— Explore quotes safely, no real transactions</span>
           </div>
+        </div>
+      )}
+
+      {/* Same-Chain Privacy Banner */}
+      {isSameChainPrivacy && (
+        <div className="mb-4 rounded-lg border border-purple-500/30 bg-purple-500/10 p-3" data-testid="same-chain-privacy-banner">
+          <div className="flex items-center gap-2 text-sm text-purple-400">
+            <SolanaLockIcon className="h-4 w-4" />
+            <span className="font-medium">Same-Chain Privacy</span>
+            <span className="text-purple-400/70">— Direct stealth transfer on Solana</span>
+          </div>
+          <p className="mt-1 text-xs text-purple-400/60">
+            Funds sent to a one-time stealth address. Faster than cross-chain.
+          </p>
         </div>
       )}
 
@@ -584,26 +601,41 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
         <div className="mb-4 rounded-xl bg-gray-800/50 p-3 sm:p-4" data-testid="destination-address-section">
           <div className="mb-2 flex flex-wrap items-center justify-between gap-1 text-sm text-gray-400">
             <span className="flex items-center gap-1">
-              <WalletIcon className="h-4 w-4 text-cyan-500" />
-              <span className="text-xs sm:text-sm">Destination Address</span>
+              {isSameChainPrivacy ? (
+                <>
+                  <ShieldIcon className="h-4 w-4 text-purple-500" />
+                  <span className="text-xs sm:text-sm">Recipient SIP Address</span>
+                </>
+              ) : (
+                <>
+                  <WalletIcon className="h-4 w-4 text-cyan-500" />
+                  <span className="text-xs sm:text-sm">Destination Address</span>
+                </>
+              )}
             </span>
-            <span className="text-xs text-cyan-500">Required</span>
+            <span className={`text-xs ${isSameChainPrivacy ? 'text-purple-500' : 'text-cyan-500'}`}>Required</span>
           </div>
 
           <input
             type="text"
             value={destinationAddress}
             onChange={(e) => setDestinationAddress(e.target.value)}
-            placeholder={`Enter ${toToken.name} address to receive funds`}
+            placeholder={isSameChainPrivacy
+              ? 'sip:solana:0x... (recipient stealth meta-address)'
+              : `Enter ${toToken.name} address to receive funds`}
             data-testid="destination-address-input"
-            aria-label="Destination address"
-            className="w-full rounded-lg bg-gray-700/50 px-3 py-2 text-sm outline-none placeholder:text-gray-500 transition-all focus:ring-1 focus:ring-cyan-500/50"
+            aria-label={isSameChainPrivacy ? 'Recipient SIP meta-address' : 'Destination address'}
+            className={`w-full rounded-lg bg-gray-700/50 px-3 py-2 text-sm outline-none placeholder:text-gray-500 transition-all ${
+              isSameChainPrivacy ? 'focus:ring-1 focus:ring-purple-500/50' : 'focus:ring-1 focus:ring-cyan-500/50'
+            }`}
           />
 
           <p className="mt-2 text-xs text-gray-500">
-            {hasPrivacy
-              ? `Your ${toToken.name} address (swap is private - sender identity hidden)`
-              : `Funds will be sent to this ${toToken.name} address after the swap completes`}
+            {isSameChainPrivacy
+              ? 'Enter the recipient\'s SIP stealth meta-address for private transfer'
+              : hasPrivacy
+                ? `Your ${toToken.name} address (swap is private - sender identity hidden)`
+                : `Funds will be sent to this ${toToken.name} address after the swap completes`}
           </p>
         </div>
       )}
@@ -1295,6 +1327,18 @@ function WalletIcon({ className }: { className?: string }) {
         strokeLinecap="round"
         strokeLinejoin="round"
         d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3"
+      />
+    </svg>
+  )
+}
+
+function SolanaLockIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
       />
     </svg>
   )

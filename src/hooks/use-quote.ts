@@ -260,6 +260,35 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
         return
       }
 
+      // For Solana same-chain privacy (SOL → SOL or SPL token same-chain)
+      // Use direct transfer instead of cross-chain routing
+      const isSolanaToSolana = params.fromChain === 'solana' && params.toChain === 'solana'
+      const isSameToken = params.fromToken === params.toToken
+      const canUseSameChain = isSolanaToSolana && isSameToken && effectivePrivacyLevel !== PrivacyLevel.TRANSPARENT
+
+      if (canUseSameChain) {
+        // Same-chain: 1:1 rate minus ~0.000005 SOL gas fee
+        // For SPL tokens, gas is paid in SOL separately
+        const estimatedGasSol = 0.000005 // ~5000 lamports
+        const outputAmount = amountBigInt // Same amount (1:1)
+        const sameChainQuote: Quote & { type: 'same-chain' } = {
+          quoteId: `same-chain-${Date.now()}`,
+          intentId: `sip-same-chain-${Date.now()}`,
+          solverId: 'sip-same-chain',
+          outputAmount,
+          fee: BigInt(Math.floor(estimatedGasSol * 1e9)), // Gas fee in lamports
+          estimatedTime: 5, // ~5 seconds for Solana confirmation
+          expiry: Date.now() + QUOTE_EXPIRY_DURATION,
+          type: 'same-chain', // Mark as same-chain for execution routing
+        }
+        setQuote(sameChainQuote)
+        setFetchedAt(Date.now())
+        setFreshness('fresh')
+        setExpiresIn(null) // Same-chain quotes don't expire
+        logger.debug('Solana same-chain quote generated', 'Quote')
+        return
+      }
+
       // Note: recipientMetaAddress as 2nd arg, senderAddress as 3rd arg for refunds
       // Priority:
       // 1. If wallet connected and chain matches input → use wallet address for refunds
