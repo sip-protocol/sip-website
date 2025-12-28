@@ -44,7 +44,7 @@ const fromTokens: Token[] = [
   { symbol: 'ETH', name: 'Ethereum', chain: 'ethereum', logo: '/tokens/eth.png' },
   { symbol: 'SOL', name: 'Solana', chain: 'solana', logo: '/tokens/sol.png' },
   { symbol: 'NEAR', name: 'NEAR', chain: 'near', logo: '/tokens/near.png' },
-  { symbol: 'USDC', name: 'USDC (Solana)', chain: 'solana', logo: '/tokens/usdc.svg' },
+  { symbol: 'USDC', name: 'USDC (Solana)', chain: 'solana', logo: '/tokens/usdc.png' },
 ]
 
 // Tokens available as DESTINATION (NEAR Intents supported chains)
@@ -54,7 +54,7 @@ const toTokens: Token[] = [
   { symbol: 'ETH', name: 'Ethereum', chain: 'ethereum', logo: '/tokens/eth.png' },
   { symbol: 'SOL', name: 'Solana', chain: 'solana', logo: '/tokens/sol.png' },
   { symbol: 'NEAR', name: 'NEAR', chain: 'near', logo: '/tokens/near.png' },
-  { symbol: 'USDC', name: 'USDC (Solana)', chain: 'solana', logo: '/tokens/usdc.svg' },
+  { symbol: 'USDC', name: 'USDC (Solana)', chain: 'solana', logo: '/tokens/usdc.png' },
 ]
 
 export function SwapCard({ privacyLevel }: SwapCardProps) {
