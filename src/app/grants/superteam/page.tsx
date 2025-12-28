@@ -18,10 +18,10 @@ import {
   Github,
   ExternalLink,
   DollarSign,
-  Building2,
   PenTool,
   MessageSquare,
   Target,
+  Twitter,
 } from 'lucide-react'
 import { TEST_COUNTS, SDK_VERSION } from '@/lib/constants'
 
@@ -36,6 +36,7 @@ export default function SuperteamPitchPage() {
       <TractionSection />
       <BudgetSection />
       <TimelineSection />
+      <CommunityStrategySection />
       <TeamSection />
       <CTASection />
     </>
@@ -490,10 +491,9 @@ function TractionSection() {
 
 function BudgetSection() {
   const budget = [
-    { category: 'Content Campaign', amount: '$3,500', percent: 35, icon: PenTool, detail: '5 articles + 10 Twitter threads' },
-    { category: 'Community Building', amount: '$3,000', percent: 30, icon: MessageSquare, detail: 'Discord + developer relations' },
-    { category: 'Ecosystem Presentations', amount: '$2,000', percent: 20, icon: Megaphone, detail: '3 Solana ecosystem events' },
-    { category: 'SIP Labs Inc. Setup', amount: '$1,500', percent: 15, icon: Building2, detail: 'Legal entity for fundraising' },
+    { category: 'Content Campaign', amount: '$4,500', percent: 45, icon: PenTool, detail: '8 articles + 15 Twitter threads → 50K+ impressions' },
+    { category: 'Community Building', amount: '$3,500', percent: 35, icon: MessageSquare, detail: 'Discord launch → 500+ members, dev relations' },
+    { category: 'Ecosystem Presentations', amount: '$2,000', percent: 20, icon: Megaphone, detail: '3 events + 5 dApp partnership LOIs' },
   ]
 
   return (
@@ -584,8 +584,29 @@ function BudgetSection() {
 
 function TimelineSection() {
   const milestones = [
-    { month: 'Month 1', title: 'Narrative Capture', items: ['5 technical articles', 'Launch Discord community', '2 ecosystem presentations'] },
-    { month: 'Month 2', title: 'Community + Entity', items: ['10 Twitter threads', 'Register SIP Labs Inc.', 'Partner pipeline (5+ dApps)'] },
+    {
+      month: 'Month 1',
+      title: 'Narrative Capture',
+      items: [
+        '5 technical articles (Medium, Mirror, dev.to)',
+        'Launch Discord server → 200+ member target',
+        '8 Twitter threads → 25K impressions target',
+        '2 ecosystem presentations (Superteam events)',
+      ],
+      kpis: ['25K Twitter impressions', '200 Discord members', '1K article reads'],
+    },
+    {
+      month: 'Month 2',
+      title: 'Community Growth',
+      items: [
+        '3 more articles + integration guides',
+        '7 more Twitter threads → 25K impressions',
+        'Discord grows → 500+ members with dev channels',
+        '5 dApp partnership LOIs (wallets, DEXs)',
+        '1 ecosystem presentation + demo day',
+      ],
+      kpis: ['50K total impressions', '500 Discord members', '5 dApp LOIs'],
+    },
   ]
 
   return (
@@ -598,8 +619,17 @@ function TimelineSection() {
             viewport={{ once: true }}
             className="text-3xl sm:text-4xl font-bold"
           >
-            2-Month Timeline
+            2-Month Timeline with KPIs
           </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="mt-4 text-gray-400"
+          >
+            Measurable outcomes, not vanity metrics
+          </motion.p>
         </div>
 
         <div className="max-w-3xl mx-auto grid gap-6 md:grid-cols-2">
@@ -616,12 +646,130 @@ function TimelineSection() {
               <h3 className="mt-2 text-xl font-semibold">{milestone.title}</h3>
               <ul className="mt-4 space-y-2">
                 {milestone.items.map((item) => (
-                  <li key={item} className="flex items-center gap-2 text-sm text-gray-400">
-                    <CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0" />
+                  <li key={item} className="flex items-start gap-2 text-sm text-gray-400">
+                    <CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
                     {item}
                   </li>
                 ))}
               </ul>
+              {/* KPI targets */}
+              <div className="mt-4 pt-4 border-t border-gray-700/50">
+                <div className="text-xs text-gray-500 mb-2 font-medium">Success Metrics:</div>
+                <div className="flex flex-wrap gap-2">
+                  {milestone.kpis.map((kpi) => (
+                    <span key={kpi} className="px-2 py-1 text-xs bg-green-500/10 text-green-400 rounded-full border border-green-500/20">
+                      {kpi}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function CommunityStrategySection() {
+  const platforms = [
+    {
+      name: 'Discord',
+      role: 'Primary Hub',
+      icon: MessageSquare,
+      color: 'from-indigo-500 to-purple-500',
+      borderColor: 'border-indigo-500/20',
+      bgColor: 'bg-indigo-500/10',
+      textColor: 'text-indigo-400',
+      features: [
+        'Developer support & technical discussions',
+        'Integration partner onboarding',
+        'Real-time community engagement',
+        'Dedicated channels: #dev-support, #integrations, #announcements',
+      ],
+      target: '500+ members by Month 2',
+    },
+    {
+      name: 'Twitter/X',
+      role: 'Reach & Awareness',
+      icon: Twitter,
+      color: 'from-sky-500 to-blue-500',
+      borderColor: 'border-sky-500/20',
+      bgColor: 'bg-sky-500/10',
+      textColor: 'text-sky-400',
+      features: [
+        'Technical threads & educational content',
+        'Ecosystem announcements & partnerships',
+        'Privacy advocacy & thought leadership',
+        'Cross-promotion with Solana ecosystem',
+      ],
+      target: '50K+ impressions by Month 2',
+    },
+  ]
+
+  return (
+    <section className="py-24 border-t border-gray-800/50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20"
+          >
+            <Users className="w-4 h-4" />
+            Community Strategy
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="mt-6 text-3xl sm:text-4xl font-bold"
+          >
+            Discord + Twitter: Developer-First Approach
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.15 }}
+            className="mt-4 text-gray-400 max-w-2xl mx-auto"
+          >
+            Discord for deep developer engagement. Twitter for reach and ecosystem visibility.
+          </motion.p>
+        </div>
+
+        <div className="max-w-4xl mx-auto grid gap-6 md:grid-cols-2">
+          {platforms.map((platform, index) => (
+            <motion.div
+              key={platform.name}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              className={`p-6 rounded-2xl bg-gray-900/50 border ${platform.borderColor}`}
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className={`w-12 h-12 rounded-xl ${platform.bgColor} flex items-center justify-center`}>
+                  <platform.icon className={`w-6 h-6 ${platform.textColor}`} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold">{platform.name}</h3>
+                  <div className={`text-sm ${platform.textColor}`}>{platform.role}</div>
+                </div>
+              </div>
+              <ul className="space-y-2 mb-4">
+                {platform.features.map((feature) => (
+                  <li key={feature} className="flex items-start gap-2 text-sm text-gray-400">
+                    <CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+              <div className={`mt-4 px-3 py-2 rounded-lg ${platform.bgColor} ${platform.textColor} text-sm font-medium text-center`}>
+                Target: {platform.target}
+              </div>
             </motion.div>
           ))}
         </div>

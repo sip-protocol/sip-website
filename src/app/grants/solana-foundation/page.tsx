@@ -28,6 +28,10 @@ import {
   ArrowLeft,
   Globe,
   ChevronDown,
+  Users,
+  Handshake,
+  Code,
+  BookOpen,
 } from 'lucide-react'
 import { TEST_COUNTS, SDK_VERSION } from '@/lib/constants'
 
@@ -40,6 +44,8 @@ export default function SolanaFoundationPitchPage() {
       <SolutionSection />
       <CompetitorSection />
       <TractionSection />
+      <TeamSection />
+      <EcosystemCommitmentSection />
       <ArchitectureSection />
       <RoadmapSection />
       <MilestonesSection />
@@ -394,7 +400,7 @@ function CompetitorSection() {
     { feature: 'Amount Privacy', sip: 'Any amount hidden', privacycash: 'Fixed pools only', arcium: 'Compute privacy' },
     { feature: 'Viewing Keys', sip: 'Yes (compliance)', privacycash: 'No', arcium: 'No' },
     { feature: 'Same-Chain Transfers', sip: 'Yes (M17)', privacycash: 'Yes', arcium: 'No (compute only)' },
-    { feature: 'Cross-Chain', sip: 'Yes (NEAR Intents)', privacycash: 'No', arcium: 'No' },
+    { feature: 'Cross-Chain Ready', sip: 'Yes (pluggable)', privacycash: 'No', arcium: 'No' },
     { feature: 'Production Status', sip: 'Live SDK, M15 Complete', privacycash: 'Mainnet', arcium: 'Testnet only' },
   ]
 
@@ -534,6 +540,232 @@ function TractionSection() {
             Install in seconds
           </div>
           <code className="text-green-400 font-mono">npm install @sip-protocol/sdk</code>
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
+function TeamSection() {
+  const team = [
+    {
+      name: 'RECTOR',
+      role: 'Founder & Lead Developer',
+      bio: 'Full-stack developer with 10+ years experience in cryptography, blockchain, and privacy-preserving technologies. Previously built fintech solutions and decentralized applications.',
+      focus: ['SDK Architecture', 'Cryptographic Primitives', 'System Design'],
+      icon: Code,
+    },
+  ]
+
+  const stats = [
+    { label: 'Lines of TypeScript', value: '15,000+' },
+    { label: 'Test Coverage', value: '95%+' },
+    { label: 'Commits', value: '500+' },
+    { label: 'Development Hours', value: '1,000+' },
+  ]
+
+  return (
+    <section className="py-24 border-t border-gray-800/50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20"
+          >
+            <Users className="w-4 h-4" />
+            The Team
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="mt-6 text-3xl sm:text-4xl font-bold"
+          >
+            Built by Developers, for Developers
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.15 }}
+            className="mt-4 text-gray-400 max-w-2xl mx-auto"
+          >
+            Lean team, focused execution. {TEST_COUNTS.totalDisplay} tests don&apos;t write themselves.
+          </motion.p>
+        </div>
+
+        <div className="max-w-4xl mx-auto">
+          {team.map((member, index) => (
+            <motion.div
+              key={member.name}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              className="p-8 rounded-2xl bg-gray-900/50 border border-gray-800"
+            >
+              <div className="flex flex-col sm:flex-row gap-6">
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+                  <member.icon className="w-10 h-10 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold">{member.name}</h3>
+                  <div className="text-purple-400 font-medium">{member.role}</div>
+                  <p className="mt-3 text-gray-400">{member.bio}</p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {member.focus.map((skill) => (
+                      <span key={skill} className="px-3 py-1 text-xs bg-purple-500/10 text-purple-400 rounded-full border border-purple-500/20">
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="mt-4 flex gap-3">
+                    <a
+                      href="https://github.com/sip-protocol"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors"
+                    >
+                      <Github className="w-5 h-5" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+
+          {/* Development Stats */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4"
+          >
+            {stats.map((stat) => (
+              <div key={stat.label} className="p-4 rounded-xl bg-gray-900/50 border border-gray-800 text-center">
+                <div className="text-xl font-bold text-purple-400">{stat.value}</div>
+                <div className="text-xs text-gray-500">{stat.label}</div>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function EcosystemCommitmentSection() {
+  const commitments = [
+    {
+      title: 'Solana Ecosystem Focus',
+      description: 'Dedicated to making Solana THE privacy chain. All M17 deliverables are Solana-native.',
+      icon: Globe,
+      items: [
+        'Solana-native stealth addresses (ed25519)',
+        'Jupiter DEX integration for private swaps',
+        'Phantom, Solflare, Backpack wallet support',
+        'SPL token privacy for any Solana token',
+      ],
+    },
+    {
+      title: 'dApp Partnerships Pipeline',
+      description: 'Active conversations with Solana ecosystem projects. Target: 10+ integration LOIs by Month 6.',
+      icon: Handshake,
+      items: [
+        'Wallet providers (Phantom, Solflare)',
+        'DEX aggregators (Jupiter, Orca)',
+        'DeFi protocols (Marinade, Raydium)',
+        'DAO tooling platforms',
+      ],
+    },
+    {
+      title: 'Open Source Commitment',
+      description: 'MIT licensed. All code public. No vendor lock-in. Community-driven development.',
+      icon: BookOpen,
+      items: [
+        'Full SDK source code on GitHub',
+        'Comprehensive documentation site',
+        'Community Discord for developers',
+        'Regular security updates and audits',
+      ],
+    },
+  ]
+
+  return (
+    <section className="py-24 border-t border-gray-800/50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-green-500/10 text-green-400 border border-green-500/20"
+          >
+            <Handshake className="w-4 h-4" />
+            Ecosystem Commitment
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="mt-6 text-3xl sm:text-4xl font-bold"
+          >
+            All-In on Solana
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.15 }}
+            className="mt-4 text-gray-400 max-w-2xl mx-auto"
+          >
+            SIP is built for Solana first. Cross-chain comes later — Solana privacy is the priority.
+          </motion.p>
+        </div>
+
+        <div className="grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
+          {commitments.map((commitment, index) => (
+            <motion.div
+              key={commitment.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              className="p-6 rounded-2xl bg-gray-900/50 border border-gray-800"
+            >
+              <div className="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center mb-4">
+                <commitment.icon className="w-6 h-6 text-green-400" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">{commitment.title}</h3>
+              <p className="text-sm text-gray-400 mb-4">{commitment.description}</p>
+              <ul className="space-y-2">
+                {commitment.items.map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-sm text-gray-500">
+                    <CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Partnership Target */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-12 max-w-2xl mx-auto p-6 rounded-2xl bg-green-950/20 border border-green-500/20 text-center"
+        >
+          <div className="text-2xl font-bold text-green-400 mb-2">10+ dApp LOIs Target</div>
+          <p className="text-gray-400">
+            Signed Letters of Intent from Solana ecosystem projects by Month 6.
+            Wallet integrations, DEX partnerships, and DeFi protocol collaborations.
+          </p>
         </motion.div>
       </div>
     </section>
@@ -813,8 +1045,8 @@ function MilestonesSection() {
     },
     {
       id: 'M17-4',
-      title: 'Third-Party Security Audit',
-      description: 'Independent security audit by reputable firm with public disclosure',
+      title: 'Targeted Security Audit',
+      description: 'Focused audit on cryptographic core (stealth addresses, commitments) + Solana program security. $15K covers SDK crypto review — additional program audit via Solana audit pool.',
       budget: '$15,000',
       timeline: 'Month 4-5',
       icon: ShieldCheck,
