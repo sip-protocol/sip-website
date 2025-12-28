@@ -4,9 +4,54 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { PrivacyLevel } from '@sip-protocol/types'
+import type { NetworkId } from '@/lib'
 
 // Dynamic SDK import to avoid WASM loading during SSG
 const loadSDK = () => import('@sip-protocol/sdk')
+
+// Base58 alphabet (Bitcoin/Solana style)
+const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
+
+/**
+ * Convert hex string to base58 (Solana-style)
+ */
+function hexToBase58(hex: string): string {
+  // Remove 0x prefix if present
+  const cleanHex = hex.startsWith('0x') ? hex.slice(2) : hex
+
+  // Convert hex to bytes
+  const bytes: number[] = []
+  for (let i = 0; i < cleanHex.length; i += 2) {
+    bytes.push(parseInt(cleanHex.slice(i, i + 2), 16))
+  }
+
+  // Count leading zeros
+  let leadingZeros = 0
+  for (const byte of bytes) {
+    if (byte === 0) leadingZeros++
+    else break
+  }
+
+  // Convert to base58
+  let num = BigInt('0x' + cleanHex)
+  let result = ''
+  while (num > 0n) {
+    const remainder = Number(num % 58n)
+    result = BASE58_ALPHABET[remainder] + result
+    num = num / 58n
+  }
+
+  // Add leading '1's for each leading zero byte
+  return '1'.repeat(leadingZeros) + result
+}
+
+/**
+ * Truncate base58 string for display
+ */
+function truncateBase58(str: string, startChars = 6, endChars = 4): string {
+  if (str.length <= startChars + endChars + 3) return str
+  return `${str.slice(0, startChars)}...${str.slice(-endChars)}`
+}
 
 /**
  * Generate real Pedersen commitment using @sip-protocol/sdk
@@ -84,6 +129,8 @@ interface PedersenCommitmentDisplayProps {
   amount?: string
   /** Show interactive demo mode */
   showDemo?: boolean
+  /** Source chain for display formatting (solana = base58, others = hex) */
+  chain?: NetworkId
 }
 
 /**
@@ -104,12 +151,33 @@ export function PedersenCommitmentDisplay({
   privacyLevel,
   amount,
   showDemo = false,
+  chain,
 }: PedersenCommitmentDisplayProps) {
   const [commitment, setCommitment] = useState<string | null>(null)
   const [blinding, setBlinding] = useState<string | null>(null)
   const [amountHex, setAmountHex] = useState<string | null>(null)
   const [showDetails, setShowDetails] = useState(false)
   const [copied, setCopied] = useState<string | null>(null)
+
+  // Determine if we should use base58 format (Solana) or hex (Ethereum/others)
+  const useBase58 = chain === 'solana'
+
+  // Format value based on chain - use base58 for Solana, hex for others
+  const formatValue = useCallback((hex: string, truncateStart = 10, truncateEnd = 8): string => {
+    if (useBase58) {
+      const base58 = hexToBase58(hex)
+      return truncateBase58(base58, truncateStart, truncateEnd)
+    }
+    return truncateHex(hex, truncateStart, truncateEnd)
+  }, [useBase58])
+
+  // Get full formatted value (for copy)
+  const getFullValue = useCallback((hex: string): string => {
+    if (useBase58) {
+      return hexToBase58(hex)
+    }
+    return hex
+  }, [useBase58])
 
   // Demo state
   const [demoAmount, setDemoAmount] = useState('100')
@@ -267,14 +335,14 @@ export function PedersenCommitmentDisplay({
           <div className="rounded-lg bg-gray-900/50 p-3">
             <div className="mb-1 flex items-center justify-between">
               <span className="text-xs text-gray-500">Commitment (C = v·G + r·H):</span>
-              <span className="text-xs text-green-400">secp256k1</span>
+              <span className="text-xs text-green-400">{useBase58 ? 'base58' : 'secp256k1'}</span>
             </div>
             <div className="flex items-center gap-2">
               <code className="flex-1 break-all font-mono text-sm text-white">
-                {truncateHex(commitment, 12, 10)}
+                {formatValue(commitment, 12, 10)}
               </code>
               <button
-                onClick={() => handleCopy(commitment, 'commitment')}
+                onClick={() => handleCopy(getFullValue(commitment), 'commitment')}
                 className="rounded-lg p-2 text-green-400 transition-colors hover:bg-green-500/20 hover:text-green-300"
                 title="Copy commitment"
               >
@@ -290,11 +358,11 @@ export function PedersenCommitmentDisplay({
           {/* Visual representation */}
           <div className="mt-3 flex items-center justify-center gap-2 text-xs">
             <span className="rounded bg-gray-800 px-2 py-1 font-mono text-gray-400">
-              {amountHex ? truncateHex(amountHex, 6, 4) : '???'}
+              {amountHex ? formatValue(amountHex, 6, 4) : '???'}
             </span>
             <span className="text-gray-500">→</span>
             <span className="rounded bg-green-500/20 px-2 py-1 font-mono text-green-400">
-              {truncateHex(commitment, 8, 6)}
+              {formatValue(commitment, 8, 6)}
             </span>
           </div>
 

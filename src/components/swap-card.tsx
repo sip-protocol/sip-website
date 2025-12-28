@@ -703,6 +703,7 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
           <PedersenCommitmentDisplay
             privacyLevel={privacyLevel}
             amount={amount}
+            chain={fromToken.chain}
           />
         </div>
       )}
