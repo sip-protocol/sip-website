@@ -36,7 +36,15 @@ interface Token {
   name: string
   chain: NetworkId
   logo: string
+  /** SPL token mint address (Solana only). Native tokens (SOL) don't have this */
+  mint?: string
+  /** Token decimals (default: chain native decimals) */
+  decimals?: number
 }
+
+// USDC SPL token mint address on Solana mainnet
+const USDC_MINT = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
+const USDC_DECIMALS = 6
 
 // Tokens available as SOURCE (chains with wallet deposit support)
 // Reduced to core chains for reliable 1Click API quotes
@@ -44,7 +52,7 @@ const fromTokens: Token[] = [
   { symbol: 'ETH', name: 'Ethereum', chain: 'ethereum', logo: '/tokens/eth.png' },
   { symbol: 'SOL', name: 'Solana', chain: 'solana', logo: '/tokens/sol.png' },
   { symbol: 'NEAR', name: 'NEAR', chain: 'near', logo: '/tokens/near.png' },
-  { symbol: 'USDC', name: 'USDC (Solana)', chain: 'solana', logo: '/tokens/usdc.png' },
+  { symbol: 'USDC', name: 'USDC (Solana)', chain: 'solana', logo: '/tokens/usdc.png', mint: USDC_MINT, decimals: USDC_DECIMALS },
 ]
 
 // Tokens available as DESTINATION (NEAR Intents supported chains)
@@ -54,7 +62,7 @@ const toTokens: Token[] = [
   { symbol: 'ETH', name: 'Ethereum', chain: 'ethereum', logo: '/tokens/eth.png' },
   { symbol: 'SOL', name: 'Solana', chain: 'solana', logo: '/tokens/sol.png' },
   { symbol: 'NEAR', name: 'NEAR', chain: 'near', logo: '/tokens/near.png' },
-  { symbol: 'USDC', name: 'USDC (Solana)', chain: 'solana', logo: '/tokens/usdc.png' },
+  { symbol: 'USDC', name: 'USDC (Solana)', chain: 'solana', logo: '/tokens/usdc.png', mint: USDC_MINT, decimals: USDC_DECIMALS },
 ]
 
 export function SwapCard({ privacyLevel }: SwapCardProps) {
@@ -113,8 +121,12 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
   const { mode: swapMode } = useSwapModeStore()
   const isPreviewMode = swapMode === 'preview'
 
-  // Balance fetching
-  const { balance: rawBalance, formatted: balance, symbol: balanceSymbol, isLoading: isBalanceLoading } = useBalance()
+  // Balance fetching - pass token mint for SPL tokens like USDC
+  const { balance: rawBalance, formatted: balance, symbol: balanceSymbol, isLoading: isBalanceLoading } = useBalance({
+    tokenMint: fromToken.mint,
+    tokenSymbol: fromToken.symbol,
+    tokenDecimals: fromToken.decimals,
+  })
 
   // Check if balance matches source token chain
   const { chain: connectedChain } = useWalletStore()
@@ -124,20 +136,23 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
   const hasInsufficientBalance = useMemo(() => {
     if (!isConnected || !rawBalance || !amount || !isBalanceForSourceToken) return false
     try {
-      const decimals = NETWORKS[fromToken.chain]?.decimals ?? 18
+      // Use token decimals if available (e.g., USDC = 6), otherwise use chain native decimals
+      const decimals = fromToken.decimals ?? NETWORKS[fromToken.chain]?.decimals ?? 18
       const amountBigInt = parseAmount(amount, decimals)
       return amountBigInt > rawBalance
     } catch {
       return false
     }
-  }, [isConnected, rawBalance, amount, fromToken.chain, isBalanceForSourceToken])
+  }, [isConnected, rawBalance, amount, fromToken.chain, fromToken.decimals, isBalanceForSourceToken])
 
   // MAX button handler - leave small amount for gas
   const handleMaxClick = useCallback(() => {
     if (!rawBalance || !isBalanceForSourceToken) return
-    const decimals = NETWORKS[fromToken.chain]?.decimals ?? 18
-    // Leave ~0.01 for gas fees (varies by chain)
-    const gasReserve = BigInt(10 ** (decimals - 2)) // 0.01 in native units
+    // Use token decimals if available (e.g., USDC = 6), otherwise use chain native decimals
+    const decimals = fromToken.decimals ?? NETWORKS[fromToken.chain]?.decimals ?? 18
+    // For SPL tokens (non-native), use the full balance; for native tokens, leave gas reserve
+    const isNativeToken = !fromToken.mint
+    const gasReserve = isNativeToken ? BigInt(10 ** (decimals - 2)) : 0n // 0.01 for native, 0 for SPL
     const maxAmount = rawBalance > gasReserve ? rawBalance - gasReserve : rawBalance
     // Convert to string with proper decimals
     const divisor = BigInt(10 ** decimals)
@@ -146,7 +161,7 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
     const fractionStr = fraction.toString().padStart(decimals, '0').replace(/0+$/, '')
     const formattedMax = fractionStr ? `${whole}.${fractionStr}` : whole.toString()
     setAmount(formattedMax)
-  }, [rawBalance, fromToken.chain, isBalanceForSourceToken])
+  }, [rawBalance, fromToken.chain, fromToken.decimals, fromToken.mint, isBalanceForSourceToken])
 
   // Build quote params
   const quoteParams = useMemo(() => {
