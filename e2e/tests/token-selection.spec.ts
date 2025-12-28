@@ -152,8 +152,11 @@ test.describe('Token Selection', () => {
     })
   })
 
-  test.describe('Same-Token Prevention', () => {
+  test.describe('Same-Token Prevention (Transparent Mode)', () => {
     test('should auto-swap tokens when selecting same token as destination', async ({ page }) => {
+      // Auto-swap only happens in transparent mode (privacy modes allow same-token for same-chain privacy)
+      await demoPage.selectPrivacyLevel('public')
+
       // Start with ETH → SOL
       await expect(demoPage.swapCard.fromToken).toContainText('ETH')
       await expect(demoPage.swapCard.toToken).toContainText('SOL')
@@ -169,6 +172,9 @@ test.describe('Token Selection', () => {
     })
 
     test('should auto-swap tokens when selecting same token as source', async ({ page }) => {
+      // Auto-swap only happens in transparent mode (privacy modes allow same-token for same-chain privacy)
+      await demoPage.selectPrivacyLevel('public')
+
       // Start with ETH → SOL
       await expect(demoPage.swapCard.fromToken).toContainText('ETH')
       await expect(demoPage.swapCard.toToken).toContainText('SOL')
@@ -181,6 +187,24 @@ test.describe('Token Selection', () => {
       // Should auto-swap: SOL → ETH (FROM becomes SOL, TO becomes ETH)
       await expect(demoPage.swapCard.fromToken).toContainText('SOL')
       await expect(demoPage.swapCard.toToken).toContainText('ETH')
+    })
+
+    test('should allow same-token selection in shielded mode', async ({ page }) => {
+      // Shielded mode allows same-token selection for same-chain privacy transfers
+      await expect(demoPage.privacyToggle.shieldedButton).toHaveAttribute('aria-checked', 'true')
+
+      // Select SOL as FROM
+      await demoPage.swapCard.fromToken.click()
+      await page.getByTestId('token-option-SOL').click()
+
+      // Select SOL as TO (same token) - should be allowed in shielded mode
+      await demoPage.swapCard.toToken.click()
+      await page.getByTestId('token-option-SOL').click()
+      await page.waitForTimeout(200)
+
+      // Both should be SOL (no auto-swap)
+      await expect(demoPage.swapCard.fromToken).toContainText('SOL')
+      await expect(demoPage.swapCard.toToken).toContainText('SOL')
     })
   })
 })
