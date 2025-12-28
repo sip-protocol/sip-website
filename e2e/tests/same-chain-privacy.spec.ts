@@ -5,12 +5,9 @@ import { DemoPage } from '../pages/demo.page'
  * Same-Chain Privacy Tests
  * Tests for Solana→Solana same-chain privacy feature
  *
- * NOTE: Same-chain privacy requires fromToken.symbol === toToken.symbol (e.g., SOL→SOL),
- * but the UI's token selection logic prevents selecting the same token on both sides
- * (it auto-swaps to prevent same-token selection). This is a known design conflict.
- *
- * Tests that require same-token selection are marked as .fixme() until the UI
- * is updated to allow same-token selection for privacy transfers.
+ * Same-chain privacy requires fromToken.symbol === toToken.symbol (e.g., SOL→SOL).
+ * The UI allows same-token selection when privacy mode is enabled (shielded/compliant),
+ * but auto-swaps in transparent mode to prevent accidental same-token selection.
  */
 
 test.describe('Same-Chain Privacy', () => {
@@ -21,19 +18,17 @@ test.describe('Same-Chain Privacy', () => {
     await demoPage.goto()
   })
 
-  // FIXME: UI prevents same-token selection (auto-swaps tokens)
-  // Same-chain privacy requires SOL→SOL but selecting SOL on both sides swaps them
-  test.fixme('should show privacy banner when SOL→SOL with shielded mode', async ({ page }) => {
+  test('should show privacy banner when SOL→SOL with shielded mode', async ({ page }) => {
+    // Ensure shielded mode is active (default) - this allows same-token selection
+    await expect(demoPage.privacyToggle.shieldedButton).toHaveAttribute('aria-checked', 'true')
+
     // Select SOL as from token
     await demoPage.swapCard.fromToken.click()
     await page.getByTestId('token-option-SOL').click()
 
-    // Select SOL as to token - but UI will auto-swap!
+    // Select SOL as to token - allowed in shielded mode
     await demoPage.swapCard.toToken.click()
     await page.getByTestId('token-option-SOL').click()
-
-    // Ensure shielded mode is active (default)
-    await expect(demoPage.privacyToggle.shieldedButton).toHaveAttribute('aria-checked', 'true')
 
     // Verify same-chain privacy banner appears
     await expect(page.getByTestId('same-chain-privacy-banner')).toBeVisible()
@@ -45,19 +40,24 @@ test.describe('Same-Chain Privacy', () => {
     await expect(page.getByTestId('same-chain-privacy-banner')).toBeHidden()
   })
 
-  test('should hide banner for same chain but different tokens', async ({ page }) => {
-    // Select SOL as from token (Solana chain)
+  test('should hide banner for cross-chain with SOL as source', async ({ page }) => {
+    // Select SOL as from token
     await demoPage.swapCard.fromToken.click()
     await page.getByTestId('token-option-SOL').click()
 
-    // Select a different destination (auto-swap will happen if we try SOL→SOL)
-    // Banner should NOT appear for same chain different tokens (current implementation)
+    // Select NEAR as to token (different chain)
+    await demoPage.swapCard.toToken.click()
+    await page.getByTestId('token-option-NEAR').click()
+
+    // Banner should NOT appear for different chains (SOL→NEAR)
     await expect(page.getByTestId('same-chain-privacy-banner')).toBeHidden()
   })
 
-  // FIXME: UI prevents same-token selection
-  test.fixme('should hide banner when privacy is public', async ({ page }) => {
-    // Select SOL→SOL
+  test('should hide banner when privacy is public', async ({ page }) => {
+    // Ensure shielded mode first to allow SOL→SOL selection
+    await expect(demoPage.privacyToggle.shieldedButton).toHaveAttribute('aria-checked', 'true')
+
+    // Select SOL→SOL while in shielded mode
     await demoPage.swapCard.fromToken.click()
     await page.getByTestId('token-option-SOL').click()
     await demoPage.swapCard.toToken.click()
@@ -69,12 +69,14 @@ test.describe('Same-Chain Privacy', () => {
     // Switch to public mode
     await demoPage.selectPrivacyLevel('public')
 
-    // Banner should disappear
+    // Banner should disappear (public mode = no privacy)
     await expect(page.getByTestId('same-chain-privacy-banner')).toBeHidden()
   })
 
-  // FIXME: UI prevents same-token selection
-  test.fixme('should show "Recipient SIP Address" label for same-chain', async ({ page }) => {
+  test('should show "Recipient SIP Address" label for same-chain', async ({ page }) => {
+    // Ensure shielded mode is active (default)
+    await expect(demoPage.privacyToggle.shieldedButton).toHaveAttribute('aria-checked', 'true')
+
     // Select SOL→SOL with shielded mode
     await demoPage.swapCard.fromToken.click()
     await page.getByTestId('token-option-SOL').click()
@@ -91,15 +93,17 @@ test.describe('Same-Chain Privacy', () => {
     await expect(page.locator('text=Destination Address')).toBeVisible()
   })
 
-  // FIXME: UI prevents same-token selection
-  test.fixme('should show banner in compliant mode', async ({ page }) => {
+  test('should show banner in compliant mode', async ({ page }) => {
+    // Ensure shielded mode first to allow SOL→SOL selection
+    await expect(demoPage.privacyToggle.shieldedButton).toHaveAttribute('aria-checked', 'true')
+
     // Select SOL→SOL
     await demoPage.swapCard.fromToken.click()
     await page.getByTestId('token-option-SOL').click()
     await demoPage.swapCard.toToken.click()
     await page.getByTestId('token-option-SOL').click()
 
-    // Switch to compliant mode
+    // Switch to compliant mode (still has privacy)
     await demoPage.selectPrivacyLevel('compliant')
 
     // Banner should still be visible (compliant has privacy)

@@ -64,18 +64,20 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
   const [destinationAddress, setDestinationAddress] = useState('') // Destination address for all swap modes
   const [showSettings, setShowSettings] = useState(false)
 
-  // Prevent same-token selection by auto-swapping
+  // Token selection handlers
+  // Allow same-token selection when privacy is enabled (for same-chain privacy transfers)
+  // Only auto-swap in transparent mode to prevent accidental same-token selection
   const handleFromTokenSelect = (token: Token) => {
-    if (token.symbol === toToken.symbol) {
-      // Swap tokens to prevent same-token selection
+    if (token.symbol === toToken.symbol && privacyLevel === PrivacyLevel.TRANSPARENT) {
+      // Swap tokens to prevent same-token selection in transparent mode
       setToToken(fromToken)
     }
     setFromToken(token)
   }
 
   const handleToTokenSelect = (token: Token) => {
-    if (token.symbol === fromToken.symbol) {
-      // Swap tokens to prevent same-token selection
+    if (token.symbol === fromToken.symbol && privacyLevel === PrivacyLevel.TRANSPARENT) {
+      // Swap tokens to prevent same-token selection in transparent mode
       setFromToken(toToken)
     }
     setToToken(token)
