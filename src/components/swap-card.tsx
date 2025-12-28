@@ -47,12 +47,11 @@ const USDC_MINT = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
 const USDC_DECIMALS = 6
 
 // Tokens available as SOURCE (chains with wallet deposit support)
-// Reduced to core chains for reliable 1Click API quotes
+// Only native tokens - NEAR Intents solver doesn't support SPL token deposits yet
 const fromTokens: Token[] = [
   { symbol: 'ETH', name: 'Ethereum', chain: 'ethereum', logo: '/tokens/eth.png' },
   { symbol: 'SOL', name: 'Solana', chain: 'solana', logo: '/tokens/sol.png' },
   { symbol: 'NEAR', name: 'NEAR', chain: 'near', logo: '/tokens/near.png' },
-  { symbol: 'USDC', name: 'USDC (Solana)', chain: 'solana', logo: '/tokens/usdc.png', mint: USDC_MINT, decimals: USDC_DECIMALS },
 ]
 
 // Tokens available as DESTINATION (NEAR Intents supported chains)
