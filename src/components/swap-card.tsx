@@ -623,7 +623,7 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
             value={destinationAddress}
             onChange={(e) => setDestinationAddress(e.target.value)}
             placeholder={isSameChainPrivacy
-              ? 'sip:solana:0x... (recipient stealth meta-address)'
+              ? 'sip:solana:ABC... (recipient stealth meta-address)'
               : `Enter ${toToken.name} address to receive funds`}
             data-testid="destination-address-input"
             aria-label={isSameChainPrivacy ? 'Recipient SIP meta-address' : 'Destination address'}
