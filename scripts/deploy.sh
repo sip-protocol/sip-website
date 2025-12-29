@@ -26,6 +26,11 @@ cd "$APP_DIR"
 # Set the image tag
 export IMAGE_TAG="$IMAGE_TAG"
 
+# Stop and remove old blue-green containers if they exist (migration from blue-green)
+log "Cleaning up old blue-green containers..."
+docker stop sip-website-blue sip-website-green sip-website-staging 2>/dev/null || true
+docker rm sip-website-blue sip-website-green sip-website-staging 2>/dev/null || true
+
 # Pull new image
 log "Pulling image: ghcr.io/sip-protocol/sip-website:$IMAGE_TAG"
 docker compose pull
