@@ -15,7 +15,8 @@ import {
   Copy,
   ExternalLink
 } from 'lucide-react'
-import { TEST_COUNTS } from '@/lib/constants'
+import { TEST_COUNTS, HERO, ACHIEVEMENTS } from '@/lib/constants'
+import { CHAINS, getActiveChains, getComingChains } from '@/lib/data/chains'
 
 export default function Home() {
   return (
@@ -30,6 +31,8 @@ export default function Home() {
 }
 
 function HeroSection() {
+  const achievement = ACHIEVEMENTS[0]
+
   return (
     <section className="relative overflow-hidden">
       {/* Animated Background */}
@@ -41,34 +44,36 @@ function HeroSection() {
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
         <div className="text-center">
-          {/* Badge */}
+          {/* Achievement Badge */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
-              </span>
-              Built on NEAR Intents + Zcash
-            </span>
+            <a
+              href={achievement.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-yellow-400 border border-yellow-500/30 hover:border-yellow-500/50 transition-colors"
+            >
+              <span className="text-lg">🏆</span>
+              {achievement.title} — {achievement.prize}
+            </a>
           </motion.div>
 
-          {/* Headline */}
+          {/* Headline - THE Privacy Standard */}
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             className="mt-8 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight"
           >
-            Privacy for{' '}
+            {HERO.tagline.split(' ').slice(0, 1)}{' '}
             <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-purple-400 bg-clip-text text-transparent">
-              Cross-Chain
+              Privacy Standard
             </span>
             <br />
-            Transactions
+            for Web3
           </motion.h1>
 
           {/* Subheadline */}
@@ -78,9 +83,31 @@ function HeroSection() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="mt-6 text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto"
           >
-            One toggle to shield your sender, amount, and recipient.
-            Privacy should be a feature, not a tradeoff.
+            {HERO.subtitle}
           </motion.p>
+
+          {/* Value Props */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.25 }}
+            className="mt-6 flex flex-wrap items-center justify-center gap-4 text-sm text-gray-500"
+          >
+            <span className="flex items-center gap-1.5">
+              <Shield className="h-4 w-4 text-purple-400" />
+              Chain-agnostic
+            </span>
+            <span className="text-gray-700">•</span>
+            <span className="flex items-center gap-1.5">
+              <Lock className="h-4 w-4 text-purple-400" />
+              Settlement-agnostic
+            </span>
+            <span className="text-gray-700">•</span>
+            <span className="flex items-center gap-1.5">
+              <Eye className="h-4 w-4 text-purple-400" />
+              Compliance-ready
+            </span>
+          </motion.div>
 
           {/* CTAs */}
           <motion.div
@@ -119,11 +146,11 @@ function HeroSection() {
             </div>
             <div className="flex items-center gap-2">
               <Check className="h-4 w-4 text-green-500" />
-              <span>TypeScript First</span>
+              <span>M15 Complete</span>
             </div>
             <div className="flex items-center gap-2">
               <Check className="h-4 w-4 text-green-500" />
-              <span>MIT Licensed</span>
+              <span>15+ Chains</span>
             </div>
           </motion.div>
         </div>
@@ -192,38 +219,31 @@ function FeaturesSection() {
 }
 
 function ChainSection() {
-  const chains = [
-    // Active in SDK
-    { name: 'NEAR', color: 'from-[#00C08B] to-[#00C08B]' },
-    { name: 'Ethereum', color: 'from-[#627EEA] to-[#627EEA]' },
-    { name: 'Solana', color: 'from-[#9945FF] to-[#14F195]' },
-    { name: 'Zcash', color: 'from-[#F4B728] to-[#F4B728]' },
-    // In SDK ChainId (coming)
-    { name: 'Arbitrum', color: 'from-[#28A0F0] to-[#28A0F0]' },
-    { name: 'Optimism', color: 'from-[#FF0420] to-[#FF0420]' },
-    { name: 'Base', color: 'from-[#0052FF] to-[#0052FF]' },
-    { name: 'Polygon', color: 'from-[#8247E5] to-[#8247E5]' },
-    { name: 'Bitcoin', color: 'from-[#F7931A] to-[#F7931A]' },
-    // Aspirational (future research)
-    { name: 'Aptos', color: 'from-[#4CC9F0] to-[#4CC9F0]' },
-    { name: 'Sui', color: 'from-[#6FBCF0] to-[#6FBCF0]' },
-    { name: 'Mina', color: 'from-[#E39B3E] to-[#E39B3E]' },
-  ]
+  // Use centralized chain data
+  const displayChains = CHAINS.filter(
+    (chain) => chain.status === 'active' || chain.status === 'coming'
+  ).slice(0, 12)
 
   return (
     <section className="py-16 border-t border-gray-800/50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <p className="text-center text-sm text-gray-500 mb-8">
-          PRIVACY ACROSS CHAINS
+          PRIVACY ACROSS 15+ CHAINS
         </p>
         <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
-          {chains.map((chain) => (
+          {displayChains.map((chain) => (
             <div
-              key={chain.name}
+              key={chain.id}
               className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
             >
-              <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${chain.color}`} />
+              <div
+                className="w-3 h-3 rounded-full"
+                style={{ backgroundColor: chain.color }}
+              />
               <span className="text-sm font-medium">{chain.name}</span>
+              {chain.status === 'active' && (
+                <Check className="h-3 w-3 text-green-500" />
+              )}
             </div>
           ))}
         </div>

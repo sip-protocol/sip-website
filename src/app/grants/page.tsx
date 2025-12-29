@@ -14,7 +14,7 @@ import {
   ExternalLink,
   Sparkles,
 } from 'lucide-react'
-import { TEST_COUNTS, SDK_VERSION } from '@/lib/constants'
+import { TEST_COUNTS, SDK_VERSION, ACHIEVEMENTS, PROJECT_STATUS } from '@/lib/constants'
 
 export default function GrantsPage() {
   return (
@@ -77,17 +77,35 @@ function HeroSection() {
             that Web3 deserves.
           </motion.p>
 
-          {/* Stats */}
+          {/* Achievement Badge */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
+            className="mt-8"
+          >
+            <a
+              href={ACHIEVEMENTS[0].link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-yellow-400 border border-yellow-500/30 hover:border-yellow-500/50 transition-colors"
+            >
+              <span className="text-lg">🏆</span>
+              {ACHIEVEMENTS[0].title} — {ACHIEVEMENTS[0].prize}
+            </a>
+          </motion.div>
+
+          {/* Stats */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
             className="mt-10 flex flex-wrap justify-center gap-8"
           >
             {[
               { value: TEST_COUNTS.totalDisplay, label: 'Tests Passing' },
               { value: SDK_VERSION.display, label: 'npm Published' },
-              { value: 'M8', label: 'Phase 1: 95%' },
+              { value: `M${PROJECT_STATUS.completedMilestones}`, label: 'Phase 1-3 Complete' },
               { value: '100%', label: 'Open Source' },
             ].map((stat) => (
               <div key={stat.label} className="text-center">
@@ -284,8 +302,8 @@ function WhyFundSection() {
 function TractionSection() {
   const traction = [
     { metric: TEST_COUNTS.totalDisplay, label: 'Tests Passing', detail: TEST_COUNTS.detailDisplay },
-    { metric: '@sip-protocol/sdk', label: 'npm Package', detail: 'v0.1.0 published' },
-    { metric: 'M1-M9', label: 'Milestones', detail: 'All complete' },
+    { metric: SDK_VERSION.display, label: 'npm Package', detail: SDK_VERSION.full },
+    { metric: `M1-M${PROJECT_STATUS.completedMilestones}`, label: 'Milestones', detail: 'Phase 1-3 Complete' },
     { metric: 'Live', label: 'Demo', detail: 'sip-protocol.org' },
   ]
 

@@ -15,8 +15,9 @@ import {
   Package
 } from 'lucide-react'
 import Link from 'next/link'
-import { TEST_COUNTS } from '@/lib/constants'
+import { TEST_COUNTS, PROJECT_STATUS, ACHIEVEMENTS } from '@/lib/constants'
 import { FounderProfile } from '@/components/founder-profile'
+import { ALL_PHASES, getCompletedMilestoneCount, getTotalMilestoneCount } from '@/lib/data'
 
 export default function AboutPage() {
   return (
@@ -70,8 +71,8 @@ function HeroSection() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="mt-6 text-lg text-gray-400 max-w-2xl mx-auto"
           >
-            Building the privacy layer that cross-chain transactions deserve.
-            Open source, auditable, and designed for compliance.
+            The Privacy Standard for Web3. One toggle to shield sender, amount, and recipient.
+            Open source, auditable, and compliance-ready with viewing keys.
           </motion.p>
         </div>
       </div>
@@ -301,38 +302,17 @@ function HowItWorksSection() {
 }
 
 function RoadmapSection() {
-  const milestones = [
-    {
-      id: 'M1-M3',
-      title: 'Core Cryptography',
-      status: 'complete',
-      items: ['Protocol design', 'Pedersen commitments', 'Stealth addresses', 'TypeScript SDK']
-    },
-    {
-      id: 'M4-M5',
-      title: 'Network & Launch',
-      status: 'complete',
-      items: ['NEAR Intents adapter', 'Wallet adapters', 'Documentation site', 'npm publish']
-    },
-    {
-      id: 'M6-M7',
-      title: 'Demo Integration',
-      status: 'complete',
-      items: ['Live demo with real wallets', 'NEAR wallet support', `${TEST_COUNTS.totalDisplay} tests passing`]
-    },
-    {
-      id: 'M8',
-      title: 'Production Hardening',
-      status: 'upcoming',
-      items: ['Noir ZK circuits', 'Security audit', 'Performance optimization']
-    },
-    {
-      id: 'M9',
-      title: 'Horizontal Expansion',
-      status: 'upcoming',
-      items: ['Additional chains', 'Treasury use cases', 'Enterprise features']
-    }
-  ]
+  const completedCount = getCompletedMilestoneCount()
+  const totalCount = getTotalMilestoneCount()
+
+  // Colors for each phase
+  const phaseColors: Record<number, { bg: string; border: string; text: string }> = {
+    1: { bg: 'bg-indigo-500/20', border: 'border-indigo-500', text: 'text-indigo-400' },
+    2: { bg: 'bg-green-500/20', border: 'border-green-500', text: 'text-green-400' },
+    3: { bg: 'bg-emerald-500/20', border: 'border-emerald-500', text: 'text-emerald-400' },
+    4: { bg: 'bg-blue-500/20', border: 'border-blue-500', text: 'text-blue-400' },
+    5: { bg: 'bg-purple-500/20', border: 'border-purple-500', text: 'text-purple-400' },
+  }
 
   return (
     <section className="py-24 border-t border-gray-800/50">
@@ -342,66 +322,80 @@ function RoadmapSection() {
             Roadmap
           </h2>
           <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
-            Methodical progress toward production-ready privacy
+            {completedCount} of {totalCount} milestones complete — Phase {PROJECT_STATUS.currentPhase} active
           </p>
         </div>
 
-        <div className="relative max-w-3xl mx-auto">
-          {/* Timeline line */}
-          <div className="absolute left-8 top-0 bottom-0 w-px bg-gradient-to-b from-purple-500 via-purple-500/50 to-gray-800" />
-
-          <div className="space-y-8">
-            {milestones.map((milestone, index) => (
+        {/* Phase Overview */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-5 max-w-6xl mx-auto mb-12">
+          {ALL_PHASES.map((phase, index) => {
+            const colors = phaseColors[phase.id]
+            return (
               <motion.div
-                key={milestone.id}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                key={phase.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="relative flex gap-6"
+                transition={{ delay: index * 0.1 }}
+                className={`p-4 rounded-xl bg-gray-900/50 border ${
+                  phase.status === 'active' ? colors.border : 'border-gray-800'
+                }`}
               >
-                {/* Timeline dot */}
-                <div className={`relative z-10 flex h-16 w-16 items-center justify-center rounded-full border-2 ${
-                  milestone.status === 'complete'
-                    ? 'bg-purple-500/20 border-purple-500 text-purple-400'
-                    : 'bg-gray-900 border-gray-700 text-gray-500'
-                }`}>
-                  {milestone.status === 'complete' ? (
-                    <Check className="h-6 w-6" />
-                  ) : (
-                    <span className="text-sm font-bold">{milestone.id}</span>
-                  )}
+                <div className="flex items-center justify-between mb-2">
+                  <span className={`text-xs font-medium ${colors.text}`}>Phase {phase.id}</span>
+                  <span className={`text-xs px-2 py-0.5 rounded-full ${
+                    phase.status === 'complete' ? 'bg-green-500/10 text-green-400' :
+                    phase.status === 'active' ? 'bg-blue-500/10 text-blue-400' :
+                    'bg-gray-500/10 text-gray-500'
+                  }`}>
+                    {phase.status === 'complete' ? '100%' : phase.status === 'active' ? `${phase.progress}%` : 'Upcoming'}
+                  </span>
                 </div>
-
-                {/* Content */}
-                <div className={`flex-1 pb-8 ${milestone.status === 'upcoming' ? 'opacity-60' : ''}`}>
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-sm font-medium text-purple-400">{milestone.id}</span>
-                    {milestone.status === 'complete' && (
-                      <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-green-500/10 text-green-400">
-                        Complete
-                      </span>
-                    )}
-                    {milestone.status === 'upcoming' && (
-                      <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-400">
-                        Upcoming
-                      </span>
-                    )}
-                  </div>
-                  <h3 className="text-lg font-semibold">{milestone.title}</h3>
-                  <ul className="mt-2 space-y-1">
-                    {milestone.items.map((item) => (
-                      <li key={item} className="text-sm text-gray-400 flex items-center gap-2">
-                        <span className="w-1 h-1 rounded-full bg-gray-600" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
+                <h3 className="font-semibold text-sm">{phase.name}</h3>
+                <p className="text-xs text-gray-500 mt-1">{phase.subtitle}</p>
+                <div className="mt-3 h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    whileInView={{ width: `${phase.progress}%` }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8, delay: index * 0.1 }}
+                    className={`h-full rounded-full ${
+                      phase.status === 'complete' ? 'bg-green-500' :
+                      phase.status === 'active' ? 'bg-blue-500' :
+                      'bg-gray-700'
+                    }`}
+                  />
+                </div>
+                <div className="mt-2 text-xs text-gray-500">
+                  M{phase.milestones[0].id.replace('M', '')}–M{phase.milestones[phase.milestones.length - 1].id.replace('M', '')}
                 </div>
               </motion.div>
-            ))}
-          </div>
+            )
+          })}
         </div>
+
+        {/* Current Focus */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="max-w-2xl mx-auto p-6 rounded-2xl bg-blue-950/30 border border-blue-500/30 text-center"
+        >
+          <div className="text-sm text-blue-400 font-medium mb-2">Currently Active</div>
+          <h3 className="text-xl font-bold">
+            {PROJECT_STATUS.currentMilestone}: {PROJECT_STATUS.currentPhaseName}
+          </h3>
+          <p className="mt-2 text-gray-400 text-sm">
+            Narrative capture, community building, and competitive positioning vs PrivacyCash
+          </p>
+          <Link
+            href="/roadmap"
+            className="inline-flex items-center gap-2 mt-4 text-blue-400 hover:text-blue-300 transition-colors text-sm"
+          >
+            View Full Roadmap
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </motion.div>
       </div>
     </section>
   )

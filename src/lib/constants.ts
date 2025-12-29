@@ -66,3 +66,36 @@ export const PROJECT_METRICS = {
   proofTime: '<5s',
   proofSize: '~2KB',
 }
+
+// Project status - current phase and milestone
+export const PROJECT_STATUS = {
+  currentPhase: 4,
+  currentPhaseName: 'Same-Chain Expansion',
+  currentMilestone: 'M16',
+  currentMilestoneName: 'Narrative Capture',
+  completedMilestones: 15,
+  totalMilestones: 22,
+  phasesComplete: 3,
+  totalPhases: 5,
+}
+
+// Achievements and awards
+export const ACHIEVEMENTS = [
+  {
+    id: 'zypherpunk-2025',
+    title: 'Zypherpunk Hackathon Winner',
+    track: 'NEAR Track',
+    prize: '$4,000',
+    date: 'December 2025',
+    link: 'https://zypherpunk.xyz',
+    badge: 'Winner',
+  },
+] as const
+
+// Hero messaging - THE Privacy Standard claim
+export const HERO = {
+  badge: 'Zypherpunk Hackathon Winner',
+  tagline: 'The Privacy Standard for Web3',
+  subtitle: 'Like HTTPS for the internet. One toggle to shield sender, amount, and recipient.',
+  description: 'Privacy middleware between applications and blockchains. Chain-agnostic. Settlement-agnostic. Compliance-ready with viewing keys.',
+}

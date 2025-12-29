@@ -22,6 +22,8 @@ import {
   ExternalLink
 } from 'lucide-react'
 import Link from 'next/link'
+import { CHAINS, VMS, CHAIN_STATUS_LABELS, VM_STATUS_LABELS, getActiveChains, getComingChains } from '@/lib/data'
+import { TEST_COUNTS } from '@/lib/constants'
 
 export default function FeaturesPage() {
   return (
@@ -153,7 +155,7 @@ await shareViewingKey(viewingKey, auditorId)`
             Privacy Primitives
           </h2>
           <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
-            Enterprise-grade cryptography adapted from Zcash, battle-tested with 1,331+ tests
+            Enterprise-grade cryptography adapted from Zcash, battle-tested with {TEST_COUNTS.totalDisplay} tests
           </p>
         </div>
 
@@ -258,32 +260,17 @@ function FeatureDetail({ feature, index }: { feature: any; index: number }) {
 }
 
 function VMSection() {
-  const vms = [
-    {
-      name: 'EVM',
-      fullName: 'Ethereum Virtual Machine',
-      curve: 'secp256k1',
-      status: 'active',
-      chains: ['Ethereum', 'Arbitrum', 'Base', 'Polygon', 'Optimism'],
-      color: '#627EEA',
-    },
-    {
-      name: 'SVM',
-      fullName: 'Solana Virtual Machine',
-      curve: 'ed25519',
-      status: 'active',
-      chains: ['Solana'],
-      color: '#9945FF',
-    },
-    {
-      name: 'MoveVM',
-      fullName: 'Move Virtual Machine',
-      curve: 'ed25519',
-      status: 'coming',
-      chains: ['Aptos', 'Sui'],
-      color: '#4CC9F0',
-    },
-  ]
+  // VM color mapping
+  const vmColors: Record<string, string> = {
+    'EVM': '#627EEA',
+    'SVM': '#9945FF',
+    'NearVM': '#00C08B',
+    'MoveVM': '#4CC9F0',
+    'Zcash': '#F4B728',
+    'Bitcoin': '#F7931A',
+    'Cosmos': '#2E3148',
+    'Mina': '#7B61FF',
+  }
 
   return (
     <section className="py-24 border-t border-gray-800/50">
@@ -317,8 +304,8 @@ function VMSection() {
           </motion.p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3 max-w-4xl mx-auto">
-          {vms.map((vm, index) => (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto">
+          {VMS.map((vm, index) => (
             <motion.div
               key={vm.name}
               initial={{ opacity: 0, y: 20 }}
@@ -331,30 +318,33 @@ function VMSection() {
                 <div className="flex items-center gap-3">
                   <div
                     className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: vm.color }}
+                    style={{ backgroundColor: vmColors[vm.name] }}
                   />
                   <h3 className="text-lg font-bold">{vm.name}</h3>
                 </div>
                 <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-                  vm.status === 'active'
+                  vm.status === 'supported'
                     ? 'bg-green-500/10 text-green-400'
                     : 'bg-yellow-500/10 text-yellow-400'
                 }`}>
-                  {vm.status === 'active' ? 'Supported' : 'Coming Soon'}
+                  {VM_STATUS_LABELS[vm.status]}
                 </span>
               </div>
-              <p className="text-sm text-gray-500 mb-3">{vm.fullName}</p>
+              <p className="text-sm text-gray-500 mb-3">{vm.displayName}</p>
               <div className="flex items-center gap-2 mb-4">
                 <span className="text-xs px-2 py-1 rounded bg-gray-800 text-gray-400 font-mono">
                   {vm.curve}
                 </span>
               </div>
               <div className="flex flex-wrap gap-1.5">
-                {vm.chains.map((chain) => (
-                  <span key={chain} className="text-xs px-2 py-1 rounded-full bg-gray-800/50 text-gray-400">
-                    {chain}
-                  </span>
-                ))}
+                {vm.chains.map((chainId) => {
+                  const chain = CHAINS.find(c => c.id === chainId)
+                  return (
+                    <span key={chainId} className="text-xs px-2 py-1 rounded-full bg-gray-800/50 text-gray-400">
+                      {chain?.name || chainId}
+                    </span>
+                  )
+                })}
               </div>
             </motion.div>
           ))}
@@ -377,23 +367,34 @@ function VMSection() {
 }
 
 function ChainsSection() {
-  const chains = [
-    // Active
-    { name: 'NEAR', status: 'active', color: '#00C08B', description: 'Native integration via NEAR Intents' },
-    { name: 'Ethereum', status: 'active', color: '#627EEA', description: 'Full EVM support with stealth addresses' },
-    { name: 'Solana', status: 'active', color: '#9945FF', description: 'High-speed privacy transactions' },
-    { name: 'Zcash', status: 'active', color: '#F4B728', description: 'Shielded pool integration' },
-    // Coming Soon - EVM L2s
-    { name: 'Arbitrum', status: 'coming', color: '#28A0F0', description: 'Leading L2 with EVM privacy' },
-    { name: 'Base', status: 'coming', color: '#0052FF', description: 'Coinbase L2, fast growing ecosystem' },
-    { name: 'Polygon', status: 'coming', color: '#8247E5', description: 'Massive EVM ecosystem' },
-    // Coming Soon - Move chains
-    { name: 'Aptos', status: 'coming', color: '#4CC9F0', description: 'Move-based privacy via ed25519' },
-    { name: 'Sui', status: 'coming', color: '#6FBCF0', description: 'Object-model privacy support' },
-    // Coming Soon - Others
-    { name: 'Bitcoin', status: 'coming', color: '#F7931A', description: 'Via chain signatures' },
-    { name: 'Mina', status: 'coming', color: '#E39DFF', description: 'Proof verification layer' },
-  ]
+  // Chain descriptions for display
+  const chainDescriptions: Record<string, string> = {
+    'near': 'Native integration via NEAR Intents',
+    'ethereum': 'Full EVM support with stealth addresses',
+    'solana': 'High-speed privacy transactions',
+    'zcash': 'Shielded pool integration',
+    'base': '60%+ L2 transaction share',
+    'arbitrum': '44% L2 TVL, leading L2',
+    'optimism': 'OP Stack ecosystem leader',
+    'polygon': 'Massive EVM ecosystem',
+    'bitcoin': 'Silent Payments (BIP-352)',
+    'bnb': '4.32M daily active wallets',
+    'mina': 'Proof composition partner',
+    'aptos': 'Move-based privacy via ed25519',
+    'sui': 'Object-model privacy support',
+    'cosmos': 'IBC cross-chain privacy',
+  }
+
+  // Sort chains: active first, then by priority
+  const sortedChains = [...CHAINS].sort((a, b) => {
+    if (a.status === 'active' && b.status !== 'active') return -1
+    if (a.status !== 'active' && b.status === 'active') return 1
+    const priorityOrder = { tier1: 0, tier2: 1, tier3: 2 }
+    return priorityOrder[a.priority] - priorityOrder[b.priority]
+  })
+
+  const activeCount = getActiveChains().length
+  const comingCount = getComingChains().length
 
   return (
     <section className="py-24 border-t border-gray-800/50">
@@ -403,18 +404,18 @@ function ChainsSection() {
             Supported Chains
           </h2>
           <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
-            Privacy works seamlessly across the multi-chain ecosystem
+            {activeCount} chains active, {comingCount} coming soon — privacy works seamlessly across the multi-chain ecosystem
           </p>
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {chains.map((chain, index) => (
+          {sortedChains.filter(c => c.status !== 'future' && c.status !== 'research').map((chain, index) => (
             <motion.div
-              key={chain.name}
+              key={chain.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              transition={{ duration: 0.5, delay: Math.min(index * 0.05, 0.5) }}
               className="group p-6 rounded-2xl bg-gray-900/50 border border-gray-800 hover:border-purple-500/50 transition-colors"
             >
               <div className="flex items-center justify-between mb-4">
@@ -430,13 +431,34 @@ function ChainsSection() {
                     ? 'bg-green-500/10 text-green-400'
                     : 'bg-yellow-500/10 text-yellow-400'
                 }`}>
-                  {chain.status === 'active' ? 'Active' : 'Coming Soon'}
+                  {CHAIN_STATUS_LABELS[chain.status]}
                 </span>
               </div>
-              <p className="text-sm text-gray-400">{chain.description}</p>
+              <p className="text-sm text-gray-400">
+                {chainDescriptions[chain.id] || chain.notes || `${chain.vm} chain with ${chain.curve} support`}
+              </p>
+              {chain.priority === 'tier1' && chain.status === 'coming' && (
+                <div className="mt-3">
+                  <span className="text-xs px-2 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                    High Priority (M18)
+                  </span>
+                </div>
+              )}
             </motion.div>
           ))}
         </div>
+
+        {/* Future chains note */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-12 text-center"
+        >
+          <p className="text-sm text-gray-500">
+            More chains planned: Cosmos IBC, Aptos, Sui • <Link href="/roadmap" className="text-purple-400 hover:text-purple-300">View full roadmap</Link>
+          </p>
+        </motion.div>
       </div>
     </section>
   )
