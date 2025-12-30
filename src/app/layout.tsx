@@ -16,9 +16,9 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://sip-protocol.org'),
-  title: 'SIP Protocol - Privacy for Cross-Chain Transactions',
-  description: 'Shielded Intents Protocol - One toggle to shield your sender, amount, and recipient. Built on NEAR Intents + Zcash.',
-  keywords: ['privacy', 'cross-chain', 'blockchain', 'stealth addresses', 'NEAR', 'Zcash', 'DeFi'],
+  title: 'SIP Protocol - The Privacy Standard for Web3',
+  description: 'One toggle to shield sender, amount, and recipient. Stealth addresses, Pedersen commitments, and viewing keys for compliance. Any chain.',
+  keywords: ['privacy', 'web3', 'blockchain', 'stealth addresses', 'pedersen commitments', 'viewing keys', 'DeFi', 'Solana', 'Ethereum', 'NEAR'],
   authors: [{ name: 'SIP Protocol' }],
   alternates: {
     canonical: '/',
@@ -32,8 +32,8 @@ export const metadata: Metadata = {
     apple: '/apple-touch-icon.png',
   },
   openGraph: {
-    title: 'SIP Protocol - Privacy for Cross-Chain Transactions',
-    description: 'One toggle to shield your sender, amount, and recipient.',
+    title: 'SIP Protocol - The Privacy Standard for Web3',
+    description: 'One toggle to shield sender, amount, and recipient. Stealth addresses, Pedersen commitments, and viewing keys for compliance.',
     url: 'https://sip-protocol.org',
     siteName: 'SIP Protocol',
     type: 'website',
@@ -42,14 +42,14 @@ export const metadata: Metadata = {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'SIP Protocol - Privacy Layer for Cross-Chain Transactions',
+        alt: 'SIP Protocol - The Privacy Standard for Web3',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SIP Protocol - Privacy for Cross-Chain Transactions',
-    description: 'One toggle to shield your sender, amount, and recipient.',
+    title: 'SIP Protocol - The Privacy Standard for Web3',
+    description: 'One toggle to shield sender, amount, and recipient. Stealth addresses, Pedersen commitments, and viewing keys for compliance.',
     images: ['/og-image.png'],
   },
 }
