@@ -18,7 +18,7 @@ const teamConfig: TeamMember = {
   tagline: 'Building privacy infrastructure',
   avatar: 'https://avatars.githubusercontent.com/u/95009642?v=4',
   github: 'https://github.com/rz1989s',
-  twitter: 'https://x.com/rz1989s',
+  twitter: 'https://x.com/sipprotocol',
 }
 
 function GitHubIcon({ className }: { className?: string }) {
