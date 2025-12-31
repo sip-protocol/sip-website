@@ -95,46 +95,62 @@ const defaultConfig: FounderProfileProps = {
   username: '@rz1989s',
   role: 'Founder, SIP Protocol',
   avatar: 'https://avatars.githubusercontent.com/u/95009642?v=4',
-  bio: 'Building the privacy standard for Web3. Blockchain architect focused on cryptographic privacy, cross-chain infrastructure, and high-performance systems. Believer that privacy is a right, not a feature.',
+  bio: 'Building the privacy standard for Web3. Blockchain architect with $10,800+ in hackathon wins (2024-2025) including MonkeDAO, Zypherpunk, and Superteam. 5,600+ contributions across 170 repos. Focused on cryptographic privacy, cross-chain infrastructure, and high-performance systems. Privacy is a right, not a feature.',
   github: 'https://github.com/rz1989s',
   twitter: 'https://x.com/rz1989s',
   website: 'https://rectorspace.com',
   stats: {
-    repositories: 27,
-    stars: 206,
-    followers: 26,
+    repositories: 33,
+    stars: 246,
+    followers: 27,
     commits: 4500,
-    prs: 117,
+    prs: 146,
     badge: '2,757+ Tests',
   },
   projects: [
     {
-      name: 'sip-protocol',
-      description: 'Privacy layer for cross-chain transactions — 2,757 tests across 6 packages',
+      name: 'SIP Protocol',
+      description: 'Winner Zypherpunk Hackathon NEAR Track — Privacy layer with 2,757 tests ($4,000)',
       url: 'https://github.com/sip-protocol/sip-protocol',
       stars: 1,
       language: 'TypeScript',
-      tags: ['TypeScript', 'Privacy', 'ZK'],
+      tags: ['Winner', 'Privacy', 'ZK'],
+    },
+    {
+      name: 'Web3 Deal Discovery',
+      description: '1st Place MonkeDAO/Superteam — NFT coupons on Solana with escrow marketplace ($5,000 + Gen3 NFT)',
+      url: 'https://github.com/rz1989s/web3-deal-discovery',
+      stars: 1,
+      language: 'TypeScript',
+      tags: ['1st Place', 'Solana', 'NFT'],
+    },
+    {
+      name: 'OpenBudget.ID',
+      description: '2nd Place Garuda Spark/Superteam Indonesia — On-chain government spending transparency ($1,500)',
+      url: 'https://github.com/rz1989s/openbudget-id',
+      stars: 1,
+      language: 'TypeScript',
+      tags: ['2nd Place', 'Solana', 'Gov'],
+    },
+    {
+      name: 'Saros SDK Docs',
+      description: '1st Place Documentation Bounty — Interactive API Explorer for Saros DEX ($300)',
+      url: 'https://github.com/rz1989s/saros-sdk-docs',
+      stars: 1,
+      language: 'TypeScript',
+      tags: ['1st Place', 'Docs'],
     },
     {
       name: 'claude-code-statusline',
-      description: 'Terminal statusline tool with cost tracking — 205 stars, 13 forks',
+      description: 'Terminal statusline with cost tracking — 240 stars, 17 forks (community favorite)',
       url: 'https://github.com/rz1989s/claude-code-statusline',
-      stars: 205,
-      forks: 13,
+      stars: 240,
+      forks: 17,
       language: 'Shell',
-      tags: ['Shell', 'CLI'],
-    },
-    {
-      name: 'meteora-cp-amm-fee-routing',
-      description: 'Permissionless fee routing for Meteora DAMM V2 pools — $7,500 bounty',
-      url: 'https://github.com/rz1989s/meteora-cp-amm-fee-routing',
-      stars: 1,
-      language: 'TypeScript',
-      tags: ['TypeScript', 'Solana'],
+      tags: ['240 Stars', 'CLI'],
     },
   ],
-  techStack: ['TypeScript', 'Rust', 'Noir', 'React', 'Solana', 'NEAR', 'Zcash', 'Docker'],
+  techStack: ['TypeScript', 'Rust', 'Python', 'Noir', 'React', 'Solana', 'NEAR', 'Zcash', 'Docker'],
   quote: {
     text: '"One person. 2,757 tests. Zero shortcuts."',
     subtitle: '— Pure execution, no committee decisions',
@@ -397,11 +413,17 @@ export function FounderProfile(props: FounderProfileProps = {}) {
                           <span
                             key={tag}
                             className={`px-2 py-0.5 rounded text-xs font-medium ${
+                              tag === 'Winner' || tag === '1st Place' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' :
+                              tag === '2nd Place' ? 'bg-gray-400/20 text-gray-300 border border-gray-400/30' :
+                              tag.includes('Stars') ? 'bg-amber-500/20 text-amber-400' :
                               tag === 'Shell' ? 'bg-green-500/20 text-green-400' :
                               tag === 'TypeScript' ? 'bg-blue-500/20 text-blue-400' :
                               tag === 'Solana' ? 'bg-purple-500/20 text-purple-400' :
-                              tag === 'Privacy' ? 'bg-amber-500/20 text-amber-400' :
+                              tag === 'Privacy' || tag === 'ZK' ? 'bg-pink-500/20 text-pink-400' :
                               tag === 'CLI' ? 'bg-cyan-500/20 text-cyan-400' :
+                              tag === 'NFT' ? 'bg-orange-500/20 text-orange-400' :
+                              tag === 'Gov' ? 'bg-emerald-500/20 text-emerald-400' :
+                              tag === 'Docs' ? 'bg-indigo-500/20 text-indigo-400' :
                               'bg-gray-500/20 text-gray-400'
                             }`}
                           >

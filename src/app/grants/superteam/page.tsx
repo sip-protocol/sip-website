@@ -1,15 +1,22 @@
 'use client'
 
+/**
+ * Superteam Instagrant Pitch Page
+ * Updated Dec 2025 - 3x Value Strategy: Request $10K, Deliver $30K
+ *
+ * Philosophy: Code fundamentals first. Marketing is ongoing activity, not measured KPI.
+ * Technical deliverables are the REAL milestones.
+ */
+
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+import Image from 'next/image'
 import {
   Shield,
   Zap,
   CheckCircle2,
   ArrowLeft,
-  Users,
   FileText,
-  Megaphone,
   Trophy,
   AlertTriangle,
   TrendingUp,
@@ -18,26 +25,34 @@ import {
   Github,
   ExternalLink,
   DollarSign,
-  PenTool,
-  MessageSquare,
   Target,
-  Twitter,
+  Code,
+  Terminal,
+  Layers,
+  Sparkles,
+  ArrowRight,
 } from 'lucide-react'
 import { TEST_COUNTS, SDK_VERSION } from '@/lib/constants'
+import { VideoDemo } from '@/components/video-demo'
+import { FounderProfile } from '@/components/founder-profile'
+import { ZachXBTTweet } from '@/components/zachxbt-tweet'
+import { ArchitectureDiagram } from '@/components/architecture-diagram'
 
 export default function SuperteamPitchPage() {
   return (
     <>
       <HeroSection />
       <AchievementSection />
+      <VideoDemoSection />
+      <ValuePropositionSection />
       <ProblemSection />
       <SolutionSection />
       <CompetitionSection />
       <TractionSection />
+      <SocialProofSection />
       <BudgetSection />
       <TimelineSection />
-      <CommunityStrategySection />
-      <TeamSection />
+      <FounderSection />
       <CTASection />
     </>
   )
@@ -78,7 +93,7 @@ function HeroSection() {
           >
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
               <DollarSign className="w-4 h-4" />
-              Microgrant Application
+              Instagrant Application
             </span>
           </motion.div>
 
@@ -89,9 +104,13 @@ function HeroSection() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="mt-8 flex items-center justify-center gap-4"
           >
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-              <Shield className="w-8 h-8 text-white" />
-            </div>
+            <Image
+              src="/logo-mark-512.png"
+              alt="SIP Protocol"
+              width={64}
+              height={64}
+              className="rounded-2xl"
+            />
           </motion.div>
 
           {/* Headline */}
@@ -124,19 +143,25 @@ function HeroSection() {
             Cryptographic privacy, not pool mixing. Compliance-ready from day one.
           </motion.p>
 
-          {/* Amount */}
+          {/* Amount with Value Proposition */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="mt-8 inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-blue-500/10 border border-blue-500/20"
+            className="mt-8 inline-flex flex-col items-center gap-2"
           >
-            <span className="text-gray-400">Requesting</span>
-            <span className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-              $10,000
-            </span>
-            <span className="text-gray-500">|</span>
-            <span className="text-gray-400">2 months</span>
+            <div className="flex items-center gap-3 px-6 py-3 rounded-2xl bg-blue-500/10 border border-blue-500/20">
+              <span className="text-gray-400">Requesting</span>
+              <span className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                $10,000
+              </span>
+              <span className="text-gray-500">|</span>
+              <span className="text-gray-400">2 months</span>
+            </div>
+            <div className="flex items-center gap-2 text-green-400 text-sm">
+              <Sparkles className="w-4 h-4" />
+              <span>Delivering $30,000+ in value</span>
+            </div>
           </motion.div>
 
           {/* Quick Links */}
@@ -178,21 +203,175 @@ function HeroSection() {
 
 function AchievementSection() {
   return (
-    <section className="py-12 border-t border-gray-800/50">
+    <section className="py-16 border-t border-gray-800/50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="relative max-w-lg mx-auto"
+        >
+          {/* Glow effect */}
+          <div className="absolute -inset-1 bg-gradient-to-r from-yellow-500/20 via-amber-500/20 to-yellow-500/20 rounded-3xl blur-xl" />
+
+          {/* Card */}
+          <div className="relative p-8 rounded-2xl bg-gradient-to-b from-yellow-950/40 to-amber-950/20 border border-yellow-500/30 backdrop-blur-sm overflow-hidden">
+            {/* Animated sparkles */}
+            <div className="absolute top-4 left-6 text-yellow-400/60 animate-pulse">✦</div>
+            <div className="absolute top-6 right-8 text-amber-400/50 animate-pulse" style={{ animationDelay: '0.5s' }}>✦</div>
+            <div className="absolute bottom-6 left-10 text-yellow-300/40 animate-pulse" style={{ animationDelay: '1s' }}>✦</div>
+            <div className="absolute bottom-4 right-6 text-amber-300/60 animate-pulse" style={{ animationDelay: '0.3s' }}>✦</div>
+
+            {/* Content */}
+            <div className="text-center">
+              {/* Trophy */}
+              <motion.div
+                initial={{ scale: 0 }}
+                whileInView={{ scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ type: 'spring', stiffness: 200, delay: 0.2 }}
+                className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-amber-500 shadow-lg shadow-yellow-500/30 mb-4"
+              >
+                <Trophy className="w-8 h-8 text-yellow-950" />
+              </motion.div>
+
+              {/* Label */}
+              <div className="text-xs font-semibold tracking-[0.2em] uppercase text-yellow-500/80 mb-2">
+                Hackathon Winner
+              </div>
+
+              {/* Divider */}
+              <div className="w-12 h-0.5 bg-gradient-to-r from-transparent via-yellow-500/50 to-transparent mx-auto mb-3" />
+
+              {/* Title */}
+              <h3 className="text-xl font-bold bg-gradient-to-r from-yellow-300 via-amber-200 to-yellow-300 bg-clip-text text-transparent mb-2">
+                Zypherpunk Hackathon
+              </h3>
+
+              {/* Details */}
+              <div className="flex items-center justify-center gap-3 text-sm text-gray-400">
+                <span className="px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-400 text-xs font-medium">
+                  NEAR Track
+                </span>
+                <span>•</span>
+                <span className="font-semibold text-amber-400">$4,000</span>
+                <span>•</span>
+                <span>Dec 2025</span>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
+function ValuePropositionSection() {
+  const valueItems = [
+    {
+      label: 'Requesting',
+      value: '$10K',
+      icon: DollarSign,
+      color: 'text-blue-400',
+      bgColor: 'bg-blue-500/10',
+    },
+    {
+      label: 'Delivering',
+      value: '$30K+',
+      icon: Sparkles,
+      color: 'text-green-400',
+      bgColor: 'bg-green-500/10',
+    },
+    {
+      label: 'ROI',
+      value: '3x',
+      icon: TrendingUp,
+      color: 'text-purple-400',
+      bgColor: 'bg-purple-500/10',
+    },
+  ]
+
+  const deliverables = [
+    { item: '3 Working Integration POCs', value: '$10K+', description: 'Phantom, Jupiter, Marinade demos' },
+    { item: 'CLI v2 with Guided Wizard', value: '$5K+', description: 'Zero-friction developer onboarding' },
+    { item: 'Viewing Key Dashboard', value: '$8K+', description: 'Compliance demo for institutions' },
+    { item: 'Devnet Faucet Integration', value: '$3K+', description: 'Test private transfers instantly' },
+    { item: 'Technical Content + Community', value: '$4K+', description: 'Articles, threads, Discord (ongoing)' },
+  ]
+
+  return (
+    <section className="py-24 border-t border-gray-800/50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-green-500/10 text-green-400 border border-green-500/20"
+          >
+            <Sparkles className="w-4 h-4" />
+            3x Value Proposition
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="mt-6 text-3xl sm:text-4xl font-bold"
+          >
+            Request $10K, Deliver $30K
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.15 }}
+            className="mt-4 text-gray-400 max-w-2xl mx-auto"
+          >
+            We over-deliver. Technical deliverables are the real milestones — marketing is ongoing activity, not the goal.
+          </motion.p>
+        </div>
+
+        {/* ROI Cards */}
+        <div className="grid gap-6 sm:grid-cols-3 max-w-2xl mx-auto mb-12">
+          {valueItems.map((item, index) => (
+            <motion.div
+              key={item.label}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              className={`p-6 rounded-2xl ${item.bgColor} border border-gray-800 text-center`}
+            >
+              <item.icon className={`w-8 h-8 ${item.color} mx-auto mb-2`} />
+              <div className={`text-3xl font-bold ${item.color}`}>{item.value}</div>
+              <div className="text-sm text-gray-400">{item.label}</div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Deliverables Breakdown */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 p-6 rounded-2xl bg-gradient-to-r from-yellow-900/30 to-amber-900/30 border border-yellow-500/30"
+          className="max-w-3xl mx-auto p-6 rounded-2xl bg-gray-900/50 border border-gray-800"
         >
-          <Trophy className="w-10 h-10 text-yellow-400" />
-          <div className="text-center sm:text-left">
-            <div className="text-lg font-bold text-yellow-400">
-              Zypherpunk Hackathon Winner
-            </div>
-            <div className="text-sm text-gray-400">
-              NEAR Track - $4,000 Prize | December 2025
+          <h3 className="text-lg font-semibold mb-4 text-center">What You Get for $10K</h3>
+          <div className="space-y-3">
+            {deliverables.map((d, index) => (
+              <div key={d.item} className="flex items-center justify-between p-3 rounded-lg bg-gray-800/50">
+                <div>
+                  <div className="font-medium">{d.item}</div>
+                  <div className="text-xs text-gray-500">{d.description}</div>
+                </div>
+                <div className="text-green-400 font-semibold">{d.value}</div>
+              </div>
+            ))}
+            <div className="flex items-center justify-between p-3 rounded-lg bg-green-950/30 border border-green-500/20">
+              <div className="font-bold text-green-400">Total Value Delivered</div>
+              <div className="text-xl font-bold text-green-400">$30K+</div>
             </div>
           </div>
         </motion.div>
@@ -205,18 +384,18 @@ function ProblemSection() {
   const problems = [
     {
       icon: AlertTriangle,
-      title: 'Pool Mixing is Broken',
-      description: 'PrivacyCash and Tornado Cash use fixed pools. Amount correlation attacks can trace unique values through the pool.',
+      title: 'Pool Mixing Exposes Amounts',
+      description: 'Pool-based privacy solutions expose transaction amounts on-chain. Fixed pool sizes and visible amounts enable correlation attacks.',
     },
     {
       icon: TrendingUp,
-      title: 'Privacy Projects Failed',
-      description: 'Elusiv sunset in Feb 2024. Light Protocol pivoted to ZK Compression. The market has a vacuum — and PrivacyCash is filling it with outdated tech.',
+      title: 'Privacy Vacuum on Solana',
+      description: 'Elusiv sunset in Feb 2024. Light Protocol pivoted to ZK Compression. The market needs cryptographic privacy — not just pool mixing.',
     },
     {
       icon: Eye,
-      title: 'No Compliance Option',
-      description: 'Mixers have no viewing keys. No compliance = regulatory risk. DAOs and institutions can\'t use them.',
+      title: 'Limited Compliance Options',
+      description: 'Most privacy solutions lack viewing keys for selective disclosure. DAOs and institutions need compliance-ready privacy.',
     },
   ]
 
@@ -240,7 +419,7 @@ function ProblemSection() {
             transition={{ delay: 0.1 }}
             className="mt-6 text-3xl sm:text-4xl font-bold"
           >
-            Solana Privacy is Stuck in 2020
+            Solana Privacy Needs an Upgrade
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -249,7 +428,7 @@ function ProblemSection() {
             transition={{ delay: 0.15 }}
             className="mt-4 text-gray-400 max-w-2xl mx-auto"
           >
-            PrivacyCash is a Tornado Cash clone. Same architecture, same weaknesses, same regulatory risk. Solana deserves better.
+            Pool mixing exposes amounts. Cryptographic privacy hides everything. Solana deserves the next generation.
           </motion.p>
         </div>
 
@@ -359,10 +538,10 @@ function SolutionSection() {
 function CompetitionSection() {
   const comparison = [
     { feature: 'Privacy Method', sip: 'Cryptographic (Pedersen)', privacycash: 'Pool Mixing' },
-    { feature: 'Amount Privacy', sip: 'Any amount hidden', privacycash: 'Fixed pools only' },
-    { feature: 'Viewing Keys', sip: 'Yes (compliance)', privacycash: 'No' },
+    { feature: 'Amount Privacy', sip: 'Hidden (commitments)', privacycash: 'Visible on-chain' },
+    { feature: 'Viewing Keys', sip: 'Yes (native)', privacycash: 'Via integration' },
     { feature: 'Amount Correlation', sip: 'Impossible', privacycash: 'Vulnerable' },
-    { feature: 'Regulatory Risk', sip: 'Low (compliant)', privacycash: 'High (Tornado clone)' },
+    { feature: 'Pool Size Constraints', sip: 'None (any amount)', privacycash: 'Fixed sizes' },
     { feature: 'Cross-Chain', sip: 'Yes (NEAR Intents)', privacycash: 'No' },
   ]
 
@@ -415,6 +594,18 @@ function CompetitionSection() {
             </tbody>
           </table>
         </motion.div>
+
+        {/* Market context footnote */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+          className="mt-6 text-center text-sm text-gray-500 max-w-2xl mx-auto"
+        >
+          <span className="text-gray-400">Solana privacy landscape:</span> Elusiv sunset Feb 2024. Light Protocol pivoted to ZK compression.
+          PrivacyCash is currently the only active privacy solution on Solana — SIP brings cryptographic privacy to fill this gap.
+        </motion.p>
       </div>
     </section>
   )
@@ -491,9 +682,39 @@ function TractionSection() {
 
 function BudgetSection() {
   const budget = [
-    { category: 'Content Campaign', amount: '$4,500', percent: 45, icon: PenTool, detail: '8 articles + 15 Twitter threads → 50K+ impressions' },
-    { category: 'Community Building', amount: '$3,500', percent: 35, icon: MessageSquare, detail: 'Discord launch → 500+ members, dev relations' },
-    { category: 'Ecosystem Presentations', amount: '$2,000', percent: 20, icon: Megaphone, detail: '3 events + 5 dApp partnership LOIs' },
+    {
+      category: 'Integration POCs',
+      amount: '$4,000',
+      percent: 40,
+      icon: Code,
+      deliverables: [
+        '3 working integration POCs (Phantom, Jupiter, Marinade)',
+        'Each POC: functional demo, documentation, code samples',
+        'Proves SDK integration is friction-free',
+      ],
+    },
+    {
+      category: 'Developer Tools',
+      amount: '$3,500',
+      percent: 35,
+      icon: Terminal,
+      deliverables: [
+        'CLI v2 with guided setup wizard',
+        'Devnet faucet integration',
+        'Interactive getting-started experience',
+      ],
+    },
+    {
+      category: 'Compliance Demo',
+      amount: '$2,500',
+      percent: 25,
+      icon: Layers,
+      deliverables: [
+        'Viewing key dashboard (web app)',
+        'Compliance audit trail visualization',
+        'Institutional selling tool',
+      ],
+    },
   ]
 
   return (
@@ -525,11 +746,11 @@ function BudgetSection() {
             transition={{ delay: 0.15 }}
             className="mt-4 text-gray-400 max-w-2xl mx-auto"
           >
-            Narrative capture + community building for same-chain privacy expansion
+            100% allocated to technical deliverables. Marketing and community are ongoing activities, not budget items.
           </motion.p>
         </div>
 
-        <div className="max-w-2xl mx-auto space-y-4">
+        <div className="max-w-3xl mx-auto space-y-6">
           {budget.map((item, index) => (
             <motion.div
               key={item.category}
@@ -537,22 +758,31 @@ function BudgetSection() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="p-4 rounded-xl bg-gray-900/50 border border-gray-800"
+              className="p-6 rounded-xl bg-gray-900/50 border border-gray-800"
             >
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                    <item.icon className="w-5 h-5 text-blue-400" />
+                  <div className="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                    <item.icon className="w-6 h-6 text-blue-400" />
                   </div>
                   <div>
-                    <span className="font-medium">{item.category}</span>
-                    <div className="text-xs text-gray-500">{item.detail}</div>
+                    <span className="font-semibold text-lg">{item.category}</span>
+                    <div className="text-xs text-gray-500">{item.percent}% of budget</div>
                   </div>
                 </div>
-                <span className="text-blue-400 font-semibold">{item.amount}</span>
+                <span className="text-2xl font-bold text-blue-400">{item.amount}</span>
               </div>
+              {/* Deliverables list */}
+              <ul className="space-y-2 ml-15">
+                {item.deliverables.map((d) => (
+                  <li key={d} className="flex items-start gap-2 text-sm text-gray-400">
+                    <CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                    {d}
+                  </li>
+                ))}
+              </ul>
               {/* Progress bar */}
-              <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+              <div className="mt-4 h-2 bg-gray-800 rounded-full overflow-hidden">
                 <motion.div
                   initial={{ width: 0 }}
                   whileInView={{ width: `${item.percent}%` }}
@@ -565,16 +795,24 @@ function BudgetSection() {
           ))}
         </div>
 
-        {/* Total */}
+        {/* Total + Ongoing Activities */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-8 text-center"
+          className="mt-8 max-w-3xl mx-auto"
         >
-          <div className="inline-flex items-center gap-4 px-8 py-4 rounded-2xl bg-blue-500/10 border border-blue-500/20">
-            <span className="text-gray-400">Total Request</span>
-            <span className="text-3xl font-bold text-white">$10,000</span>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex-1 p-6 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-center">
+              <span className="text-gray-400">Total Request</span>
+              <div className="text-3xl font-bold text-white mt-1">$10,000</div>
+            </div>
+            <div className="flex-1 p-6 rounded-2xl bg-gray-900/50 border border-gray-800 text-center">
+              <span className="text-gray-400">Ongoing (No Budget)</span>
+              <div className="text-sm text-gray-500 mt-2">
+                Community Discord, Twitter content, ecosystem presentations — we do these anyway
+              </div>
+            </div>
           </div>
         </motion.div>
       </div>
@@ -586,26 +824,25 @@ function TimelineSection() {
   const milestones = [
     {
       month: 'Month 1',
-      title: 'Narrative Capture',
+      title: 'Integration POCs + Dev Tools',
       items: [
-        '5 technical articles (Medium, Mirror, dev.to)',
-        'Launch Discord server → 200+ member target',
-        '8 Twitter threads → 25K impressions target',
-        '2 ecosystem presentations (Superteam events)',
+        'Phantom wallet integration POC (working demo)',
+        'Jupiter DEX integration POC (private swap demo)',
+        'CLI v2 development: guided wizard, devnet faucet',
+        'Begin viewing key dashboard development',
       ],
-      kpis: ['25K Twitter impressions', '200 Discord members', '1K article reads'],
+      deliverables: ['2 working POCs', 'CLI v2 alpha'],
     },
     {
       month: 'Month 2',
-      title: 'Community Growth',
+      title: 'Completion + Ecosystem',
       items: [
-        '3 more articles + integration guides',
-        '7 more Twitter threads → 25K impressions',
-        'Discord grows → 500+ members with dev channels',
-        '5 dApp partnership LOIs (wallets, DEXs)',
-        '1 ecosystem presentation + demo day',
+        'Marinade/3rd integration POC',
+        'CLI v2 release with full documentation',
+        'Viewing key dashboard v1 (compliance demo)',
+        'Partnership outreach with POC demos',
       ],
-      kpis: ['50K total impressions', '500 Discord members', '5 dApp LOIs'],
+      deliverables: ['3rd POC', 'CLI v2 release', 'Dashboard v1'],
     },
   ]
 
@@ -619,7 +856,7 @@ function TimelineSection() {
             viewport={{ once: true }}
             className="text-3xl sm:text-4xl font-bold"
           >
-            2-Month Timeline with KPIs
+            2-Month Timeline
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -628,7 +865,7 @@ function TimelineSection() {
             transition={{ delay: 0.1 }}
             className="mt-4 text-gray-400"
           >
-            Measurable outcomes, not vanity metrics
+            Concrete deliverables, not vanity metrics
           </motion.p>
         </div>
 
@@ -652,13 +889,13 @@ function TimelineSection() {
                   </li>
                 ))}
               </ul>
-              {/* KPI targets */}
+              {/* Concrete deliverables */}
               <div className="mt-4 pt-4 border-t border-gray-700/50">
-                <div className="text-xs text-gray-500 mb-2 font-medium">Success Metrics:</div>
+                <div className="text-xs text-gray-500 mb-2 font-medium">Shipped:</div>
                 <div className="flex flex-wrap gap-2">
-                  {milestone.kpis.map((kpi) => (
-                    <span key={kpi} className="px-2 py-1 text-xs bg-green-500/10 text-green-400 rounded-full border border-green-500/20">
-                      {kpi}
+                  {milestone.deliverables.map((d) => (
+                    <span key={d} className="px-2 py-1 text-xs bg-green-500/10 text-green-400 rounded-full border border-green-500/20">
+                      {d}
                     </span>
                   ))}
                 </div>
@@ -666,47 +903,25 @@ function TimelineSection() {
             </motion.div>
           ))}
         </div>
+
+        {/* What's NOT a milestone */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-8 max-w-3xl mx-auto p-4 rounded-xl bg-gray-900/30 border border-gray-800/50 text-center"
+        >
+          <div className="text-sm text-gray-500">
+            <strong className="text-gray-400">Ongoing activities (not milestones):</strong> Discord community, Twitter threads, ecosystem presentations.
+            These happen regardless — we don&apos;t gate success on social metrics.
+          </div>
+        </motion.div>
       </div>
     </section>
   )
 }
 
-function CommunityStrategySection() {
-  const platforms = [
-    {
-      name: 'Discord',
-      role: 'Primary Hub',
-      icon: MessageSquare,
-      color: 'from-indigo-500 to-purple-500',
-      borderColor: 'border-indigo-500/20',
-      bgColor: 'bg-indigo-500/10',
-      textColor: 'text-indigo-400',
-      features: [
-        'Developer support & technical discussions',
-        'Integration partner onboarding',
-        'Real-time community engagement',
-        'Dedicated channels: #dev-support, #integrations, #announcements',
-      ],
-      target: '500+ members by Month 2',
-    },
-    {
-      name: 'Twitter/X',
-      role: 'Reach & Awareness',
-      icon: Twitter,
-      color: 'from-sky-500 to-blue-500',
-      borderColor: 'border-sky-500/20',
-      bgColor: 'bg-sky-500/10',
-      textColor: 'text-sky-400',
-      features: [
-        'Technical threads & educational content',
-        'Ecosystem announcements & partnerships',
-        'Privacy advocacy & thought leadership',
-        'Cross-promotion with Solana ecosystem',
-      ],
-      target: '50K+ impressions by Month 2',
-    },
-  ]
-
+function FounderSection() {
   return (
     <section className="py-24 border-t border-gray-800/50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -717,8 +932,8 @@ function CommunityStrategySection() {
             viewport={{ once: true }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20"
           >
-            <Users className="w-4 h-4" />
-            Community Strategy
+            <Code className="w-4 h-4" />
+            The Founder
           </motion.span>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -727,105 +942,79 @@ function CommunityStrategySection() {
             transition={{ delay: 0.1 }}
             className="mt-6 text-3xl sm:text-4xl font-bold"
           >
-            Discord + Twitter: Developer-First Approach
+            Built by a Developer, for Developers
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.15 }}
-            className="mt-4 text-gray-400 max-w-2xl mx-auto"
+            className="mt-4 text-gray-400"
           >
-            Discord for deep developer engagement. Twitter for reach and ecosystem visibility.
+            {TEST_COUNTS.totalDisplay} tests don&apos;t write themselves.
           </motion.p>
         </div>
 
-        <div className="max-w-4xl mx-auto grid gap-6 md:grid-cols-2">
-          {platforms.map((platform, index) => (
-            <motion.div
-              key={platform.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className={`p-6 rounded-2xl bg-gray-900/50 border ${platform.borderColor}`}
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <div className={`w-12 h-12 rounded-xl ${platform.bgColor} flex items-center justify-center`}>
-                  <platform.icon className={`w-6 h-6 ${platform.textColor}`} />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold">{platform.name}</h3>
-                  <div className={`text-sm ${platform.textColor}`}>{platform.role}</div>
-                </div>
-              </div>
-              <ul className="space-y-2 mb-4">
-                {platform.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-2 text-sm text-gray-400">
-                    <CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-              <div className={`mt-4 px-3 py-2 rounded-lg ${platform.bgColor} ${platform.textColor} text-sm font-medium text-center`}>
-                Target: {platform.target}
-              </div>
-            </motion.div>
-          ))}
-        </div>
+        <FounderProfile />
       </div>
     </section>
   )
 }
 
-function TeamSection() {
+function VideoDemoSection() {
   return (
-    <section className="py-24 border-t border-gray-800/50">
+    <section className="py-16 border-t border-gray-800/50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl sm:text-4xl font-bold"
+            className="text-2xl sm:text-3xl font-bold"
           >
-            Built by Developers, for Developers
+            See SIP in Action
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="mt-4 text-gray-400"
+            className="mt-2 text-gray-400"
           >
-            Passionate about privacy and open source
+            2-minute demo of cryptographic privacy on Solana
           </motion.p>
         </div>
+        <VideoDemo caption="Watch how SIP enables private transactions with viewing keys for compliance" />
+      </div>
+    </section>
+  )
+}
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="max-w-xl mx-auto p-8 rounded-2xl bg-gray-900/50 border border-gray-800 text-center"
-        >
-          <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mb-4">
-            <Users className="w-10 h-10 text-white" />
-          </div>
-          <h3 className="text-xl font-semibold">SIP Protocol Team</h3>
-          <p className="mt-2 text-gray-400">
-            Full-stack developers with experience in cryptography, blockchain, and privacy-preserving technologies.
-          </p>
-          <div className="mt-6 flex justify-center gap-4">
-            <a
-              href="https://github.com/sip-protocol"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors"
-            >
-              <Github className="w-5 h-5" />
-            </a>
-          </div>
-        </motion.div>
+function SocialProofSection() {
+  return (
+    <section className="py-16 border-t border-gray-800/50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20"
+          >
+            <Eye className="w-4 h-4" />
+            Why Privacy Matters
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="mt-6 text-2xl sm:text-3xl font-bold"
+          >
+            The Cost of Transparent Wallets
+          </motion.h2>
+        </div>
+        <ZachXBTTweet />
       </div>
     </section>
   )
@@ -843,10 +1032,10 @@ function CTASection() {
           </div>
 
           <div className="px-8 py-16 sm:px-16 text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold">Ready to Support Privacy?</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold">$10K Investment → $30K Value</h2>
             <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
-              Help us establish SIP as the privacy standard for Solana. Your support accelerates
-              adoption and brings compliant privacy to millions of users.
+              Working integration POCs. Developer tools. Compliance dashboard.
+              Real deliverables, not social media metrics.
             </p>
 
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
