@@ -58,6 +58,7 @@ interface FounderProfileProps {
   bio?: string
   github?: string
   twitter?: string
+  twitterProject?: string
   website?: string
   stats?: {
     repositories: number
@@ -98,6 +99,7 @@ const defaultConfig: FounderProfileProps = {
   bio: 'Building the privacy standard for Web3. Blockchain architect with $10,800+ in hackathon wins (2024-2025) including MonkeDAO, Zypherpunk, and Superteam. 5,600+ contributions across 170 repos. Focused on cryptographic privacy, cross-chain infrastructure, and high-performance systems. Privacy is a right, not a feature.',
   github: 'https://github.com/rz1989s',
   twitter: 'https://x.com/rz1989s',
+  twitterProject: 'https://x.com/sipprotocol',
   website: 'https://rectorspace.com',
   stats: {
     repositories: 33,
@@ -242,13 +244,27 @@ export function FounderProfile(props: FounderProfileProps = {}) {
                     <GitHubIcon className="h-4 w-4" />
                   </a>
                 )}
+                {config.twitterProject && (
+                  <a
+                    href={config.twitterProject}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center h-9 px-3 rounded-full bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white transition-colors gap-1.5"
+                    aria-label="SIP Protocol Twitter"
+                    title="@sipprotocol"
+                  >
+                    <XIcon className="h-4 w-4" />
+                    <span className="text-xs font-medium">SIP</span>
+                  </a>
+                )}
                 {config.twitter && (
                   <a
                     href={config.twitter}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center h-9 w-9 rounded-full bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white transition-colors"
-                    aria-label="Twitter / X"
+                    aria-label="Personal Twitter"
+                    title="@rz1989s"
                   >
                     <XIcon className="h-4 w-4" />
                   </a>
