@@ -18,6 +18,7 @@ const navLinks = [
   { href: '/demo', label: 'Demo' },
   { href: '/sdk', label: 'SDK' },
   { href: 'https://docs.sip-protocol.org', label: 'Docs', external: true },
+  { href: 'https://blog.sip-protocol.org', label: 'Blog', external: true },
   { href: '/about', label: 'About' },
 ]
 
