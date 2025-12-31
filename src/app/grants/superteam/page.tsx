@@ -53,6 +53,7 @@ export default function SuperteamPitchPage() {
       <BudgetSection />
       <TimelineSection />
       <FounderSection />
+      <CommitmentsSection />
       <CTASection />
     </>
   )
@@ -85,15 +86,19 @@ function HeroSection() {
         </motion.div>
 
         <div className="text-center">
-          {/* Badge */}
+          {/* Badges */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
+            className="flex flex-wrap justify-center gap-3"
           >
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
               <DollarSign className="w-4 h-4" />
               Instagrant Application
+            </span>
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-red-500/10 text-red-400 border border-red-500/20">
+              🇮🇩 Indonesian Founder
             </span>
           </motion.div>
 
@@ -1015,6 +1020,87 @@ function SocialProofSection() {
           </motion.h2>
         </div>
         <ZachXBTTweet />
+      </div>
+    </section>
+  )
+}
+
+function CommitmentsSection() {
+  const commitments = [
+    {
+      icon: Github,
+      title: '100% Open Source',
+      description: 'MIT licensed. All code published to github.com/sip-protocol. Fork it, audit it, build on it.',
+      badge: 'MIT License',
+    },
+    {
+      icon: FileText,
+      title: 'Weekly Progress Updates',
+      description: 'Transparent development. Weekly updates to Superteam Indonesia community on progress and milestones.',
+      badge: 'Every Week',
+    },
+    {
+      icon: CheckCircle2,
+      title: 'Milestone-Based Delivery',
+      description: 'Concrete deliverables, not vanity metrics. Release unlocks after each milestone completion.',
+      badge: 'Accountable',
+    },
+  ]
+
+  return (
+    <section className="py-24 border-t border-gray-800/50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-green-500/10 text-green-400 border border-green-500/20"
+          >
+            <CheckCircle2 className="w-4 h-4" />
+            Our Commitments
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="mt-6 text-3xl sm:text-4xl font-bold"
+          >
+            Transparent & Accountable
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.15 }}
+            className="mt-4 text-gray-400 max-w-2xl mx-auto"
+          >
+            We believe in building in public. Here&apos;s what we commit to:
+          </motion.p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-3 max-w-4xl mx-auto">
+          {commitments.map((item, index) => (
+            <motion.div
+              key={item.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              className="p-6 rounded-2xl bg-green-950/20 border border-green-500/20 text-center"
+            >
+              <div className="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center mx-auto mb-4">
+                <item.icon className="w-6 h-6 text-green-400" />
+              </div>
+              <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-400 mb-3">
+                {item.badge}
+              </span>
+              <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+              <p className="text-sm text-gray-400">{item.description}</p>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   )
