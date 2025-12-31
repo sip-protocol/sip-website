@@ -15,7 +15,7 @@ import {
   Package
 } from 'lucide-react'
 import Link from 'next/link'
-import { TEST_COUNTS, PROJECT_STATUS, ACHIEVEMENTS } from '@/lib/constants'
+import { TEST_COUNTS, PROJECT_STATUS } from '@/lib/constants'
 import { FounderProfile } from '@/components/founder-profile'
 import { ALL_PHASES, getCompletedMilestoneCount, getTotalMilestoneCount } from '@/lib/data'
 
@@ -414,16 +414,8 @@ function TeamSection() {
           </p>
         </div>
 
-        {/* Use the rich FounderProfile component */}
-        <FounderProfile
-          stats={{
-            repositories: 27,
-            stars: 206,
-            followers: 26,
-            commits: 4500,
-            badge: `${TEST_COUNTS.totalDisplay} Tests`,
-          }}
-        />
+        {/* Use the rich FounderProfile component - uses default config for consistency */}
+        <FounderProfile />
 
         {/* Join the team CTA */}
         <div className="mt-12 text-center">
