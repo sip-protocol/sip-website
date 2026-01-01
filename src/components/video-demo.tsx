@@ -4,8 +4,9 @@ import { motion } from 'framer-motion'
 import { useState, useRef } from 'react'
 import { Play, Pause, Maximize, Volume2, VolumeX } from 'lucide-react'
 
-// CDN video URL
-const CDN_VIDEO_URL = 'https://cdn.sip-protocol.org/videos/sip-demo.mp4'
+// CDN video URL with cache-bust for re-encoded version
+const CDN_VIDEO_URL = 'https://cdn.sip-protocol.org/videos/sip-demo.mp4?v=2'
+const CDN_POSTER_URL = 'https://cdn.sip-protocol.org/videos/sip-demo-poster.jpg'
 
 interface VideoConfig {
   youtubeId?: string
@@ -18,6 +19,7 @@ interface VideoConfig {
 const defaultVideoConfig: VideoConfig = {
   selfHostedUrl: CDN_VIDEO_URL,
   title: 'SIP Protocol Demo',
+  poster: CDN_POSTER_URL,
 }
 
 interface VideoDemoProps {
