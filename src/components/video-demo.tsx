@@ -120,7 +120,7 @@ function SelfHostedVideo({
               src={url}
               title={title || 'Video Demo'}
               poster={poster}
-              className="absolute inset-0 w-full h-full object-cover cursor-pointer"
+              className="absolute inset-0 w-full h-full object-contain cursor-pointer"
               onClick={togglePlay}
               onPlay={() => setIsPlaying(true)}
               onPause={() => setIsPlaying(false)}
