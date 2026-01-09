@@ -52,6 +52,7 @@ export default function SuperteamPitchPage() {
       <SocialProofSection />
       <BudgetSection />
       <TimelineSection />
+      <SuccessMetricsSection />
       <FounderSection />
       <CommitmentsSection />
       <CTASection />
@@ -302,7 +303,7 @@ function ValuePropositionSection() {
     { item: 'CLI v2 with Guided Wizard', value: '$5K+', description: 'Zero-friction developer onboarding' },
     { item: 'Viewing Key Dashboard', value: '$8K+', description: 'Compliance demo for institutions' },
     { item: 'Devnet Faucet Integration', value: '$3K+', description: 'Test private transfers instantly' },
-    { item: 'Technical Content + Community', value: '$4K+', description: 'Articles, threads, Discord (ongoing)' },
+    { item: 'Technical Content + Community', value: '$4K+', description: 'Articles, threads, Discourse forum (self-hosted)' },
   ]
 
   return (
@@ -815,7 +816,7 @@ function BudgetSection() {
             <div className="flex-1 p-6 rounded-2xl bg-gray-900/50 border border-gray-800 text-center">
               <span className="text-gray-400">Ongoing (No Budget)</span>
               <div className="text-sm text-gray-500 mt-2">
-                Community Discord, Twitter content, ecosystem presentations — we do these anyway
+                Discourse forum (self-hosted), Twitter content, ecosystem presentations — we do these anyway
               </div>
             </div>
           </div>
@@ -917,9 +918,159 @@ function TimelineSection() {
           className="mt-8 max-w-3xl mx-auto p-4 rounded-xl bg-gray-900/30 border border-gray-800/50 text-center"
         >
           <div className="text-sm text-gray-500">
-            <strong className="text-gray-400">Ongoing activities (not milestones):</strong> Discord community, Twitter threads, ecosystem presentations.
+            <strong className="text-gray-400">Ongoing activities (not milestones):</strong> Discourse forum (self-hosted), Twitter threads, ecosystem presentations.
             These happen regardless — we don&apos;t gate success on social metrics.
           </div>
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
+function SuccessMetricsSection() {
+  const tranches = [
+    {
+      id: 'T1',
+      payment: '$3,000',
+      percent: '30%',
+      timeline: 'Month 1',
+      deliverables: ['Phantom wallet POC', 'Jupiter DEX POC', 'CLI v2 beta'],
+      metrics: [
+        { label: 'X Followers', current: '100', target: '250', growth: '+150' },
+        { label: 'GitHub Stars', current: '1', target: '30', growth: '+29' },
+        { label: 'npm Downloads/wk', current: '217', target: '500', growth: '+283' },
+        { label: 'Discourse Members', current: '0', target: '100', growth: '+100' },
+        { label: 'Blog Views', current: '0', target: '1,000', growth: '+1,000' },
+      ],
+    },
+    {
+      id: 'T2',
+      payment: '$3,000',
+      percent: '30%',
+      timeline: 'Month 2',
+      deliverables: ['Marinade POC', 'CLI v2 full release', 'Documentation'],
+      metrics: [
+        { label: 'X Followers', current: '250', target: '500', growth: '+250' },
+        { label: 'GitHub Stars', current: '30', target: '60', growth: '+30' },
+        { label: 'npm Downloads/wk', current: '500', target: '800', growth: '+300' },
+        { label: 'Discourse Members', current: '100', target: '250', growth: '+150' },
+        { label: 'Blog Views', current: '1,000', target: '2,500', growth: '+1,500' },
+      ],
+    },
+    {
+      id: 'T3',
+      payment: '$4,000',
+      percent: '40%',
+      timeline: 'Completion',
+      deliverables: ['Viewing Key Dashboard v1', 'Partnership outreach', '3 dApp LOIs'],
+      metrics: [
+        { label: 'X Followers', current: '500', target: '800', growth: '+300' },
+        { label: 'GitHub Stars', current: '60', target: '100', growth: '+40' },
+        { label: 'npm Downloads/wk', current: '800', target: '1,000', growth: '+200' },
+        { label: 'Discourse Members', current: '250', target: '400', growth: '+150' },
+        { label: 'Blog Views', current: '2,500', target: '4,000', growth: '+1,500' },
+      ],
+    },
+  ]
+
+  return (
+    <section className="py-24 border-t border-gray-800/50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-cyan-500/10 text-cyan-400 border border-cyan-500/20"
+          >
+            <Target className="w-4 h-4" />
+            Success Metrics
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="mt-6 text-3xl sm:text-4xl font-bold"
+          >
+            Tranche-Based Funding
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.15 }}
+            className="mt-4 text-gray-400 max-w-2xl mx-auto"
+          >
+            Payment released upon hitting deliverables AND traction targets. 30% → 30% → 40% structure.
+          </motion.p>
+        </div>
+
+        <div className="space-y-8 max-w-4xl mx-auto">
+          {tranches.map((tranche, index) => (
+            <motion.div
+              key={tranche.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              className="p-6 rounded-2xl bg-gray-900/50 border border-gray-800"
+            >
+              {/* Header */}
+              <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <div className="flex items-center gap-3">
+                  <span className="px-3 py-1 rounded-lg bg-cyan-500/20 text-cyan-400 font-bold text-sm">
+                    {tranche.id}
+                  </span>
+                  <span className="text-gray-400">{tranche.timeline}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl font-bold text-white">{tranche.payment}</span>
+                  <span className="text-sm text-gray-500">({tranche.percent})</span>
+                </div>
+              </div>
+
+              {/* Deliverables */}
+              <div className="mb-6">
+                <div className="text-xs text-gray-500 uppercase tracking-wider mb-2">Deliverables</div>
+                <div className="flex flex-wrap gap-2">
+                  {tranche.deliverables.map((d) => (
+                    <span key={d} className="px-3 py-1 text-sm bg-green-500/10 text-green-400 rounded-full border border-green-500/20">
+                      {d}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Metrics Table */}
+              <div>
+                <div className="text-xs text-gray-500 uppercase tracking-wider mb-2">Traction Targets</div>
+                <div className="grid gap-2">
+                  {tranche.metrics.map((m) => (
+                    <div key={m.label} className="flex items-center justify-between p-2 rounded-lg bg-gray-800/50">
+                      <span className="text-sm text-gray-400">{m.label}</span>
+                      <div className="flex items-center gap-4 text-sm">
+                        <span className="text-gray-500">{m.current}</span>
+                        <ArrowRight className="w-3 h-3 text-gray-600" />
+                        <span className="text-white font-medium">{m.target}</span>
+                        <span className="text-cyan-400 text-xs">({m.growth})</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Current baseline note */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="mt-8 text-center text-sm text-gray-500"
+        >
+          <strong className="text-gray-400">Current baseline (Jan 2026):</strong> 100 X followers, 1 GitHub star, 217 npm downloads/week
         </motion.div>
       </div>
     </section>

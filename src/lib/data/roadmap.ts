@@ -195,7 +195,7 @@ export const PHASE_4: Phase = {
       title: 'Narrative Capture',
       description: 'Content campaign, community building, competitive positioning vs PrivacyCash',
       status: 'in-progress',
-      highlights: ['8 technical articles', '15 Twitter threads', 'Discord 500+ members', '5 dApp LOIs'],
+      highlights: ['8 technical articles', '15 Twitter threads', 'Discourse 500+ members', '5 dApp LOIs'],
       githubIssue: 384,
     },
     {
