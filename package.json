@@ -37,7 +37,7 @@
     "zustand": "^4.5.7"
   },
   "devDependencies": {
-    "@ledgerhq/hw-app-eth": "^6.47.1",
+    "@ledgerhq/hw-app-eth": "^7.1.1",
     "@ledgerhq/hw-app-solana": "^7.6.2",
     "@ledgerhq/hw-transport-webhid": "^6.30.11",
     "@ledgerhq/hw-transport-webusb": "^6.29.15",
