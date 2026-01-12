@@ -62,18 +62,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <head>
+      <body
+        className={`${inter.variable} ${jetbrainsMono.variable} font-sans bg-gray-950 text-white antialiased`}
+      >
         {/* Umami Analytics (self-hosted, privacy-first) */}
         <Script
-          defer
           src="https://analytics.sip-protocol.org/script.js"
           data-website-id="ad016e04-ff09-4cf0-be5d-6c4de4bda1b9"
           strategy="afterInteractive"
         />
-      </head>
-      <body
-        className={`${inter.variable} ${jetbrainsMono.variable} font-sans bg-gray-950 text-white antialiased`}
-      >
         <Providers>
           <Header />
           <main className="min-h-screen pt-16">
