@@ -24,8 +24,8 @@ importers:
         specifier: ^10.1.4
         version: 10.1.4(3c1190d6e9e593fe008c6032e5491008)
       '@sip-protocol/sdk':
-        specifier: 0.7.2
-        version: 0.7.2(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)
+        specifier: 0.7.3
+        version: 0.7.3(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)
       '@sip-protocol/types':
         specifier: 0.2.1
         version: 0.2.1
@@ -1147,8 +1147,8 @@ packages:
   '@sinclair/typebox@0.33.22':
     resolution: {integrity: sha512-auUj4k+f4pyrIVf4GW5UKquSZFHJWri06QgARy9C0t9ZTjJLIuNIrr1yl9bWcJWJ1Gz1vOvYN1D+QPaIlNMVkQ==}
 
-  '@sip-protocol/sdk@0.7.2':
-    resolution: {integrity: sha512-MhBYu79sXyqx6SP3PHh+opb3lbkpv02HHmVDM/8eAPLXK+BETo0HaN99cSv37umDrrXCoxUjWRaRnB06rmkcIw==}
+  '@sip-protocol/sdk@0.7.3':
+    resolution: {integrity: sha512-b1aWFNG0TyzhHcIk5wJhvf9sKgmW5y2uVKUtXNmSsBlwTOLnIr75pTMVXcTF4Ri3RhkTTlq9GT1eBHkYyuM6Vg==}
 
   '@sip-protocol/types@0.2.1':
     resolution: {integrity: sha512-wDX8T2Oav9NzyZbNxiA+u6E/BvSk34ylaCyhj+LMDL3NMJ2RFc2Sud65+DjFGImVPpym4LH8Hpi/et2OLCfJ6Q==}
@@ -5681,7 +5681,7 @@ snapshots:
 
   '@scure/bip32@1.7.0':
     dependencies:
-      '@noble/curves': 1.9.7
+      '@noble/curves': 1.9.0
       '@noble/hashes': 1.8.0
       '@scure/base': 1.2.6
 
@@ -5692,7 +5692,7 @@ snapshots:
 
   '@sinclair/typebox@0.33.22': {}
 
-  '@sip-protocol/sdk@0.7.2(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)':
+  '@sip-protocol/sdk@0.7.3(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)':
     dependencies:
       '@aztec/bb.js': 3.0.0-nightly.20251104
       '@ethereumjs/rlp': 10.1.0
