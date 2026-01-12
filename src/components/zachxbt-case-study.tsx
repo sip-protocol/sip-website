@@ -287,7 +287,7 @@ export function ZachXBTCaseStudy() {
             {/* Link to ZachXBT profile */}
             <div className="text-center">
               <a
-                href="https://twitter.com/zachxbt"
+                href="https://x.com/zachxbt"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-purple-400 transition-colors"
