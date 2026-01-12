@@ -3,7 +3,32 @@
 > **Ecosystem Hub:** See [sip-protocol/CLAUDE.md](https://github.com/sip-protocol/sip-protocol/blob/main/CLAUDE.md) for full ecosystem context
 
 **Repository:** https://github.com/sip-protocol/sip-website
-**Purpose:** Demo application + Marketing website for SIP Protocol
+**Purpose:** Marketing website for SIP Protocol (demo pages deprecated → sip-app)
+
+---
+
+## DEPRECATION NOTICE
+
+**Demo/POC pages are migrating to `app.sip-protocol.org` (sip-app repo):**
+
+| Deprecated Page | New Location | Status |
+|-----------------|--------------|--------|
+| `/demo` | `app.sip-protocol.org/dex` | Pending |
+| `/demo/toggle-*` | DELETE (internal testing) | Pending |
+| `/claim` | `app.sip-protocol.org/payments/receive` | Pending |
+| `/phantom-poc` | `app.sip-protocol.org/wallet` | Pending |
+| `/jupiter-poc` | `app.sip-protocol.org/dex/jupiter` | Pending |
+| `/compliance-dashboard` | `app.sip-protocol.org/enterprise/compliance` | Pending |
+
+**Keep in sip-website (marketing):**
+- `/` - Landing page
+- `/sdk` - SDK showcase
+- `/grants/*` - Grant pitch pages
+- `/pitch-deck` - Investor deck
+- `/about` - Team page
+- `/features` - Feature comparison
+- `/roadmap` - Public roadmap
+- `/privacy`, `/terms`, `/license`, `/security` - Legal pages
 
 ---
 
