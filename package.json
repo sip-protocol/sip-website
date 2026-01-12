@@ -30,7 +30,7 @@
     "framer-motion": "^11.18.2",
     "lucide-react": "^0.562.0",
     "near-api-js": "^6.5.1",
-    "next": "^14.2.33",
+    "next": "^16.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-syntax-highlighter": "^16.1.0",
