@@ -6,7 +6,8 @@ import { DemoPage } from '../pages/demo.page'
  * Tests privacy level switching and UI updates
  */
 
-test.describe('Privacy Toggle', () => {
+// SKIPPED: The /demo page has been deprecated and migrated to sip-app. See: https://github.com/sip-protocol/sip-website/issues/156
+test.describe.skip('Privacy Toggle', () => {
   let demoPage: DemoPage
 
   test.beforeEach(async ({ page }) => {

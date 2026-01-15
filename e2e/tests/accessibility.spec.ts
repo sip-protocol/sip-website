@@ -6,7 +6,8 @@ import { DemoPage } from '../pages/demo.page'
  * Tests keyboard navigation, ARIA attributes, focus management, and screen reader support
  */
 
-test.describe('Accessibility', () => {
+// SKIPPED: The /demo page has been deprecated and migrated to sip-app. See: https://github.com/sip-protocol/sip-website/issues/156
+test.describe.skip('Accessibility', () => {
   let demoPage: DemoPage
 
   test.beforeEach(async ({ page }) => {

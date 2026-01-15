@@ -4,9 +4,13 @@ import { DemoPage } from '../pages/demo.page'
 /**
  * Flow 1: Wallet Connection Tests
  * Tests wallet UI states with mocked wallet providers
+ *
+ * SKIPPED: The /demo page has been deprecated and migrated to sip-app.
+ * These tests should be moved to the sip-app E2E suite.
+ * See: https://github.com/sip-protocol/sip-website/issues/156
  */
 
-test.describe('Wallet Connection', () => {
+test.describe.skip('Wallet Connection', () => {
   let demoPage: DemoPage
 
   test.beforeEach(async ({ page }) => {
