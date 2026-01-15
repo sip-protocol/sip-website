@@ -1,6 +1,49 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+/* Theme customization for SIP Protocol */
+@theme {
+  /* SIP brand colors */
+  --color-sip-purple-50: #f5f3ff;
+  --color-sip-purple-100: #ede9fe;
+  --color-sip-purple-500: #8b5cf6;
+  --color-sip-purple-600: #7c3aed;
+  --color-sip-purple-700: #6d28d9;
+  --color-sip-purple-900: #4c1d95;
+  --color-sip-green-400: #4ade80;
+  --color-sip-green-500: #22c55e;
+
+  /* Font family */
+  --font-family-mono: var(--font-mono), monospace;
+
+  /* Transaction flow animations - 6 second cycle (4 steps x 1.5s) */
+  --animate-flow-sender: flow-step-red 6s ease-in-out infinite;
+  --animate-flow-pool: flow-step-red 6s ease-in-out infinite 1.5s;
+  --animate-flow-refund: flow-step-red 6s ease-in-out infinite 3s;
+  --animate-flow-arrow1: flow-arrow-red 6s ease-in-out infinite 1.5s;
+  --animate-flow-arrow2: flow-arrow-red 6s ease-in-out infinite 3s;
+  --animate-flow-sender-green: flow-step-green 6s ease-in-out infinite;
+  --animate-flow-pool-green: flow-step-green 6s ease-in-out infinite 1.5s;
+  --animate-flow-refund-green: flow-step-green 6s ease-in-out infinite 3s;
+  --animate-flow-arrow1-green: flow-arrow-green 6s ease-in-out infinite 1.5s;
+  --animate-flow-arrow2-green: flow-arrow-green 6s ease-in-out infinite 3s;
+
+  @keyframes flow-step-red {
+    0%, 20% { box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.5); }
+    25%, 100% { box-shadow: none; }
+  }
+  @keyframes flow-step-green {
+    0%, 20% { box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.5); }
+    25%, 100% { box-shadow: none; }
+  }
+  @keyframes flow-arrow-red {
+    0%, 20% { transform: scale(1.25); color: rgb(248, 113, 113); }
+    25%, 100% { transform: scale(1); color: rgb(75, 85, 99); }
+  }
+  @keyframes flow-arrow-green {
+    0%, 20% { transform: scale(1.25); color: rgb(74, 222, 128); }
+    25%, 100% { transform: scale(1); color: rgb(75, 85, 99); }
+  }
+}
 
 :root {
   --background: 0 0% 3%;
