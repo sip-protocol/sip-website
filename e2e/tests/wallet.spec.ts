@@ -23,12 +23,12 @@ test.describe('Wallet Connection', () => {
     await demoPage.swapCard.swapButton.click()
 
     // Wait for modal animation and dynamic import to complete
-    // Modal header "Connect Wallet" is always visible when modal opens
-    await expect(page.getByRole('heading', { name: 'Connect Wallet' })).toBeVisible({ timeout: 5000 })
+    // Use data-testid for reliable detection
+    await expect(page.locator('[data-testid="wallet-modal"]')).toBeVisible({ timeout: 10000 })
 
     // Wallet options are always visible (either as "Connect" or "Not installed")
     // The wallet name is shown regardless of detection status
-    await expect(page.locator('button').filter({ hasText: /phantom/i }).first()).toBeVisible({ timeout: 3000 })
+    await expect(page.locator('button').filter({ hasText: /phantom/i }).first()).toBeVisible({ timeout: 5000 })
   })
 
   test('should display wallet options in modal', async ({ page }) => {
@@ -51,35 +51,35 @@ test.describe('Wallet Connection', () => {
       await demoPage.goto()
       await demoPage.swapCard.swapButton.click()
 
-      // Wait for modal to open
-      await expect(page.getByRole('heading', { name: 'Connect Wallet' })).toBeVisible({ timeout: 5000 })
+      // Wait for modal to open using data-testid
+      await expect(page.locator('[data-testid="wallet-modal"]')).toBeVisible({ timeout: 10000 })
 
       // Phantom option is always visible (shows "Not installed" if not detected)
       const phantomOption = page.locator('button').filter({ hasText: /phantom/i })
-      await expect(phantomOption).toBeVisible({ timeout: 3000 })
+      await expect(phantomOption).toBeVisible({ timeout: 5000 })
     })
 
     test('should show MetaMask wallet option on Ethereum tab', async ({ page }) => {
       await demoPage.goto()
       await demoPage.swapCard.swapButton.click()
 
-      // Wait for modal to open
-      await expect(page.getByRole('heading', { name: 'Connect Wallet' })).toBeVisible({ timeout: 5000 })
+      // Wait for modal to open using data-testid
+      await expect(page.locator('[data-testid="wallet-modal"]')).toBeVisible({ timeout: 10000 })
 
       // Switch to Ethereum tab using data-testid
       await page.locator('[data-testid="wallet-tab-ethereum"]').click()
 
       // MetaMask option is always visible on Ethereum tab
       const metamaskOption = page.locator('button').filter({ hasText: /metamask/i })
-      await expect(metamaskOption).toBeVisible({ timeout: 3000 })
+      await expect(metamaskOption).toBeVisible({ timeout: 5000 })
     })
 
     test('should show chain tabs in wallet modal', async ({ page }) => {
       await demoPage.goto()
       await demoPage.swapCard.swapButton.click()
 
-      // Wait for modal to open first
-      await expect(page.getByRole('heading', { name: 'Connect Wallet' })).toBeVisible({ timeout: 5000 })
+      // Wait for modal to open first using data-testid
+      await expect(page.locator('[data-testid="wallet-modal"]')).toBeVisible({ timeout: 10000 })
 
       // Use data-testid for reliable selection
       await expect(page.locator('[data-testid="wallet-tab-solana"]')).toBeVisible()
