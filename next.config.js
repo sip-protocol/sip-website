@@ -12,6 +12,10 @@ try {
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+  eslint: {
+    // Use flat config file
+    ignoreDuringBuilds: false,
+  },
   images: {
     remotePatterns: [
       {

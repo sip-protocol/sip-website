@@ -185,6 +185,7 @@ export default function JupiterPOCPage() {
     } finally {
       setIsLoadingQuote(false)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- generatePrivacyLayer is stable, page deprecated (see #156)
   }, [amount, fromToken, toToken, privacyEnabled])
 
   // Generate privacy layer (stealth address)
