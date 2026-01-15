@@ -39,7 +39,7 @@ export default function PitchDeckPage() {
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              href="/demo"
+              href="https://app.sip-protocol.org/dex"
               className="px-8 py-3 text-base font-medium text-white bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all"
             >
               Try Live Demo
@@ -488,7 +488,7 @@ export default function PitchDeckPage() {
               description="Guides & API reference"
             />
             <LinkCard
-              href="/demo"
+              href="https://app.sip-protocol.org/dex"
               icon="🎮"
               title="Live Demo"
               description="Try it yourself"
@@ -534,7 +534,7 @@ export default function PitchDeckPage() {
               Get Started
             </a>
             <Link
-              href="/demo"
+              href="https://app.sip-protocol.org/dex"
               className="px-8 py-4 text-lg font-medium text-gray-300 border border-gray-700 rounded-lg hover:border-gray-500 hover:text-white transition-colors"
             >
               Try Demo First

@@ -314,7 +314,7 @@ function DeepDiveCard({
           {/* Try it link */}
           <div className="flex justify-center">
             <a
-              href="/demo"
+              href="https://app.sip-protocol.org/dex"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/20 hover:bg-purple-500/20 transition-colors text-sm"
             >
               <span>🎮</span>

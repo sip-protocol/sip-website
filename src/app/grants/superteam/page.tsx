@@ -178,7 +178,7 @@ function HeroSection() {
             className="mt-8 flex flex-wrap justify-center gap-4"
           >
             <a
-              href="/demo"
+              href="https://app.sip-protocol.org/dex"
               className="px-5 py-2.5 text-white bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all font-medium"
             >
               Try Live Demo
@@ -1277,7 +1277,7 @@ function CTASection() {
 
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
               <a
-                href="/demo"
+                href="https://app.sip-protocol.org/dex"
                 className="px-8 py-3 text-white bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all font-medium"
               >
                 Try Live Demo
