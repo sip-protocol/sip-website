@@ -676,7 +676,7 @@ function CTASection() {
 
           <div className="mt-10 flex flex-wrap justify-center gap-4">
             <Link
-              href="/demo"
+              href="https://app.sip-protocol.org/dex"
               className="px-8 py-3 text-white bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg hover:from-indigo-600 hover:to-purple-600 transition-all font-medium"
             >
               Try Live Demo

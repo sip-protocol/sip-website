@@ -368,7 +368,7 @@ await shareWithAuditor({
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
-              href="/demo"
+              href="https://app.sip-protocol.org/dex"
               className="px-8 py-4 text-lg font-medium text-white bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all"
             >
               Try the Demo

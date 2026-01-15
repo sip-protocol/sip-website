@@ -12,6 +12,10 @@ try {
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+  eslint: {
+    // Use flat config file
+    ignoreDuringBuilds: false,
+  },
   images: {
     remotePatterns: [
       {
@@ -27,6 +31,41 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_GIT_COMMIT: process.env.GIT_COMMIT || 'dev',
     NEXT_PUBLIC_GIT_BRANCH: process.env.GIT_BRANCH || 'local',
+  },
+  async redirects() {
+    return [
+      // Deprecated app pages → sip-app (see #156)
+      {
+        source: '/demo',
+        destination: 'https://app.sip-protocol.org/dex',
+        permanent: true,
+      },
+      {
+        source: '/demo/:path*',
+        destination: 'https://app.sip-protocol.org/dex',
+        permanent: true,
+      },
+      {
+        source: '/claim',
+        destination: 'https://app.sip-protocol.org/payments/receive',
+        permanent: true,
+      },
+      {
+        source: '/phantom-poc',
+        destination: 'https://app.sip-protocol.org/wallet',
+        permanent: true,
+      },
+      {
+        source: '/jupiter-poc',
+        destination: 'https://app.sip-protocol.org/dex/jupiter',
+        permanent: true,
+      },
+      {
+        source: '/compliance-dashboard',
+        destination: 'https://app.sip-protocol.org/enterprise',
+        permanent: true,
+      },
+    ]
   },
   async headers() {
     // Base security headers (all pages)

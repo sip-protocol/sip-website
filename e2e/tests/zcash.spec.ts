@@ -6,7 +6,8 @@ import { DemoPage } from '../pages/demo.page'
  * Tests ZEC destination field visibility and address validation
  */
 
-test.describe('Zcash Recipient', () => {
+// SKIPPED: The /demo page has been deprecated and migrated to sip-app. See: https://github.com/sip-protocol/sip-website/issues/156
+test.describe.skip('Zcash Recipient', () => {
   let demoPage: DemoPage
 
   test.beforeEach(async ({ page }) => {

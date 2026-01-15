@@ -632,7 +632,7 @@ function CTASection() {
 
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
-                href="/demo"
+                href="https://app.sip-protocol.org/dex"
                 className="flex items-center gap-2 px-6 py-3 text-base font-medium text-white bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all shadow-lg shadow-purple-500/25"
               >
                 Try Demo

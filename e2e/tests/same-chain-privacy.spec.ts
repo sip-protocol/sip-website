@@ -10,7 +10,8 @@ import { DemoPage } from '../pages/demo.page'
  * but auto-swaps in transparent mode to prevent accidental same-token selection.
  */
 
-test.describe('Same-Chain Privacy', () => {
+// SKIPPED: The /demo page has been deprecated and migrated to sip-app. See: https://github.com/sip-protocol/sip-website/issues/156
+test.describe.skip('Same-Chain Privacy', () => {
   let demoPage: DemoPage
 
   test.beforeEach(async ({ page }) => {

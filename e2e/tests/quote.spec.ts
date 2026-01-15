@@ -6,7 +6,8 @@ import { DemoPage } from '../pages/demo.page'
  * Tests quote display, loading states, and input handling
  */
 
-test.describe('Quote Fetching', () => {
+// SKIPPED: The /demo page has been deprecated and migrated to sip-app. See: https://github.com/sip-protocol/sip-website/issues/156
+test.describe.skip('Quote Fetching', () => {
   let demoPage: DemoPage
 
   test.beforeEach(async ({ page }) => {

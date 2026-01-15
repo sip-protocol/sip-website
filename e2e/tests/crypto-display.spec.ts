@@ -6,7 +6,8 @@ import { DemoPage } from '../pages/demo.page'
  * Tests stealth address, Pedersen commitment, and viewing key displays
  */
 
-test.describe('Crypto Display', () => {
+// SKIPPED: The /demo page has been deprecated and migrated to sip-app. See: https://github.com/sip-protocol/sip-website/issues/156
+test.describe.skip('Crypto Display', () => {
   let demoPage: DemoPage
 
   test.beforeEach(async ({ page }) => {

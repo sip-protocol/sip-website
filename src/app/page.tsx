@@ -126,7 +126,7 @@ function HeroSection() {
               <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </a>
             <Link
-              href="/demo"
+              href="https://app.sip-protocol.org/dex"
               className="flex items-center gap-2 px-6 py-3 text-base font-medium text-gray-300 border border-gray-700 rounded-lg hover:border-gray-600 hover:text-white transition-colors"
             >
               Try Demo

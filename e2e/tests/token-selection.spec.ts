@@ -6,7 +6,8 @@ import { DemoPage } from '../pages/demo.page'
  * Tests token selectors, cross-chain flows, and quote updates
  */
 
-test.describe('Token Selection', () => {
+// SKIPPED: The /demo page has been deprecated and migrated to sip-app. See: https://github.com/sip-protocol/sip-website/issues/156
+test.describe.skip('Token Selection', () => {
   let demoPage: DemoPage
 
   test.beforeEach(async ({ page }) => {

@@ -6,7 +6,8 @@ import { DemoPage } from '../pages/demo.page'
  * Tests privacy comparison cards, how-it-works sections, and educational content
  */
 
-test.describe('Educational Components', () => {
+// SKIPPED: The /demo page has been deprecated and migrated to sip-app. See: https://github.com/sip-protocol/sip-website/issues/156
+test.describe.skip('Educational Components', () => {
   let demoPage: DemoPage
 
   test.beforeEach(async ({ page }) => {

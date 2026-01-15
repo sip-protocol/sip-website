@@ -109,7 +109,7 @@ export function HeroSection() {
               className="mt-8 flex flex-wrap gap-4"
             >
               <a
-                href="/demo"
+                href="https://app.sip-protocol.org/dex"
                 className="px-6 py-3 text-white bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all font-medium"
               >
                 Try Live Demo
