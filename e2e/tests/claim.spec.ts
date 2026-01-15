@@ -4,9 +4,13 @@ import { ClaimPage } from '../pages/claim.page'
 /**
  * Claim Page Tests
  * Tests for the /claim page where recipients scan and claim stealth payments
+ *
+ * SKIPPED: The /claim page has been deprecated and migrated to sip-app.
+ * See: https://github.com/sip-protocol/sip-website/issues/156
  */
 
-test.describe('Claim Page', () => {
+// SKIPPED: The /claim page has been deprecated and migrated to sip-app. See: https://github.com/sip-protocol/sip-website/issues/156
+test.describe.skip('Claim Page', () => {
   let claimPage: ClaimPage
 
   test.beforeEach(async ({ page }) => {
