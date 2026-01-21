@@ -31,15 +31,16 @@ export const SDK_VERSION = {
   npmUrl: 'https://www.npmjs.com/package/@sip-protocol/sdk',
 }
 
-// Test counts - updated 2025-12-04
+// Test counts - updated 2026-01-22
 export const TEST_COUNTS = {
-  sdk: 2474,
-  react: 57,
-  cli: 33,
-  api: 67,
+  sdk: 6604,
+  react: 82,
+  cli: 10,
+  api: 18,
+  reactNative: 10,
   website: 126,
   get total() {
-    return this.sdk + this.react + this.cli + this.api + this.website
+    return this.sdk + this.react + this.cli + this.api + this.reactNative + this.website
   },
   // Formatted strings for display
   get sdkDisplay() {
@@ -52,7 +53,7 @@ export const TEST_COUNTS = {
     return `${this.total.toLocaleString()}+`
   },
   get detailDisplay() {
-    return `SDK: ${this.sdk.toLocaleString()} | React: ${this.react} | CLI: ${this.cli} | API: ${this.api} | Website: ${this.website}`
+    return `SDK: ${this.sdk.toLocaleString()} | React: ${this.react} | CLI: ${this.cli} | API: ${this.api} | RN: ${this.reactNative} | Website: ${this.website}`
   },
 }
 
@@ -61,8 +62,8 @@ export const PROJECT_METRICS = {
   testsTotal: TEST_COUNTS.totalDisplay,
   testsDetail: TEST_COUNTS.detailDisplay,
   chains: '15+',
-  packages: '6',
-  milestones: 'M15',
+  packages: '7',
+  milestones: 'M16',
   proofTime: '<5s',
   proofSize: '~2KB',
 }
@@ -71,9 +72,9 @@ export const PROJECT_METRICS = {
 export const PROJECT_STATUS = {
   currentPhase: 4,
   currentPhaseName: 'Same-Chain Expansion',
-  currentMilestone: 'M16',
-  currentMilestoneName: 'Narrative Capture',
-  completedMilestones: 15,
+  currentMilestone: 'M17',
+  currentMilestoneName: 'Solana Same-Chain Privacy',
+  completedMilestones: 16,
   totalMilestones: 22,
   phasesComplete: 3,
   totalPhases: 5,
@@ -84,8 +85,9 @@ export const ACHIEVEMENTS = [
   {
     id: 'zypherpunk-2025',
     title: 'Zypherpunk Hackathon Winner',
-    track: 'NEAR Track',
-    prize: '$4,000',
+    track: '3 Tracks (NEAR + Tachyon + pumpfun)',
+    prize: '$6,500',
+    ranking: '#9 of 93',
     date: 'December 2025',
     link: 'https://zypherpunk.xyz',
     badge: 'Winner',

@@ -2,7 +2,7 @@
 
 /**
  * Solana Foundation Grant Pitch Page
- * Updated Dec 2025 - 3x Value Strategy: Request $100K, Deliver $300K
+ * Updated Jan 2026 - 3x Value Strategy: Request $100K, Deliver $300K
  *
  * Philosophy: Code fundamentals first. Marketing is ongoing activity, not measured KPI.
  * Technical deliverables are the REAL milestones.
@@ -207,7 +207,7 @@ function HeroSection() {
               {[
                 { label: 'Tests Passing', value: TEST_COUNTS.totalDisplay, detail: TEST_COUNTS.detailDisplay },
                 { label: 'npm Package', value: 'Published', detail: SDK_VERSION.full },
-                { label: 'Phase 1-3', value: '100%', detail: 'M1-M15 Complete' },
+                { label: 'Phase 1-3', value: '100%', detail: 'M1-M16 Complete' },
                 { label: 'Status', value: 'Live', detail: 'sip-protocol.org' },
               ].map((item) => (
                 <div key={item.label} className="flex items-center justify-between">
@@ -287,14 +287,19 @@ function AchievementSection() {
               </h3>
 
               {/* Details */}
-              <div className="flex items-center justify-center gap-3 text-sm text-gray-400">
-                <span className="px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-400 text-xs font-medium">
-                  NEAR Track
-                </span>
-                <span>•</span>
-                <span className="font-semibold text-amber-400">$4,000</span>
-                <span>•</span>
-                <span>Dec 2025</span>
+              <div className="flex flex-col items-center gap-2 text-sm text-gray-400">
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-400 text-xs font-medium">
+                    3 Tracks
+                  </span>
+                  <span className="font-semibold text-amber-400">$6,500</span>
+                  <span className="px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-400 text-xs font-medium">
+                    #9 of 93
+                  </span>
+                </div>
+                <div className="text-xs text-gray-500">
+                  NEAR + Tachyon + pumpfun • Dec 2025
+                </div>
               </div>
             </div>
           </div>
@@ -603,7 +608,7 @@ function CompetitorSection() {
     { feature: 'Viewing Keys', sip: 'Yes (native)', privacycash: 'Via integration', arcium: 'No' },
     { feature: 'Pool Constraints', sip: 'None (any amount)', privacycash: 'Fixed sizes', arcium: 'N/A' },
     { feature: 'Cross-Chain Ready', sip: 'Yes (pluggable)', privacycash: 'No', arcium: 'No' },
-    { feature: 'Production Status', sip: 'Live SDK, M15 Done', privacycash: 'Mainnet', arcium: 'Testnet' },
+    { feature: 'Production Status', sip: 'Live SDK, M16 Done', privacycash: 'Mainnet', arcium: 'Testnet' },
   ]
 
   return (
@@ -696,7 +701,7 @@ function TractionSection() {
     { value: TEST_COUNTS.totalDisplay, label: 'Tests Passing', detail: TEST_COUNTS.detailDisplay },
     { value: 'Published', label: 'npm Package', detail: SDK_VERSION.full },
     { value: 'Live', label: 'Demo Deployed', detail: 'sip-protocol.org' },
-    { value: 'M15', label: 'Milestone Complete', detail: 'Phase 1-3 Done' },
+    { value: 'M16', label: 'Milestone Complete', detail: 'Phase 1-3 Done, Phase 4 Active' },
   ]
 
   return (
@@ -1162,8 +1167,8 @@ function RoadmapSection() {
       title: 'Same-Chain Expansion',
       status: 'current',
       milestones: 'M16-M18',
-      progress: 10,
-      items: ['Narrative Capture (M16)', 'Solana Same-Chain (M17)', 'Ethereum Same-Chain (M18)'],
+      progress: 33,
+      items: ['Narrative Capture (M16) ✓', 'Solana Same-Chain (M17)', 'Ethereum Same-Chain (M18)'],
     },
     {
       phase: 'Phase 5',
