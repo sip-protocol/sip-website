@@ -59,8 +59,10 @@ function getHeaders(): HeadersInit {
     'User-Agent': 'SIP-Protocol-Website',
   }
 
-  if (process.env.GITHUB_TOKEN) {
-    headers['Authorization'] = `Bearer ${process.env.GITHUB_TOKEN}`
+  // Support multiple env var names for flexibility
+  const token = process.env.GITHUB_TOKEN || process.env.GH_PAT
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`
   }
 
   return headers
