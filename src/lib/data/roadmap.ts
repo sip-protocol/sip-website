@@ -395,10 +395,10 @@ export interface Achievement {
 
 export const ACHIEVEMENTS: Achievement[] = [
   {
-    title: 'Zypherpunk Hackathon NEAR Track Winner',
-    description: 'Won the NEAR Protocol track at the Zypherpunk Privacy Hackathon',
+    title: 'Zypherpunk Hackathon Winner — 3 Tracks',
+    description: 'Won NEAR ($4,000) + Tachyon ($500) + pumpfun ($2,000) tracks at the Zypherpunk Privacy Hackathon',
     date: 'December 2025',
-    prize: '$4,000',
+    prize: '$6,500',
     link: 'https://zypherpunk.xyz',
   },
 ]
