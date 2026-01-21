@@ -2,7 +2,7 @@
 
 /**
  * Superteam Instagrant Pitch Page
- * Updated Dec 2025 - 3x Value Strategy: Request $10K, Deliver $30K
+ * Updated Jan 2026 - 3x Value Strategy: Request $10K, Deliver $30K
  *
  * Philosophy: Code fundamentals first. Marketing is ongoing activity, not measured KPI.
  * Technical deliverables are the REAL milestones.
@@ -256,14 +256,19 @@ function AchievementSection() {
               </h3>
 
               {/* Details */}
-              <div className="flex items-center justify-center gap-3 text-sm text-gray-400">
-                <span className="px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-400 text-xs font-medium">
-                  NEAR Track
-                </span>
-                <span>•</span>
-                <span className="font-semibold text-amber-400">$4,000</span>
-                <span>•</span>
-                <span>Dec 2025</span>
+              <div className="flex flex-col items-center gap-2 text-sm text-gray-400">
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-400 text-xs font-medium">
+                    3 Tracks
+                  </span>
+                  <span className="font-semibold text-amber-400">$6,500</span>
+                  <span className="px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-400 text-xs font-medium">
+                    #9 of 93
+                  </span>
+                </div>
+                <div className="text-xs text-gray-500">
+                  NEAR + Tachyon + pumpfun • Dec 2025
+                </div>
               </div>
             </div>
           </div>
@@ -622,7 +627,7 @@ function TractionSection() {
     { value: TEST_COUNTS.totalDisplay, label: 'Tests Passing', detail: TEST_COUNTS.detailDisplay },
     { value: 'Published', label: 'npm Package', detail: SDK_VERSION.full },
     { value: 'Live', label: 'Demo Deployed', detail: 'sip-protocol.org' },
-    { value: 'M15', label: 'Milestone Complete', detail: 'Phase 1-3 Done' },
+    { value: 'M16', label: 'Milestone Complete', detail: 'Phase 1-3 Done, Phase 4 Active' },
   ]
 
   return (

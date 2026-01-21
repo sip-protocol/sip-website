@@ -353,9 +353,9 @@ function QuickLinksSection() {
     {
       title: 'Live Demo',
       description: 'Try the privacy toggle',
-      href: '/demo',
+      href: 'https://app.sip-protocol.org/dex',
       icon: Zap,
-      external: false,
+      external: true,
     },
     {
       title: 'Documentation',

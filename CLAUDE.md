@@ -9,16 +9,16 @@
 
 ## DEPRECATION NOTICE
 
-**Demo/POC pages are migrating to `app.sip-protocol.org` (sip-app repo):**
+**Demo/POC pages have been removed with 301 redirects to `app.sip-protocol.org`:**
 
 | Deprecated Page | New Location | Status |
 |-----------------|--------------|--------|
-| `/demo` | `app.sip-protocol.org/dex` | Pending |
-| `/demo/toggle-*` | DELETE (internal testing) | Pending |
-| `/claim` | `app.sip-protocol.org/payments/receive` | Pending |
-| `/phantom-poc` | `app.sip-protocol.org/wallet` | Pending |
-| `/jupiter-poc` | `app.sip-protocol.org/dex/jupiter` | Pending |
-| `/compliance-dashboard` | `app.sip-protocol.org/enterprise/compliance` | Pending |
+| `/demo` | `app.sip-protocol.org/dex` | ✅ Redirected |
+| `/demo/toggle-*` | DELETED (internal testing) | ✅ Done |
+| `/claim` | `app.sip-protocol.org/payments/receive` | ✅ Redirected |
+| `/phantom-poc` | `app.sip-protocol.org/wallet` | ✅ Redirected |
+| `/jupiter-poc` | `app.sip-protocol.org/dex/jupiter` | ✅ Redirected |
+| `/compliance-dashboard` | `app.sip-protocol.org/enterprise/compliance` | ✅ Redirected |
 
 **Keep in sip-website (marketing):**
 - `/` - Landing page
@@ -34,7 +34,7 @@
 
 ## Current Focus
 
-**Status:** M15 Complete | M16 Starting (Narrative Capture)
+**Status:** M16 Complete | M17 Active (Solana Same-Chain)
 **Strategy:** Same-chain expansion - privacy for ALL Solana transactions, not just cross-chain
 
 ### Phase 4 Priorities (Website)
@@ -47,14 +47,14 @@
 
 ## Quick Reference
 
-**Tech Stack:** Next.js 14, React 18, Tailwind CSS, Zustand, Vitest
-**Deployment:** sip-protocol.org (Docker + GHCR)
+**Tech Stack:** Next.js 15, React 19, Tailwind CSS 4, Zustand, Vitest
+**Deployment:** sip-protocol.org (Docker + GHCR, port 5000)
 
 **Key Commands:**
 ```bash
 pnpm install              # Install dependencies
 pnpm dev                  # Dev server (localhost:3000)
-pnpm test -- --run        # Run tests (126 tests)
+pnpm test -- --run        # Run tests (157 tests)
 pnpm build                # Build for production
 pnpm typecheck            # Type check
 ```
@@ -150,4 +150,4 @@ pnpm typecheck            # Type check
 
 ---
 
-**Last Updated:** 2025-12-27
+**Last Updated:** 2026-01-21
