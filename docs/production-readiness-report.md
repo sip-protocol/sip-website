@@ -80,7 +80,7 @@ Risk: Potential for abuse of Zcash RPC proxy
 ### Recommendations
 1. **Upgrade dependencies** when patches available for base-x vulnerability
 2. **Add security headers** in next.config.js
-3. **Implement rate limiting** on API routes (consider Vercel Edge Config or custom middleware)
+3. **Implement rate limiting** on API routes (nginx rate limiting or custom middleware)
 4. **Add CORS configuration** for production
 
 ---
