@@ -1158,7 +1158,7 @@ function RoadmapSection() {
       phase: 'Phase 1-3',
       title: 'Foundation + Standard + Ecosystem',
       status: 'complete',
-      milestones: 'M1-M15',
+      milestones: 'M1-M16',
       progress: 100,
       items: ['SDK Core', 'Stealth Addresses', 'NEAR Integration', 'Multi-chain', 'Compliance Layer'],
     },

@@ -107,12 +107,12 @@ const defaultConfig: FounderProfileProps = {
     followers: 27,
     commits: 4500,
     prs: 146,
-    badge: '2,757+ Tests',
+    badge: '6,850+ Tests',
   },
   projects: [
     {
       name: 'SIP Protocol',
-      description: 'Winner Zypherpunk Hackathon 3 Tracks — Privacy layer with 5,584+ tests ($6,500)',
+      description: 'Winner Zypherpunk Hackathon 3 Tracks — Privacy layer with 6,850+ tests ($6,500)',
       url: 'https://github.com/sip-protocol/sip-protocol',
       stars: 1,
       language: 'TypeScript',
@@ -154,7 +154,7 @@ const defaultConfig: FounderProfileProps = {
   ],
   techStack: ['TypeScript', 'Rust', 'Python', 'Noir', 'React', 'Solana', 'NEAR', 'Zcash', 'Docker'],
   quote: {
-    text: '"One person. 2,757 tests. Zero shortcuts."',
+    text: '"One person. 6,850 tests. Zero shortcuts."',
     subtitle: '— Pure execution, no committee decisions',
   },
   originStory: {

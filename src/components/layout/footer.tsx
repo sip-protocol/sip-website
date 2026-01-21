@@ -18,7 +18,7 @@ const footerLinks: Record<string, FooterSection> = {
     title: 'Product',
     links: [
       { href: '/features', label: 'Features' },
-      { href: '/demo', label: 'Demo' },
+      { href: 'https://app.sip-protocol.org', label: 'Demo', external: true },
       { href: '/roadmap', label: 'Roadmap' },
     ],
   },
