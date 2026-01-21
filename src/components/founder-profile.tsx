@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Image from 'next/image'
+import { getStaticFounderData, type FounderData } from '@/lib/founder-data'
 
 // GitHub Icons
 function GitHubIcon({ className }: { className?: string }) {
@@ -40,150 +41,25 @@ function StarIcon({ className }: { className?: string }) {
   )
 }
 
-interface NotableProject {
-  name: string
-  description: string
-  url: string
-  stars?: number
-  forks?: number
-  language?: string
-  tags?: string[]
+function LiveIndicator() {
+  return (
+    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs">
+      <span className="relative flex h-2 w-2">
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+        <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+      </span>
+      Live
+    </span>
+  )
 }
 
 interface FounderProfileProps {
-  name?: string
-  username?: string
-  role?: string
-  avatar?: string
-  bio?: string
-  github?: string
-  twitter?: string
-  twitterProject?: string
-  website?: string
-  stats?: {
-    repositories: number
-    stars: number
-    followers: number
-    commits?: number
-    prs?: number
-    badge?: string
-  }
-  projects?: NotableProject[]
-  techStack?: string[]
-  quote?: {
-    text: string
-    subtitle?: string
-  }
-  originStory?: {
-    title: string
-    content: string
-  }
-  soloFounderPhilosophy?: {
-    title: string
-    content: string
-    highlights?: string[]
-  }
-  vision?: {
-    title: string
-    timeline: string
-    goals: string[]
-  }
+  data?: FounderData
 }
 
-// Default configuration with real GitHub data
-const defaultConfig: FounderProfileProps = {
-  name: 'RECTOR',
-  username: '@rz1989s',
-  role: 'Solo Founder, SIP Protocol  •  🇮🇩 Indonesia',
-  avatar: 'https://avatars.githubusercontent.com/u/95009642?v=4',
-  bio: 'Indonesian developer building the privacy standard for Web3. Blockchain architect with $12,800+ in hackathon wins (2024-2025) including MonkeDAO, Zypherpunk (3 tracks), and Superteam Indonesia. 5,600+ contributions across 170 repos. Focused on cryptographic privacy, cross-chain infrastructure, and high-performance systems. Privacy is a right, not a feature.',
-  github: 'https://github.com/rz1989s',
-  twitter: 'https://x.com/rz1989s',
-  twitterProject: 'https://x.com/sipprotocol',
-  website: 'https://rectorspace.com',
-  stats: {
-    repositories: 33,
-    stars: 246,
-    followers: 27,
-    commits: 4500,
-    prs: 146,
-    badge: '6,850+ Tests',
-  },
-  projects: [
-    {
-      name: 'SIP Protocol',
-      description: 'Winner Zypherpunk Hackathon 3 Tracks — Privacy layer with 6,850+ tests ($6,500)',
-      url: 'https://github.com/sip-protocol/sip-protocol',
-      stars: 1,
-      language: 'TypeScript',
-      tags: ['Winner', 'Privacy', 'ZK'],
-    },
-    {
-      name: 'Web3 Deal Discovery',
-      description: '1st Place MonkeDAO/Superteam — NFT coupons on Solana with escrow marketplace ($5,000 + Gen3 NFT)',
-      url: 'https://github.com/rz1989s/web3-deal-discovery',
-      stars: 1,
-      language: 'TypeScript',
-      tags: ['1st Place', 'Solana', 'NFT'],
-    },
-    {
-      name: 'OpenBudget.ID',
-      description: '2nd Place Garuda Spark/Superteam Indonesia — On-chain government spending transparency ($1,500)',
-      url: 'https://github.com/rz1989s/openbudget-id',
-      stars: 1,
-      language: 'TypeScript',
-      tags: ['2nd Place', 'Solana', 'Gov'],
-    },
-    {
-      name: 'Saros SDK Docs',
-      description: '1st Place Documentation Bounty — Interactive API Explorer for Saros DEX ($300)',
-      url: 'https://github.com/rz1989s/saros-sdk-docs',
-      stars: 1,
-      language: 'TypeScript',
-      tags: ['1st Place', 'Docs'],
-    },
-    {
-      name: 'claude-code-statusline',
-      description: 'Terminal statusline with cost tracking — 240 stars, 17 forks (community favorite)',
-      url: 'https://github.com/rz1989s/claude-code-statusline',
-      stars: 240,
-      forks: 17,
-      language: 'Shell',
-      tags: ['240 Stars', 'CLI'],
-    },
-  ],
-  techStack: ['TypeScript', 'Rust', 'Python', 'Noir', 'React', 'Solana', 'NEAR', 'Zcash', 'Docker'],
-  quote: {
-    text: '"One person. 6,850 tests. Zero shortcuts."',
-    subtitle: '— Pure execution, no committee decisions',
-  },
-  originStory: {
-    title: 'Why Privacy?',
-    content: 'Remember when HTTP was the norm? We now consider sites without HTTPS dangerous. Web3 is in its HTTP era — transparency is the default, but crime follows money. As Web3 matures, privacy becomes essential defense. SIP doesn\'t ignore blockchain fundamentals — it makes them better. Privacy isn\'t hiding, it\'s protection.',
-  },
-  soloFounderPhilosophy: {
-    title: 'Why Solo?',
-    content: 'Many doubt solo founders. I think differently. After building with teams, I learned that wrong teams are more dangerous than external threats — they\'re internal ones. Good projects with good teams still die from lack of synchronization. Solo means pure execution.',
-    highlights: [
-      'No committee decisions',
-      'No synchronization overhead',
-      'Ship fast, iterate faster',
-    ],
-  },
-  vision: {
-    title: 'The Endgame',
-    timeline: '2028',
-    goals: [
-      'SIP as THE privacy standard — like HTTPS for Web3',
-      'Privacy toggle in top 10 wallets globally',
-      '"Privacy by SIP" recognized like "Secured by SSL"',
-    ],
-  },
-}
-
-export function FounderProfile(props: FounderProfileProps = {}) {
-  const config = { ...defaultConfig, ...props }
-
+export function FounderProfile({ data: providedData }: FounderProfileProps) {
+  // Use provided data or fall back to static data
+  const data = providedData ?? getStaticFounderData()
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -205,17 +81,17 @@ export function FounderProfile(props: FounderProfileProps = {}) {
           >
             <div className="h-28 w-28 rounded-full bg-gradient-to-br from-red-500 to-red-700 p-1">
               <div className="h-full w-full rounded-full bg-gray-900 overflow-hidden">
-                {config.avatar ? (
+                {data.avatar ? (
                   <Image
-                    src={config.avatar}
-                    alt={config.name || 'Avatar'}
+                    src={data.avatar}
+                    alt={data.name || 'Avatar'}
                     width={112}
                     height={112}
                     className="h-full w-full object-cover"
                   />
                 ) : (
                   <div className="h-full w-full flex items-center justify-center text-3xl font-bold text-purple-400">
-                    {config.name?.charAt(0) || 'R'}
+                    {data.name?.charAt(0) || 'R'}
                   </div>
                 )}
               </div>
@@ -226,16 +102,19 @@ export function FounderProfile(props: FounderProfileProps = {}) {
           <div className="flex-grow">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div>
-                <h3 className="text-2xl font-bold text-white">{config.name}</h3>
-                <p className="text-cyan-400 text-sm">{config.username}</p>
-                <p className="text-gray-400 text-sm mt-1">{config.role}</p>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-2xl font-bold text-white">{data.name}</h3>
+                  {data.isLive && <LiveIndicator />}
+                </div>
+                <p className="text-cyan-400 text-sm">{data.username}</p>
+                <p className="text-gray-400 text-sm mt-1">{data.role}</p>
               </div>
 
               {/* Social Links */}
               <div className="flex items-center gap-2">
-                {config.github && (
+                {data.github && (
                   <a
-                    href={config.github}
+                    href={data.github}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center h-9 w-9 rounded-full bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white transition-colors"
@@ -244,9 +123,9 @@ export function FounderProfile(props: FounderProfileProps = {}) {
                     <GitHubIcon className="h-4 w-4" />
                   </a>
                 )}
-                {config.twitterProject && (
+                {data.twitterProject && (
                   <a
-                    href={config.twitterProject}
+                    href={data.twitterProject}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center h-9 px-3 rounded-full bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white transition-colors gap-1.5"
@@ -257,9 +136,9 @@ export function FounderProfile(props: FounderProfileProps = {}) {
                     <span className="text-xs font-medium">SIP</span>
                   </a>
                 )}
-                {config.twitter && (
+                {data.twitter && (
                   <a
-                    href={config.twitter}
+                    href={data.twitter}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center h-9 w-9 rounded-full bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white transition-colors"
@@ -269,9 +148,9 @@ export function FounderProfile(props: FounderProfileProps = {}) {
                     <XIcon className="h-4 w-4" />
                   </a>
                 )}
-                {config.website && (
+                {data.website && (
                   <a
-                    href={config.website}
+                    href={data.website}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center h-9 w-9 rounded-full bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white transition-colors"
@@ -286,7 +165,7 @@ export function FounderProfile(props: FounderProfileProps = {}) {
         </div>
 
         {/* About Section */}
-        {config.bio && (
+        {data.bio && (
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -297,12 +176,12 @@ export function FounderProfile(props: FounderProfileProps = {}) {
             <h4 className="text-sm font-medium text-gray-400 mb-2 flex items-center gap-2">
               <span className="text-purple-400">💡</span> About
             </h4>
-            <p className="text-gray-300 text-sm leading-relaxed">{config.bio}</p>
+            <p className="text-gray-300 text-sm leading-relaxed">{data.bio}</p>
           </motion.div>
         )}
 
         {/* Origin Story */}
-        {config.originStory && (
+        {data.originStory && (
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -311,16 +190,16 @@ export function FounderProfile(props: FounderProfileProps = {}) {
             className="mt-6"
           >
             <h4 className="text-sm font-medium text-gray-400 mb-2 flex items-center gap-2">
-              <span className="text-purple-400">🔐</span> {config.originStory.title}
+              <span className="text-purple-400">🔐</span> {data.originStory.title}
             </h4>
             <div className="p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-cyan-500/10 border border-purple-500/20">
-              <p className="text-gray-300 text-sm leading-relaxed italic">{config.originStory.content}</p>
+              <p className="text-gray-300 text-sm leading-relaxed italic">{data.originStory.content}</p>
             </div>
           </motion.div>
         )}
 
         {/* Solo Founder Philosophy */}
-        {config.soloFounderPhilosophy && (
+        {data.soloFounderPhilosophy && (
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -329,12 +208,12 @@ export function FounderProfile(props: FounderProfileProps = {}) {
             className="mt-6"
           >
             <h4 className="text-sm font-medium text-gray-400 mb-2 flex items-center gap-2">
-              <span className="text-purple-400">⚡</span> {config.soloFounderPhilosophy.title}
+              <span className="text-purple-400">⚡</span> {data.soloFounderPhilosophy.title}
             </h4>
-            <p className="text-gray-300 text-sm leading-relaxed mb-3">{config.soloFounderPhilosophy.content}</p>
-            {config.soloFounderPhilosophy.highlights && (
+            <p className="text-gray-300 text-sm leading-relaxed mb-3">{data.soloFounderPhilosophy.content}</p>
+            {data.soloFounderPhilosophy.highlights && (
               <div className="flex flex-wrap gap-2">
-                {config.soloFounderPhilosophy.highlights.map((highlight) => (
+                {data.soloFounderPhilosophy.highlights.map((highlight) => (
                   <span
                     key={highlight}
                     className="px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-medium"
@@ -348,7 +227,7 @@ export function FounderProfile(props: FounderProfileProps = {}) {
         )}
 
         {/* Vision */}
-        {config.vision && (
+        {data.vision && (
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -357,11 +236,11 @@ export function FounderProfile(props: FounderProfileProps = {}) {
             className="mt-6"
           >
             <h4 className="text-sm font-medium text-gray-400 mb-2 flex items-center gap-2">
-              <span className="text-purple-400">🎯</span> {config.vision.title}
-              <span className="ml-auto text-xs text-cyan-400 font-mono">{config.vision.timeline}</span>
+              <span className="text-purple-400">🎯</span> {data.vision.title}
+              <span className="ml-auto text-xs text-cyan-400 font-mono">{data.vision.timeline}</span>
             </h4>
             <div className="space-y-2">
-              {config.vision.goals.map((goal, index) => (
+              {data.vision.goals.map((goal, index) => (
                 <div
                   key={index}
                   className="flex items-start gap-2 p-3 rounded-lg bg-gray-800/50 border border-gray-700"
@@ -375,7 +254,7 @@ export function FounderProfile(props: FounderProfileProps = {}) {
         )}
 
         {/* GitHub Stats */}
-        {config.stats && (
+        {data.stats && (
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -385,22 +264,27 @@ export function FounderProfile(props: FounderProfileProps = {}) {
           >
             <h4 className="text-sm font-medium text-gray-400 mb-3 flex items-center gap-2">
               <span className="text-purple-400">📊</span> GitHub Stats
+              {data.isLive && (
+                <span className="text-xs text-gray-500 font-normal ml-auto">
+                  Updated {new Date(data.lastUpdated).toLocaleDateString()}
+                </span>
+              )}
             </h4>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <StatBox value={config.stats.repositories} label="Repositories" color="cyan" />
-              <StatBox value={config.stats.stars} label="Stars Earned" color="amber" />
-              <StatBox value={config.stats.followers} label="Followers" color="green" />
-              {config.stats.badge ? (
-                <StatBox value={config.stats.badge} label="Achievement" color="purple" isText />
-              ) : config.stats.commits ? (
-                <StatBox value={config.stats.commits} label="Commits" color="purple" />
+              <StatBox value={data.stats.repositories} label="Repositories" color="cyan" />
+              <StatBox value={data.stats.stars} label="Stars Earned" color="amber" />
+              <StatBox value={data.stats.followers} label="Followers" color="green" />
+              {data.stats.badge ? (
+                <StatBox value={data.stats.badge} label="Achievement" color="purple" isText />
+              ) : data.stats.commits ? (
+                <StatBox value={data.stats.commits} label="Commits" color="purple" />
               ) : null}
             </div>
           </motion.div>
         )}
 
         {/* Notable Projects */}
-        {config.projects && config.projects.length > 0 && (
+        {data.projects && data.projects.length > 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -412,7 +296,7 @@ export function FounderProfile(props: FounderProfileProps = {}) {
               <span className="text-purple-400">🚀</span> Notable Projects
             </h4>
             <div className="space-y-3">
-              {config.projects.map((project) => (
+              {data.projects.map((project) => (
                 <a
                   key={project.name}
                   href={project.url}
@@ -462,7 +346,7 @@ export function FounderProfile(props: FounderProfileProps = {}) {
         )}
 
         {/* Tech Stack */}
-        {config.techStack && config.techStack.length > 0 && (
+        {data.techStack && data.techStack.length > 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -474,7 +358,7 @@ export function FounderProfile(props: FounderProfileProps = {}) {
               <span className="text-purple-400">🛠️</span> Tech Stack
             </h4>
             <div className="flex flex-wrap gap-2">
-              {config.techStack.map((tech) => (
+              {data.techStack.map((tech) => (
                 <span
                   key={tech}
                   className="px-3 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-gray-300 text-sm font-medium"
@@ -487,7 +371,7 @@ export function FounderProfile(props: FounderProfileProps = {}) {
         )}
 
         {/* Quote */}
-        {config.quote && (
+        {data.quote && (
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -495,9 +379,9 @@ export function FounderProfile(props: FounderProfileProps = {}) {
             viewport={{ once: true }}
             className="mt-8 pt-6 border-t border-gray-800"
           >
-            <p className="text-center text-lg italic text-gray-300">{config.quote.text}</p>
-            {config.quote.subtitle && (
-              <p className="text-center text-sm text-gray-500 mt-2">{config.quote.subtitle}</p>
+            <p className="text-center text-lg italic text-gray-300">{data.quote.text}</p>
+            {data.quote.subtitle && (
+              <p className="text-center text-sm text-gray-500 mt-2">{data.quote.subtitle}</p>
             )}
           </motion.div>
         )}
@@ -525,10 +409,12 @@ function StatBox({
     purple: 'text-purple-400',
   }
 
+  const displayValue = typeof value === 'number' ? value.toLocaleString() : value
+
   return (
     <div className="p-3 rounded-xl bg-gray-800/70 border border-gray-700 text-center">
       <div className={`${isText ? 'text-sm' : 'text-xl'} font-bold ${colorClasses[color]}`}>
-        {value}
+        {displayValue}
       </div>
       <div className="text-xs text-gray-500 mt-1">{label}</div>
     </div>
