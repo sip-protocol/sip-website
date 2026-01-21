@@ -96,7 +96,7 @@ const defaultConfig: FounderProfileProps = {
   username: '@rz1989s',
   role: 'Solo Founder, SIP Protocol  •  🇮🇩 Indonesia',
   avatar: 'https://avatars.githubusercontent.com/u/95009642?v=4',
-  bio: 'Indonesian developer building the privacy standard for Web3. Blockchain architect with $10,800+ in hackathon wins (2024-2025) including MonkeDAO, Zypherpunk, and Superteam Indonesia. 5,600+ contributions across 170 repos. Focused on cryptographic privacy, cross-chain infrastructure, and high-performance systems. Privacy is a right, not a feature.',
+  bio: 'Indonesian developer building the privacy standard for Web3. Blockchain architect with $12,800+ in hackathon wins (2024-2025) including MonkeDAO, Zypherpunk (3 tracks), and Superteam Indonesia. 5,600+ contributions across 170 repos. Focused on cryptographic privacy, cross-chain infrastructure, and high-performance systems. Privacy is a right, not a feature.',
   github: 'https://github.com/rz1989s',
   twitter: 'https://x.com/rz1989s',
   twitterProject: 'https://x.com/sipprotocol',
@@ -112,7 +112,7 @@ const defaultConfig: FounderProfileProps = {
   projects: [
     {
       name: 'SIP Protocol',
-      description: 'Winner Zypherpunk Hackathon NEAR Track — Privacy layer with 2,757 tests ($4,000)',
+      description: 'Winner Zypherpunk Hackathon 3 Tracks — Privacy layer with 5,584+ tests ($6,500)',
       url: 'https://github.com/sip-protocol/sip-protocol',
       stars: 1,
       language: 'TypeScript',
