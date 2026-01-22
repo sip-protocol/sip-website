@@ -28,6 +28,7 @@ import {
 import { TEST_COUNTS, SDK_VERSION, PROJECT_STATUS } from '@/lib/constants'
 import { FounderProfile } from '@/components/founder-profile'
 import { ArchitectureDiagram } from '@/components/architecture-diagram'
+import { VideoDemo } from '@/components/video-demo'
 import type { FounderData } from '@/lib/founder-data'
 
 interface PitchDeckContentProps {
@@ -38,6 +39,7 @@ export function PitchDeckContent({ founderData }: PitchDeckContentProps) {
   return (
     <>
       <HeroSection />
+      <VideoDemoSection />
       <ProblemSection />
       <SolutionSection />
       <ArchitectureSection />
@@ -192,6 +194,35 @@ function HeroSection() {
         >
           <ChevronDown className="w-6 h-6 text-gray-600 animate-bounce" />
         </motion.div>
+      </div>
+    </section>
+  )
+}
+
+function VideoDemoSection() {
+  return (
+    <section className="py-16 border-t border-gray-800/50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-2xl sm:text-3xl font-bold"
+          >
+            See SIP in Action
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="mt-2 text-gray-400"
+          >
+            2-minute demo of cryptographic privacy in action
+          </motion.p>
+        </div>
+        <VideoDemo caption="Watch how SIP enables private transactions with viewing keys for compliance" />
       </div>
     </section>
   )
