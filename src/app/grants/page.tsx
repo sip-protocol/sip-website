@@ -123,6 +123,22 @@ function HeroSection() {
 function GrantCardsSection() {
   const grants = [
     {
+      title: 'Solana Audit Subsidy',
+      amount: 'Up to $50K',
+      description: 'Security audit subsidy for Solana Anchor program (~1,050 LOC Rust).',
+      href: '/grants/audit-subsidy',
+      color: 'from-emerald-500 to-teal-500',
+      borderColor: 'border-emerald-500/20 hover:border-emerald-500/50',
+      bgColor: 'bg-emerald-500/10',
+      textColor: 'text-emerald-400',
+      features: [
+        '~1,050 LOC audit scope',
+        'Pedersen commitments',
+        'ZK proof verification',
+        'Pre-mainnet critical',
+      ],
+    },
+    {
       title: 'Superteam Microgrant',
       amount: '$10K',
       description: 'Community building, developer advocacy, and ecosystem awareness.',
@@ -179,7 +195,7 @@ function GrantCardsSection() {
           </motion.p>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2 max-w-4xl mx-auto">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
           {grants.map((grant, index) => (
             <motion.div
               key={grant.title}
