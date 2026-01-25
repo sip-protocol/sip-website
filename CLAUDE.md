@@ -34,8 +34,8 @@
 
 ## Current Focus
 
-**Status:** M16 Complete | M17 Active (Solana Same-Chain)
-**Strategy:** Same-chain expansion - privacy for ALL Solana transactions, not just cross-chain
+**Status:** M17 Complete | M18 Active (Ethereum Same-Chain)
+**Strategy:** Same-chain expansion - privacy for ALL transactions, not just cross-chain
 
 ### Phase 4 Priorities (Website)
 - Grant pages updated for Superteam ($10K) and Solana Foundation ($100K)
@@ -150,4 +150,4 @@ pnpm typecheck            # Type check
 
 ---
 
-**Last Updated:** 2026-01-21
+**Last Updated:** 2026-01-25
