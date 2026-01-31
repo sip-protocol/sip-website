@@ -33,6 +33,11 @@ npm-debug.log*
 # Turbo
 .turbo/
 
+# Videos (hosted on CDN, too large for git)
+public/videos/showcase/**/*.mp4
+public/videos/showcase/**/*.webm
+public/videos/showcase/**/*.mov
+
 # Playwright
 playwright-report/
 playwright/.cache/
