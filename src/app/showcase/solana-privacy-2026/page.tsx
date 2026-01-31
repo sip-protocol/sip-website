@@ -18,6 +18,7 @@ import {
   Globe,
   FileText,
 } from 'lucide-react'
+import { PhoneMockup, PhoneScreen } from '@/components/ui/PhoneMockup'
 
 // CDN base URL for videos
 const CDN_BASE = 'https://cdn.sip-protocol.org/videos/showcase/solana-privacy-2026'
@@ -234,38 +235,61 @@ function HeroSection() {
             </motion.div>
           </div>
 
-          {/* Visual */}
+          {/* Phone Mockup with Screenshot */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="relative"
+            className="relative flex justify-center"
           >
-            <div className="absolute -inset-4 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-3xl blur-xl" />
-            <div className="relative p-8 rounded-3xl bg-gray-900/50 border border-gray-800">
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-800/50">
-                  <Shield className="w-8 h-8 text-green-400" />
-                  <div>
-                    <div className="font-medium text-white">Stealth Addresses</div>
-                    <div className="text-sm text-gray-500">DKSAP Protocol</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-800/50">
-                  <Lock className="w-8 h-8 text-cyan-400" />
-                  <div>
-                    <div className="font-medium text-white">Compliant Privacy</div>
-                    <div className="text-sm text-gray-500">Institution Ready</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-800/50">
-                  <Key className="w-8 h-8 text-purple-400" />
-                  <div>
-                    <div className="font-medium text-white">Viewing Keys</div>
-                    <div className="text-sm text-gray-500">Selective Disclosure</div>
-                  </div>
-                </div>
-              </div>
+            {/* Glow effect behind phone */}
+            <div className="absolute inset-0 flex justify-center items-center">
+              <div className="w-64 h-96 bg-gradient-to-r from-green-500/30 to-emerald-500/30 rounded-full blur-3xl" />
+            </div>
+
+            {/* Phone mockup with Seeker screenshot */}
+            <PhoneMockup variant="seeker" className="relative z-10">
+              <PhoneScreen
+                src="/images/showcase/solana-privacy-2026/home-screen.png"
+                alt="SIP Privacy Mobile Wallet on Seeker - Home screen showing 0.0369 SOL balance, 3 transfers, and mainnet connection"
+              />
+            </PhoneMockup>
+
+            {/* Floating feature badges */}
+            <div className="absolute -right-4 top-16 z-20 hidden lg:block">
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.6 }}
+                className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-900/90 border border-green-500/30 shadow-lg"
+              >
+                <Shield className="w-4 h-4 text-green-400" />
+                <span className="text-xs font-medium text-white">Stealth Addresses</span>
+              </motion.div>
+            </div>
+
+            <div className="absolute -left-4 top-32 z-20 hidden lg:block">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.7 }}
+                className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-900/90 border border-cyan-500/30 shadow-lg"
+              >
+                <Lock className="w-4 h-4 text-cyan-400" />
+                <span className="text-xs font-medium text-white">Compliant Privacy</span>
+              </motion.div>
+            </div>
+
+            <div className="absolute -right-8 bottom-24 z-20 hidden lg:block">
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.8 }}
+                className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-900/90 border border-purple-500/30 shadow-lg"
+              >
+                <Key className="w-4 h-4 text-purple-400" />
+                <span className="text-xs font-medium text-white">Viewing Keys</span>
+              </motion.div>
             </div>
           </motion.div>
         </div>
@@ -308,7 +332,7 @@ function VideoGallerySection() {
               {category === 'Compliance' && <Lock className="w-5 h-5 text-cyan-400" />}
               {category}
             </h3>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="flex flex-wrap gap-8 justify-center">
               {videos
                 .filter(v => v.category === category)
                 .map((video, index) => (
@@ -318,20 +342,44 @@ function VideoGallerySection() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1 }}
-                    className="rounded-2xl overflow-hidden bg-gray-900/50 border border-gray-800 hover:border-green-500/50 transition-colors"
+                    className="flex flex-col items-center"
                   >
-                    <div className="relative aspect-video bg-gray-800">
-                      <video
-                        src={video.src}
-                        className="w-full h-full object-cover"
-                        controls
-                        preload="metadata"
-                        playsInline
-                      />
+                    {/* Phone mockup frame for video */}
+                    <div className="relative w-[200px]">
+                      {/* Outer frame */}
+                      <div className="relative rounded-[2rem] p-2 bg-gradient-to-b from-gray-700 via-gray-800 to-gray-900 shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_10px_30px_-10px_rgba(0,0,0,0.5)]">
+                        {/* Inner bezel */}
+                        <div className="relative rounded-[1.5rem] bg-black p-0.5 overflow-hidden">
+                          {/* Screen area */}
+                          <div className="relative rounded-[1.25rem] overflow-hidden bg-gray-950">
+                            {/* Notch */}
+                            <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10">
+                              <div className="w-14 h-4 bg-black rounded-b-lg flex items-center justify-center">
+                                <div className="w-1.5 h-1.5 rounded-full bg-gray-800" />
+                              </div>
+                            </div>
+                            {/* Video */}
+                            <div className="relative aspect-[9/19.5]">
+                              <video
+                                src={video.src}
+                                className="w-full h-full object-cover"
+                                controls
+                                preload="metadata"
+                                playsInline
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        {/* Side buttons */}
+                        <div className="absolute -right-0.5 top-16 w-0.5 h-8 bg-gray-600 rounded-r-sm" />
+                        <div className="absolute -left-0.5 top-14 w-0.5 h-5 bg-gray-600 rounded-l-sm" />
+                        <div className="absolute -left-0.5 top-22 w-0.5 h-8 bg-gray-600 rounded-l-sm" />
+                      </div>
                     </div>
-                    <div className="p-4">
+                    {/* Title below phone */}
+                    <div className="mt-4 text-center">
                       <h4 className="font-medium text-white">{video.title}</h4>
-                      <p className="text-sm text-gray-500 mt-1">{video.description}</p>
+                      <p className="text-xs text-gray-500 mt-1">{video.description}</p>
                     </div>
                   </motion.div>
                 ))}
