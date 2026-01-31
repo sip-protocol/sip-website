@@ -19,62 +19,65 @@ import {
   FileText,
 } from 'lucide-react'
 
+// CDN base URL for videos
+const CDN_BASE = 'https://cdn.sip-protocol.org/videos/showcase/solana-privacy-2026'
+
 // Video data for the showcase
 const videos = [
   {
     id: '01-onboarding',
     title: 'Onboarding & Education',
     description: 'Interactive education slides explaining privacy concepts',
-    src: '/videos/showcase/solana-privacy-2026/01-onboarding-education.mp4',
+    src: `${CDN_BASE}/01-onboarding-education.mp4`,
     category: 'Getting Started',
   },
   {
     id: '02-wallet',
     title: 'Wallet Setup',
     description: 'Create or import wallet with secure key storage',
-    src: '/videos/showcase/solana-privacy-2026/02-wallet-setup.mp4',
+    src: `${CDN_BASE}/02-wallet-setup.mp4`,
     category: 'Getting Started',
   },
   {
     id: '03-settings',
     title: 'Settings & Navigation',
     description: 'All tabs and settings menu walkthrough',
-    src: '/videos/showcase/solana-privacy-2026/03-settings-all-menus.mp4',
+    src: `${CDN_BASE}/03-settings-all-menus.mp4`,
     category: 'Getting Started',
   },
   {
     id: '04-devnet',
     title: 'Devnet E2E Flow',
     description: 'Send → Scan → Claim cycle on devnet',
-    src: '/videos/showcase/solana-privacy-2026/04-devnet-send-scan-claim.mp4',
+    src: `${CDN_BASE}/04-devnet-send-scan-claim.mp4`,
     category: 'Privacy Transactions',
   },
   {
     id: '05-mainnet',
     title: 'Mainnet E2E Flow',
     description: 'Send → Scan → Claim cycle on mainnet',
-    src: '/videos/showcase/solana-privacy-2026/05-mainnet-send-scan-claim.mp4',
+    src: `${CDN_BASE}/05-mainnet-send-scan-claim.mp4`,
     category: 'Privacy Transactions',
   },
   {
     id: '06-explorer',
     title: 'On-Chain Verification',
     description: 'View transaction on Solscan explorer',
-    src: '/videos/showcase/solana-privacy-2026/06-view-on-explorer.mp4',
+    src: `${CDN_BASE}/06-view-on-explorer.mp4`,
     category: 'Privacy Transactions',
   },
   {
     id: '07-compliant',
     title: 'Compliant Privacy Flow',
     description: 'Send → Scan → Claim with Compliant privacy level',
-    src: '/videos/showcase/solana-privacy-2026/07-compliant-send-scan-claim.mp4',
+    src: `${CDN_BASE}/07-compliant-send-scan-claim.mp4`,
     category: 'Compliance',
   },
   {
     id: '08-viewing-keys',
     title: 'Viewing Keys & Compliance',
     description: 'Export viewing keys and compliance dashboard',
-    src: '/videos/showcase/solana-privacy-2026/08-viewing-keys-compliance.mp4',
+    src: `${CDN_BASE}/08-viewing-keys-compliance.mp4`,
     category: 'Compliance',
   },
 ]
