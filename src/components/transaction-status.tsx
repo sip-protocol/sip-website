@@ -261,14 +261,14 @@ export function TransactionStatus({
         <div className="rounded-xl border border-blue-500/30 bg-blue-500/10 p-4">
           <div className="flex items-center gap-3">
             <div className="relative flex h-10 w-10 items-center justify-center">
-              <SpinnerIcon className="h-10 w-10 animate-spin text-blue-400" />
+              <SpinnerIcon className="h-10 w-10 animate-spin text-gray-300" />
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="h-4 w-4 rounded-full bg-blue-500/20" />
               </div>
             </div>
             <div className="flex-1">
-              <p className="font-medium text-blue-300">Processing Swap</p>
-              <p className="text-sm text-blue-400/80">
+              <p className="font-medium text-gray-200">Processing Swap</p>
+              <p className="text-sm text-gray-300/80">
                 Your swap is being processed on NEAR
               </p>
             </div>
@@ -340,19 +340,19 @@ export function TransactionStatus({
             {txHash && explorerUrl && settlementChain && (
               <div className="rounded-lg bg-cyan-500/10 p-3">
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-xs text-cyan-400/60 flex items-center gap-1">
+                  <p className="text-xs text-white/60 flex items-center gap-1">
                     <ExplorerIcon chain={settlementChain} className="h-3 w-3" />
                     Destination ({NETWORKS[settlementChain]?.name || settlementChain})
                   </p>
                 </div>
-                <p className="font-mono text-xs text-cyan-300 break-all mb-2">
+                <p className="font-mono text-xs text-gray-200 break-all mb-2">
                   {truncateHash(txHash)}
                 </p>
                 <a
                   href={explorerUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 rounded-lg bg-cyan-500/20 px-3 py-1.5 text-xs font-medium text-cyan-300 transition-colors hover:bg-cyan-500/30"
+                  className="flex items-center justify-center gap-2 rounded-lg bg-cyan-500/20 px-3 py-1.5 text-xs font-medium text-gray-200 transition-colors hover:bg-cyan-500/30"
                 >
                   View on {getExplorerName(settlementChain)}
                   <ExternalLinkIcon className="h-3 w-3" />
@@ -583,7 +583,7 @@ function TransactionTimer({
     blue: {
       bar: 'bg-blue-500',
       track: 'bg-blue-500/20',
-      text: 'text-blue-400',
+      text: 'text-gray-300',
       overtime: 'text-yellow-400',
     },
   }

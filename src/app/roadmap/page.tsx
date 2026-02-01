@@ -137,7 +137,7 @@ function HeroSection() {
                     phase.status === 'complete'
                       ? 'text-green-400'
                       : phase.status === 'active'
-                      ? 'text-blue-400'
+                      ? 'text-white'
                       : 'text-gray-500'
                   }`}
                 >
@@ -173,7 +173,7 @@ function CurrentPhaseSection() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-400">
+                <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-500/20 text-white">
                   Currently Active
                 </span>
                 <span className="text-sm text-gray-500">
@@ -185,14 +185,14 @@ function CurrentPhaseSection() {
               </h2>
               <p className="mt-2 text-gray-400">{activePhase.subtitle}</p>
               {currentMilestone && (
-                <p className="mt-2 text-sm text-blue-400">
+                <p className="mt-2 text-sm text-white">
                   Current: {currentMilestone.id} — {currentMilestone.title}
                 </p>
               )}
             </div>
             <div className="flex items-center gap-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-blue-400">
+                <div className="text-3xl font-bold text-white">
                   {currentMilestone?.id || 'M16'}
                 </div>
                 <div className="text-xs text-gray-500">Current</div>
@@ -273,9 +273,9 @@ function PhaseSection({ phase }: { phase: Phase }) {
         }
       case 'active':
         return {
-          badge: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+          badge: 'bg-blue-500/10 text-white border-blue-500/20',
           border: 'border-blue-500/30',
-          icon: 'bg-blue-500/10 text-blue-400',
+          icon: 'bg-blue-500/10 text-white',
           card: 'hover:border-blue-500/30',
         }
       default:
@@ -313,7 +313,7 @@ function PhaseSection({ phase }: { phase: Phase }) {
               </span>
             )}
             {phase.status === 'active' && (
-              <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-400 animate-pulse">
+              <span className="px-2 py-1 rounded-full text-xs font-medium bg-purple-500/20 text-white animate-pulse">
                 In Progress
               </span>
             )}
@@ -368,7 +368,7 @@ function PhaseSection({ phase }: { phase: Phase }) {
                     {milestone.status === 'complete' ? (
                       <CheckCircle2 className="w-5 h-5 text-green-400" />
                     ) : milestone.status === 'in-progress' ? (
-                      <Circle className="w-5 h-5 text-blue-400" />
+                      <Circle className="w-5 h-5 text-white" />
                     ) : (
                       <Circle className="w-5 h-5 text-gray-600" />
                     )}
@@ -390,7 +390,7 @@ function PhaseSection({ phase }: { phase: Phase }) {
                           milestone.status === 'complete'
                             ? 'bg-green-500/20 text-green-400'
                             : milestone.status === 'in-progress'
-                            ? 'bg-blue-500/20 text-blue-400'
+                            ? 'bg-purple-500/20 text-white'
                             : 'bg-gray-800 text-gray-500'
                         }`}
                       >
@@ -398,7 +398,7 @@ function PhaseSection({ phase }: { phase: Phase }) {
                       </span>
                       <h3 className="font-semibold">{milestone.title}</h3>
                       {milestone.status === 'in-progress' && (
-                        <span className="text-xs text-blue-400">In Progress</span>
+                        <span className="text-xs text-white">In Progress</span>
                       )}
                       {milestone.githubIssue && (
                         <a

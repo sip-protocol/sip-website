@@ -205,7 +205,7 @@ function TransactionCard({
       borderColor: 'border-blue-600/40',
       activeBorder: 'border-blue-500 ring-2 ring-blue-500/50',
       bgGradient: 'from-blue-950/30 to-gray-950/50',
-      titleColor: 'text-blue-400',
+      titleColor: 'text-gray-300',
       showFrom: false,
       showTo: false,
       showAmount: false,
@@ -227,7 +227,7 @@ function TransactionCard({
         <div className="flex items-center gap-2">
           {mode === 'transparent' && <EyeOpenIcon className="h-5 w-5 text-gray-400" />}
           {mode === 'shielded' && <ShieldIcon className="h-5 w-5 text-purple-400" />}
-          {mode === 'compliant' && <KeyIcon className="h-5 w-5 text-blue-400" />}
+          {mode === 'compliant' && <KeyIcon className="h-5 w-5 text-gray-300" />}
           <span className={`text-sm font-bold tracking-wider ${c.titleColor}`}>{c.title}</span>
         </div>
 
@@ -289,7 +289,7 @@ function TransactionCard({
               ? 'text-red-400'
               : mode === 'shielded'
                 ? 'text-green-400'
-                : 'text-blue-400'
+                : 'text-gray-300'
           }`}
         >
           {visibleTo}
@@ -337,7 +337,7 @@ function TransactionField({ label, value, isHidden, status, showKeyIcon }: Trans
             <code className="font-mono text-xs text-gray-500 sm:text-sm">
               {status === 'selective' ? '[ENCRYPTED]' : '[HIDDEN]'}
             </code>
-            {showKeyIcon && <KeyIcon className="h-3 w-3 text-blue-400" />}
+            {showKeyIcon && <KeyIcon className="h-3 w-3 text-gray-300" />}
             <StatusBadge status={status} />
           </>
         ) : (
@@ -371,7 +371,7 @@ function StatusBadge({ status }: { status: 'exposed' | 'hidden' | 'selective' })
   }
 
   return (
-    <span className="flex items-center gap-1 rounded bg-blue-500/20 px-1.5 py-0.5 text-[10px] font-medium text-blue-400">
+    <span className="flex items-center gap-1 rounded bg-blue-500/20 px-1.5 py-0.5 text-[10px] font-medium text-gray-300">
       <KeyIcon className="h-2.5 w-2.5" />
       <span className="hidden sm:inline">KEY</span>
     </span>
@@ -381,7 +381,7 @@ function StatusBadge({ status }: { status: 'exposed' | 'hidden' | 'selective' })
 function ViewingKeyFlow() {
   return (
     <div className="rounded-xl border border-blue-500/30 bg-blue-950/20 p-4 sm:rounded-2xl sm:p-6">
-      <h4 className="mb-4 flex items-center gap-2 text-base font-semibold text-blue-300 sm:text-lg">
+      <h4 className="mb-4 flex items-center gap-2 text-base font-semibold text-gray-200 sm:text-lg">
         <KeyIcon className="h-5 w-5" />
         Viewing Key Disclosure Flow
       </h4>
@@ -389,7 +389,7 @@ function ViewingKeyFlow() {
       <div className="grid gap-4 sm:grid-cols-3">
         {/* Step 1 */}
         <div className="relative rounded-lg bg-gray-800/50 p-4">
-          <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/20 text-sm font-bold text-blue-400">
+          <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/20 text-sm font-bold text-gray-300">
             1
           </div>
           <h5 className="font-medium text-gray-200">Transaction Encrypted</h5>
@@ -401,7 +401,7 @@ function ViewingKeyFlow() {
 
         {/* Step 2 */}
         <div className="relative rounded-lg bg-gray-800/50 p-4">
-          <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/20 text-sm font-bold text-blue-400">
+          <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/20 text-sm font-bold text-gray-300">
             2
           </div>
           <h5 className="font-medium text-gray-200">Auditor Requests</h5>
@@ -413,7 +413,7 @@ function ViewingKeyFlow() {
 
         {/* Step 3 */}
         <div className="rounded-lg bg-gray-800/50 p-4">
-          <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/20 text-sm font-bold text-blue-400">
+          <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/20 text-sm font-bold text-gray-300">
             3
           </div>
           <h5 className="font-medium text-gray-200">Selective Disclosure</h5>
@@ -424,7 +424,7 @@ function ViewingKeyFlow() {
       </div>
 
       <div className="mt-4 rounded-lg bg-blue-900/20 p-3">
-        <p className="text-xs text-blue-300">
+        <p className="text-xs text-gray-200">
           <strong>Key benefit:</strong> Privacy from public + compliance when required. Best of both worlds.
         </p>
       </div>

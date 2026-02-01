@@ -297,7 +297,7 @@ export function RoadmapSection() {
     1: { bg: 'bg-indigo-500/20', border: 'border-indigo-500', text: 'text-indigo-400' },
     2: { bg: 'bg-green-500/20', border: 'border-green-500', text: 'text-green-400' },
     3: { bg: 'bg-emerald-500/20', border: 'border-emerald-500', text: 'text-emerald-400' },
-    4: { bg: 'bg-blue-500/20', border: 'border-blue-500', text: 'text-blue-400' },
+    4: { bg: 'bg-blue-500/20', border: 'border-blue-500', text: 'text-white' },
     5: { bg: 'bg-purple-500/20', border: 'border-purple-500', text: 'text-purple-400' },
   }
 
@@ -332,7 +332,7 @@ export function RoadmapSection() {
                   <span className={`text-xs font-medium ${colors.text}`}>Phase {phase.id}</span>
                   <span className={`text-xs px-2 py-0.5 rounded-full ${
                     phase.status === 'complete' ? 'bg-green-500/10 text-green-400' :
-                    phase.status === 'active' ? 'bg-blue-500/10 text-blue-400' :
+                    phase.status === 'active' ? 'bg-blue-500/10 text-white' :
                     'bg-gray-500/10 text-gray-500'
                   }`}>
                     {phase.status === 'complete' ? '100%' : phase.status === 'active' ? `${phase.progress}%` : 'Upcoming'}
@@ -368,7 +368,7 @@ export function RoadmapSection() {
           viewport={{ once: true }}
           className="max-w-2xl mx-auto p-6 rounded-2xl bg-blue-950/30 border border-blue-500/30 text-center"
         >
-          <div className="text-sm text-blue-400 font-medium mb-2">Currently Active</div>
+          <div className="text-sm text-white font-medium mb-2">Currently Active</div>
           <h3 className="text-xl font-bold">
             {PROJECT_STATUS.currentMilestone}: {PROJECT_STATUS.currentPhaseName}
           </h3>
@@ -377,7 +377,7 @@ export function RoadmapSection() {
           </p>
           <Link
             href="/roadmap"
-            className="inline-flex items-center gap-2 mt-4 text-blue-400 hover:text-blue-300 transition-colors text-sm"
+            className="inline-flex items-center gap-2 mt-4 text-white hover:text-gray-200 transition-colors text-sm"
           >
             View Full Roadmap
             <ArrowRight className="w-4 h-4" />

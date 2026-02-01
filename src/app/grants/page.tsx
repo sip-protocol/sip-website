@@ -146,7 +146,7 @@ function GrantCardsSection() {
       color: 'from-blue-500 to-cyan-500',
       borderColor: 'border-blue-500/20 hover:border-blue-500/50',
       bgColor: 'bg-blue-500/10',
-      textColor: 'text-blue-400',
+      textColor: 'text-white',
       features: [
         'Community events',
         'Documentation',

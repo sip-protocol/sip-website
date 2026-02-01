@@ -411,7 +411,7 @@ export function ComparisonView({ privacyLevel }: ComparisonViewProps) {
           {/* Compliant Mode Note */}
           {privacyLevel === PrivacyLevel.COMPLIANT && (
             <div className="mt-3 rounded-lg border border-blue-500/30 bg-blue-950/20 p-2.5 sm:mt-4 sm:p-3">
-              <p className="text-xs text-blue-300 sm:text-sm">
+              <p className="text-xs text-gray-200 sm:text-sm">
                 <strong>Compliant Mode:</strong> Auditors with your viewing key can
                 verify transactions, but public cannot link them.
               </p>

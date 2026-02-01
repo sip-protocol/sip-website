@@ -77,19 +77,19 @@ export default function SecurityPage() {
               <h3 className="text-lg font-semibold mb-3">Trust Assumptions</h3>
               <ul className="space-y-2 text-gray-400">
                 <li className="flex items-start gap-2">
-                  <span className="text-blue-500 mt-1">→</span>
+                  <span className="text-gray-400 mt-1">→</span>
                   <span>Cryptographic primitives (secp256k1, SHA-256, XChaCha20-Poly1305) are secure</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-blue-500 mt-1">→</span>
+                  <span className="text-gray-400 mt-1">→</span>
                   <span>NEAR Intents infrastructure operates honestly for settlement</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-blue-500 mt-1">→</span>
+                  <span className="text-gray-400 mt-1">→</span>
                   <span>User&apos;s local environment is not compromised</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-blue-500 mt-1">→</span>
+                  <span className="text-gray-400 mt-1">→</span>
                   <span>Random number generation (CSPRNG) is unpredictable</span>
                 </li>
               </ul>

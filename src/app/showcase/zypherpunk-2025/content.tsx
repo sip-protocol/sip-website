@@ -121,7 +121,7 @@ function HeroSection() {
                 <div className="text-xs text-gray-500">Published SDK</div>
               </div>
               <div className="px-4 py-2 rounded-lg bg-blue-500/10 border border-blue-500/20">
-                <div className="text-2xl font-bold text-blue-400">{PROJECT_STATUS.currentMilestone}</div>
+                <div className="text-2xl font-bold text-white">{PROJECT_STATUS.currentMilestone}</div>
                 <div className="text-xs text-gray-500">Current Milestone</div>
               </div>
             </motion.div>
@@ -169,7 +169,7 @@ function HeroSection() {
                 <div className="pl-4 space-y-1 text-gray-400">
                   <div><span className="text-purple-300">from:</span> <span className="text-yellow-300">&quot;ETH&quot;</span>,</div>
                   <div><span className="text-purple-300">to:</span> <span className="text-yellow-300">&quot;SOL&quot;</span>,</div>
-                  <div><span className="text-purple-300">amount:</span> <span className="text-cyan-300">1.0</span>,</div>
+                  <div><span className="text-purple-300">amount:</span> <span className="text-gray-200">1.0</span>,</div>
                   <div><span className="text-purple-300">privacy:</span> <span className="text-yellow-300">&quot;shielded&quot;</span></div>
                 </div>
                 <div className="text-green-400">{`)`}</div>
@@ -380,7 +380,7 @@ function ArchitectureSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-blue-500/10 text-white border border-blue-500/20"
           >
             <Blocks className="w-4 h-4" />
             Architecture
@@ -505,7 +505,7 @@ function TractionSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-cyan-500/10 text-cyan-400 border border-cyan-500/20"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-cyan-500/10 text-white border border-cyan-500/20"
           >
             <LineChart className="w-4 h-4" />
             Traction
@@ -623,14 +623,14 @@ function RoadmapSection() {
               <div className="flex items-center justify-between mb-4">
                 <span className={`text-sm font-medium ${
                   phase.status === 'complete' ? 'text-green-400' :
-                  phase.status === 'active' ? 'text-blue-400' :
+                  phase.status === 'active' ? 'text-white' :
                   'text-gray-500'
                 }`}>
                   Phase {phase.phase}
                 </span>
                 <span className={`text-xs px-2 py-1 rounded-full ${
                   phase.status === 'complete' ? 'bg-green-500/10 text-green-400' :
-                  phase.status === 'active' ? 'bg-blue-500/10 text-blue-400' :
+                  phase.status === 'active' ? 'bg-blue-500/10 text-white' :
                   'bg-gray-500/10 text-gray-500'
                 }`}>
                   {phase.status === 'complete' ? '✓ Complete' : phase.status === 'active' ? '● Active' : 'Upcoming'}

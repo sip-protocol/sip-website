@@ -747,7 +747,7 @@ function TimelineSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-purple-500/10 text-white border border-purple-500/20"
           >
             <Calendar className="w-4 h-4" />
             Timeline
@@ -795,7 +795,7 @@ function TimelineSection() {
                 item.highlight ? 'bg-emerald-950/30 border border-emerald-500/30' : 'bg-gray-900/50 border border-gray-800'
               }`}>
                 <div className="flex items-center gap-3 mb-2">
-                  <span className={`text-sm font-medium ${item.highlight ? 'text-emerald-400' : 'text-blue-400'}`}>
+                  <span className={`text-sm font-medium ${item.highlight ? 'text-emerald-400' : 'text-white'}`}>
                     {item.date}
                   </span>
                   {item.highlight && (

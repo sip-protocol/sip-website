@@ -502,7 +502,7 @@ export function TransactionProof() {
                 extra={
                   <div className="mt-2 p-2 rounded bg-gray-900/50">
                     <div className="text-xs text-gray-500 mb-1">Nullifier (prevents double-spend)</div>
-                    <code className="text-xs text-blue-400 break-all">{truncate(zkProofs.validityProof.nullifier, 20, 16)}</code>
+                    <code className="text-xs text-gray-300 break-all">{truncate(zkProofs.validityProof.nullifier, 20, 16)}</code>
                   </div>
                 }
               />
@@ -577,11 +577,11 @@ export function TransactionProof() {
               {/* Quote Details */}
               <div className="p-6 rounded-2xl bg-cyan-500/5 border border-cyan-500/30">
                 <div className="flex items-center gap-2 mb-4">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-cyan-500/20 text-cyan-400">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-cyan-500/20 text-white">
                     💱
                   </span>
-                  <h4 className="text-lg font-semibold text-cyan-400">NEAR Intents Quote</h4>
-                  <span className="ml-auto px-2 py-0.5 rounded text-xs bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
+                  <h4 className="text-lg font-semibold text-white">NEAR Intents Quote</h4>
+                  <span className="ml-auto px-2 py-0.5 rounded text-xs bg-cyan-500/20 text-white border border-cyan-500/30">
                     Simulated
                   </span>
                 </div>
@@ -597,7 +597,7 @@ export function TransactionProof() {
 
                 <div className="mt-4 p-3 rounded-lg bg-gray-900/50">
                   <div className="text-xs text-gray-500 mb-1">Deposit Address</div>
-                  <code className="text-cyan-400 text-sm break-all">{quoteData.depositAddress}</code>
+                  <code className="text-white text-sm break-all">{quoteData.depositAddress}</code>
                 </div>
               </div>
 
@@ -786,7 +786,7 @@ function ZKProofCard({
     blue: {
       bg: 'bg-blue-500/5',
       border: 'border-blue-500/30',
-      text: 'text-blue-400',
+      text: 'text-gray-300',
       badge: 'bg-blue-500/20',
     },
     purple: {

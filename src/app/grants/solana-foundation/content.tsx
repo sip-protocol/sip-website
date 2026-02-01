@@ -846,7 +846,7 @@ function TechnicalSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-cyan-500/10 text-cyan-400 border border-cyan-500/20"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-cyan-500/10 text-white border border-cyan-500/20"
           >
             <Code className="w-4 h-4" />
             Under the Hood
@@ -885,7 +885,7 @@ function SocialProofSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-purple-500/10 text-white border border-purple-500/20"
           >
             <Eye className="w-4 h-4" />
             Why Privacy Matters
@@ -1016,7 +1016,7 @@ function ArchitectureSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-cyan-500/10 text-cyan-400 border border-cyan-500/20"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-cyan-500/10 text-white border border-cyan-500/20"
           >
             <Blocks className="w-4 h-4" />
             Architecture
@@ -1115,27 +1115,27 @@ function ArchitectureSection() {
             transition={{ delay: 0.2 }}
             className="p-8 rounded-2xl bg-cyan-950/20 border border-cyan-500/20"
           >
-            <div className="text-cyan-400 font-semibold text-lg mb-4">Mobile + Wallets</div>
+            <div className="text-white font-semibold text-lg mb-4">Mobile + Wallets</div>
             <p className="text-gray-400 mb-4">React Native SDK + multi-wallet</p>
             <ul className="space-y-2 text-sm text-gray-500">
               <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-cyan-400" />
+                <CheckCircle2 className="w-4 h-4 text-gray-300" />
                 React Native SDK (iOS/Android)
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-cyan-400" />
+                <CheckCircle2 className="w-4 h-4 text-gray-300" />
                 Phantom adapter
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-cyan-400" />
+                <CheckCircle2 className="w-4 h-4 text-gray-300" />
                 Solflare adapter
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-cyan-400" />
+                <CheckCircle2 className="w-4 h-4 text-gray-300" />
                 Backpack + WalletConnect v2
               </li>
             </ul>
-            <div className="mt-4 px-3 py-1 bg-cyan-500/10 rounded-full inline-block text-xs text-cyan-300">
+            <div className="mt-4 px-3 py-1 bg-cyan-500/10 rounded-full inline-block text-xs text-gray-300">
               M17 Deliverable
             </div>
           </motion.div>

@@ -274,7 +274,7 @@ export function StealthAddressDisplay({
           <span
             className={`rounded px-1.5 py-0.5 text-xs ${
               curve === 'ed25519'
-                ? 'bg-blue-500/20 text-blue-400'
+                ? 'bg-blue-500/20 text-gray-300'
                 : 'bg-amber-500/20 text-amber-400'
             }`}
           >
@@ -355,7 +355,7 @@ export function StealthAddressDisplay({
             </div>
             <div className="flex justify-between">
               <span className="text-gray-500">Curve</span>
-              <span className={curve === 'ed25519' ? 'text-blue-400' : 'text-amber-400'}>
+              <span className={curve === 'ed25519' ? 'text-gray-300' : 'text-amber-400'}>
                 {curve === 'ed25519' ? 'Ed25519 (EdDSA)' : 'secp256k1 (ECDSA)'}
               </span>
             </div>

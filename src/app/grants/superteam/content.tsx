@@ -98,7 +98,7 @@ function HeroSection() {
             transition={{ duration: 0.5 }}
             className="flex flex-wrap justify-center gap-3"
           >
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-blue-500/10 text-white border border-blue-500/20">
               <DollarSign className="w-4 h-4" />
               Instagrant Application
             </span>
@@ -288,7 +288,7 @@ function ValuePropositionSection() {
       label: 'Requesting',
       value: '$10K',
       icon: DollarSign,
-      color: 'text-blue-400',
+      color: 'text-white',
       bgColor: 'bg-blue-500/10',
     },
     {
@@ -740,7 +740,7 @@ function BudgetSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-blue-500/10 text-white border border-blue-500/20"
           >
             <DollarSign className="w-4 h-4" />
             Budget Breakdown
@@ -778,14 +778,14 @@ function BudgetSection() {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                    <item.icon className="w-6 h-6 text-blue-400" />
+                    <item.icon className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <span className="font-semibold text-lg">{item.category}</span>
                     <div className="text-xs text-gray-500">{item.percent}% of budget</div>
                   </div>
                 </div>
-                <span className="text-2xl font-bold text-blue-400">{item.amount}</span>
+                <span className="text-2xl font-bold text-white">{item.amount}</span>
               </div>
               {/* Deliverables list */}
               <ul className="space-y-2 ml-15">
@@ -894,7 +894,7 @@ function TimelineSection() {
               transition={{ delay: index * 0.1 }}
               className="p-6 rounded-2xl bg-gray-900/50 border border-gray-800"
             >
-              <div className="text-sm text-blue-400 font-medium">{milestone.month}</div>
+              <div className="text-sm text-white font-medium">{milestone.month}</div>
               <h3 className="mt-2 text-xl font-semibold">{milestone.title}</h3>
               <ul className="mt-4 space-y-2">
                 {milestone.items.map((item) => (
@@ -990,7 +990,7 @@ function SuccessMetricsSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-cyan-500/10 text-cyan-400 border border-cyan-500/20"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-cyan-500/10 text-white border border-cyan-500/20"
           >
             <Target className="w-4 h-4" />
             Success Metrics
@@ -1028,7 +1028,7 @@ function SuccessMetricsSection() {
               {/* Header */}
               <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
                 <div className="flex items-center gap-3">
-                  <span className="px-3 py-1 rounded-lg bg-cyan-500/20 text-cyan-400 font-bold text-sm">
+                  <span className="px-3 py-1 rounded-lg bg-cyan-500/20 text-white font-bold text-sm">
                     {tranche.id}
                   </span>
                   <span className="text-gray-400">{tranche.timeline}</span>
@@ -1062,7 +1062,7 @@ function SuccessMetricsSection() {
                         <span className="text-gray-500">{m.current}</span>
                         <ArrowRight className="w-3 h-3 text-gray-600" />
                         <span className="text-white font-medium">{m.target}</span>
-                        <span className="text-cyan-400 text-xs">({m.growth})</span>
+                        <span className="text-white text-xs">({m.growth})</span>
                       </div>
                     </div>
                   ))}
@@ -1164,7 +1164,7 @@ function SocialProofSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-blue-500/10 text-white border border-blue-500/20"
           >
             <Eye className="w-4 h-4" />
             Why Privacy Matters

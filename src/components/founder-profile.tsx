@@ -106,7 +106,7 @@ export function FounderProfile({ data: providedData }: FounderProfileProps) {
                   <h3 className="text-2xl font-bold text-white">{data.name}</h3>
                   {data.isLive && <LiveIndicator />}
                 </div>
-                <p className="text-cyan-400 text-sm">{data.username}</p>
+                <p className="text-white text-sm">{data.username}</p>
                 <p className="text-gray-400 text-sm mt-1">{data.role}</p>
               </div>
 
@@ -237,7 +237,7 @@ export function FounderProfile({ data: providedData }: FounderProfileProps) {
           >
             <h4 className="text-sm font-medium text-gray-400 mb-2 flex items-center gap-2">
               <span className="text-purple-400">🎯</span> {data.vision.title}
-              <span className="ml-auto text-xs text-cyan-400 font-mono">{data.vision.timeline}</span>
+              <span className="ml-auto text-xs text-white font-mono">{data.vision.timeline}</span>
             </h4>
             <div className="space-y-2">
               {data.vision.goals.map((goal, index) => (
@@ -317,10 +317,10 @@ export function FounderProfile({ data: providedData }: FounderProfileProps) {
                               tag === '2nd Place' ? 'bg-gray-400/20 text-gray-300 border border-gray-400/30' :
                               tag.includes('Stars') ? 'bg-amber-500/20 text-amber-400' :
                               tag === 'Shell' ? 'bg-green-500/20 text-green-400' :
-                              tag === 'TypeScript' ? 'bg-blue-500/20 text-blue-400' :
+                              tag === 'TypeScript' ? 'bg-blue-500/20 text-gray-300' :
                               tag === 'Solana' ? 'bg-purple-500/20 text-purple-400' :
                               tag === 'Privacy' || tag === 'ZK' ? 'bg-pink-500/20 text-pink-400' :
-                              tag === 'CLI' ? 'bg-cyan-500/20 text-cyan-400' :
+                              tag === 'CLI' ? 'bg-cyan-500/20 text-white' :
                               tag === 'NFT' ? 'bg-orange-500/20 text-orange-400' :
                               tag === 'Gov' ? 'bg-emerald-500/20 text-emerald-400' :
                               tag === 'Docs' ? 'bg-indigo-500/20 text-indigo-400' :
@@ -403,7 +403,7 @@ function StatBox({
   isText?: boolean
 }) {
   const colorClasses = {
-    cyan: 'text-cyan-400',
+    cyan: 'text-white',
     amber: 'text-amber-400',
     green: 'text-green-400',
     purple: 'text-purple-400',

@@ -49,7 +49,7 @@ const levels: LevelConfig[] = [
     hint: {
       icon: '📋',
       text: 'Audit-ready — save your viewing key for tax reporting',
-      className: 'text-blue-400',
+      className: 'text-gray-300',
     },
   },
 ]
@@ -276,7 +276,7 @@ function PrivacyComparisonModal({
                     className={`px-3 py-1.5 rounded-lg transition-colors ${
                       selectedLevel === PrivacyLevel.COMPLIANT
                         ? 'bg-blue-600 text-white'
-                        : 'text-blue-400 hover:text-blue-300 hover:bg-blue-500/20'
+                        : 'text-gray-300 hover:text-gray-200 hover:bg-blue-500/20'
                     }`}
                   >
                     Compliant
@@ -312,8 +312,8 @@ function PrivacyComparisonModal({
               <span><strong className="text-purple-400">Personal use:</strong> Shielded for maximum privacy</span>
             </li>
             <li className="flex items-center gap-2">
-              <KeyIcon className="h-4 w-4 text-blue-400" />
-              <span><strong className="text-blue-400">Business/DAO:</strong> Compliant for audit trail</span>
+              <KeyIcon className="h-4 w-4 text-gray-300" />
+              <span><strong className="text-gray-300">Business/DAO:</strong> Compliant for audit trail</span>
             </li>
             <li className="flex items-center gap-2">
               <EyeOpenIcon className="h-4 w-4 text-gray-400" />

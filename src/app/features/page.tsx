@@ -280,7 +280,7 @@ function VMSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-cyan-500/10 text-cyan-400 border border-cyan-500/20"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-cyan-500/10 text-white border border-cyan-500/20"
           >
             VM-Agnostic
           </motion.span>
@@ -358,7 +358,7 @@ function VMSection() {
           className="mt-12 max-w-2xl mx-auto p-6 rounded-xl bg-cyan-950/20 border border-cyan-500/20 text-center"
         >
           <p className="text-sm text-gray-400">
-            <span className="text-cyan-400 font-medium">How it works:</span> SIP generates stealth addresses client-side using your wallet&apos;s cryptographic curve. The blockchain only sees normal transactions — no special VM support required.
+            <span className="text-white font-medium">How it works:</span> SIP generates stealth addresses client-side using your wallet&apos;s cryptographic curve. The blockchain only sees normal transactions — no special VM support required.
           </p>
         </motion.div>
       </div>
@@ -439,7 +439,7 @@ function ChainsSection() {
               </p>
               {chain.priority === 'tier1' && chain.status === 'coming' && (
                 <div className="mt-3">
-                  <span className="text-xs px-2 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                  <span className="text-xs px-2 py-1 rounded-full bg-blue-500/10 text-white border border-blue-500/20">
                     High Priority (M18)
                   </span>
                 </div>

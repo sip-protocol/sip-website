@@ -947,7 +947,7 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
             className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-800/50 transition-colors group"
             aria-label="Powered by NEAR Intents settlement"
           >
-            <NearLogo className="h-6 w-6 text-cyan-400 group-hover:text-cyan-300 transition-colors" />
+            <NearLogo className="h-6 w-6 text-white group-hover:text-gray-200 transition-colors" />
             <div className="text-left">
               <div className="text-sm font-semibold text-gray-300 group-hover:text-white transition-colors">NEAR Intents</div>
               <div className="text-[10px] text-gray-500 group-hover:text-gray-400 transition-colors">Settlement Layer</div>
@@ -963,7 +963,7 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
           <span className="px-2 py-1 text-[10px] font-medium rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">
             Stealth Addresses
           </span>
-          <span className="px-2 py-1 text-[10px] font-medium rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+          <span className="px-2 py-1 text-[10px] font-medium rounded-full bg-cyan-500/10 text-white border border-cyan-500/20">
             Cross-Chain
           </span>
         </div>

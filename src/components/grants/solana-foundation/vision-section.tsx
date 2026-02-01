@@ -69,11 +69,11 @@ export function VisionSection() {
             </div>
 
             <div className="flex justify-center">
-              <ArrowRight className="w-5 h-5 text-blue-400 rotate-90" />
+              <ArrowRight className="w-5 h-5 text-white rotate-90" />
             </div>
 
             <div className="p-4 rounded-xl bg-blue-950/30 border border-blue-500/20 text-center">
-              <div className="text-blue-400 text-xs mb-1">SETTLEMENT (Pluggable)</div>
+              <div className="text-white text-xs mb-1">SETTLEMENT (Pluggable)</div>
               <div className="text-gray-400">NEAR Intents &bull; Mina &bull; Direct Chain</div>
             </div>
 
