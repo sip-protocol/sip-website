@@ -46,8 +46,8 @@
 }
 
 :root {
-  --background: 0 0% 3%;
-  --foreground: 0 0% 98%;
+  --background: 8 8 8;
+  --foreground: 250 250 250;
 }
 
 body {
