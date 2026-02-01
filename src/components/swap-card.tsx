@@ -626,12 +626,12 @@ export function SwapCard({ privacyLevel }: SwapCardProps) {
                 </>
               ) : (
                 <>
-                  <WalletIcon className="h-4 w-4 text-cyan-500" />
+                  <WalletIcon className="h-4 w-4 text-gray-300" />
                   <span className="text-xs sm:text-sm">Destination Address</span>
                 </>
               )}
             </span>
-            <span className={`text-xs ${isSameChainPrivacy ? 'text-purple-500' : 'text-cyan-500'}`}>Required</span>
+            <span className={`text-xs ${isSameChainPrivacy ? 'text-purple-500' : 'text-gray-300'}`}>Required</span>
           </div>
 
           <input

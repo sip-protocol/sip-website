@@ -90,7 +90,7 @@ function getToastStyles(type: ToastVariant) {
       return {
         container: 'border-blue-500/30 bg-blue-900/90',
         icon: 'text-gray-300',
-        title: 'text-blue-200',
+        title: 'text-gray-200',
         message: 'text-gray-200/80',
         closeButton: 'text-gray-300/60 hover:text-gray-300 hover:bg-blue-500/20',
       }
