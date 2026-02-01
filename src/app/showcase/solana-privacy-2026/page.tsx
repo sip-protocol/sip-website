@@ -216,10 +216,19 @@ function HeroSection() {
               className="mt-8 flex flex-wrap gap-4"
             >
               <a
-                href="https://github.com/sip-protocol/sip-mobile"
+                href="https://github.com/sip-protocol/sip-mobile/releases/tag/v0.1.6"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-6 py-3 text-white bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all font-medium flex items-center gap-2"
+              >
+                <ArrowRight className="w-4 h-4" />
+                Download APK v0.1.6 (Android/Seeker)
+              </a>
+              <a
+                href="https://github.com/sip-protocol/sip-mobile"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3 text-gray-300 border border-gray-700 rounded-lg hover:text-white hover:border-gray-600 transition-all font-medium flex items-center gap-2"
               >
                 <Github className="w-4 h-4" />
                 View Source
