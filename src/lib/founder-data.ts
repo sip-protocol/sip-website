@@ -89,7 +89,7 @@ const STATIC_CONFIG = {
   name: 'RECTOR',
   username: '@rz1989s',
   role: 'Solo Founder, SIP Protocol  •  🇮🇩 Indonesia',
-  bio: 'Indonesian developer building the privacy standard for Web3. Blockchain architect with $13,300+ in hackathon wins (2024-2025) including MonkeDAO, Zypherpunk (3 tracks), and Superteam Indonesia. Focused on cryptographic privacy, cross-chain infrastructure, and high-performance systems. Privacy is a right, not a feature.',
+  bio: 'Indonesian developer building the privacy standard for Web3. Blockchain architect with $24,300+ across 6 wins (2024-2026) including $10K Superteam grant, MonkeDAO 1st, Zypherpunk Winner (3 tracks), and more. Focused on cryptographic privacy, cross-chain infrastructure, and high-performance systems. Privacy is a right, not a feature.',
   github: 'https://github.com/rz1989s',
   twitter: 'https://x.com/rz1989s',
   twitterProject: 'https://x.com/sipprotocol',
@@ -123,41 +123,59 @@ const STATIC_CONFIG = {
   },
 }
 
-// Projects with GitHub references for dynamic star counts
-// Note: Only fetch stars for repos with significant star counts (>10)
-// Hackathon projects show prize money instead of stars (more impressive)
+// Projects: 6 competition wins + 1 community project
+// Ordered by date (newest first), matching rectorspace.com/achievements
 const PROJECTS_CONFIG: NotableProject[] = [
   {
-    // Main project - no stars fetch needed, the test count is the flex
+    // Grant - biggest win
     name: 'SIP Protocol',
-    description: 'Winner Zypherpunk Hackathon 3 Tracks — Privacy layer with {testCount}+ tests ($6,500)',
+    description: '✅ Grant Approved Superteam Indonesia — Privacy layer for cross-chain transactions ($10,000)',
     url: 'https://github.com/sip-protocol/sip-protocol',
     language: 'TypeScript',
-    tags: ['Winner', 'Privacy', 'ZK'],
+    tags: ['Grant', 'Privacy', 'Solana'],
   },
   {
+    // Bounty - Feb 2026
+    name: 'pNode Pulse',
+    description: '3rd Place Xandeum pNodes Analytics — Real-time analytics for decentralized storage ($1,000)',
+    url: 'https://github.com/RECTOR-LABS/pnode-pulse',
+    language: 'TypeScript',
+    tags: ['3rd Place', 'Analytics', 'Infra'],
+  },
+  {
+    // Hackathon - Dec 2025
     name: 'Web3 Deal Discovery',
-    description: '1st Place MonkeDAO/Superteam — NFT coupons on Solana with escrow marketplace ($5,000 + Gen3 NFT)',
+    description: '1st Place MonkeDAO Cypherpunk — NFT coupons on Solana with escrow marketplace ($5,000 + NFT)',
     url: 'https://github.com/RECTOR-LABS/web3-deal-discovery-nft-coupons',
     language: 'TypeScript',
     tags: ['1st Place', 'Solana', 'NFT'],
   },
   {
+    // Hackathon - Dec 2025 (Zypherpunk)
+    name: 'SIP Protocol',
+    description: '🏆 Winner Zypherpunk Hackathon 3 Tracks — Privacy layer with {testCount}+ tests ($6,500)',
+    url: 'https://github.com/sip-protocol/sip-protocol',
+    language: 'TypeScript',
+    tags: ['Winner', 'Privacy', 'ZK'],
+  },
+  {
+    // Hackathon - Oct 2025
     name: 'OpenBudget.ID',
-    description: '2nd Place Garuda Spark/Superteam Indonesia — On-chain government spending transparency ($1,500)',
+    description: '2nd Place Garuda Spark — On-chain government spending transparency ($1,500)',
     url: 'https://github.com/RECTOR-LABS/openbudget-id',
     language: 'TypeScript',
     tags: ['2nd Place', 'Solana', 'Gov'],
   },
   {
-    name: 'Saros Docs',
-    description: '1st Place Documentation Bounty — Interactive API Explorer for Saros DEX ($300)',
+    // Bounty - Dec 2024
+    name: 'Saros SDK Docs',
+    description: '1st Place Saros SDK Guide Challenge — Docusaurus docs with interactive API Explorer ($300)',
     url: 'https://github.com/rz1989s/saros-docs',
     language: 'TypeScript',
     tags: ['1st Place', 'Docs'],
   },
   {
-    // Only repo with significant stars - fetch dynamically
+    // Community project - fetch stars dynamically
     name: 'claude-code-statusline',
     description: 'Terminal statusline with cost tracking — {stars} stars, {forks} forks (community favorite)',
     url: 'https://github.com/rz1989s/claude-code-statusline',
