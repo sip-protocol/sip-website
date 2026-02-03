@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useEffect, useRef } from 'react'
+import { motion, AnimatePresence, useInView } from 'framer-motion'
 import Link from 'next/link'
 import {
   Shield,
@@ -26,6 +26,8 @@ import {
   GitCommit,
   FolderGit2,
   ChevronRight,
+  Copy,
+  Check,
 } from 'lucide-react'
 import { PhoneMockup, PhoneScreen } from '@/components/ui/PhoneMockup'
 import { FounderProfile } from '@/components/founder-profile'
@@ -80,6 +82,75 @@ const iconMap: Record<string, React.ElementType> = {
 }
 
 // ============================================================================
+// Helper Components
+// ============================================================================
+
+// Animated counter that counts up when in view
+function AnimatedCounter({ value, suffix = '' }: { value: number | string; suffix?: string }) {
+  const [count, setCount] = useState(0)
+  const ref = useRef<HTMLSpanElement>(null)
+  const isInView = useInView(ref, { once: true })
+  const numericValue = typeof value === 'string' ? parseInt(value.replace(/,/g, ''), 10) : value
+
+  useEffect(() => {
+    if (!isInView || isNaN(numericValue)) return
+
+    const duration = 1500 // ms
+    const steps = 60
+    const increment = numericValue / steps
+    let current = 0
+
+    const timer = setInterval(() => {
+      current += increment
+      if (current >= numericValue) {
+        setCount(numericValue)
+        clearInterval(timer)
+      } else {
+        setCount(Math.floor(current))
+      }
+    }, duration / steps)
+
+    return () => clearInterval(timer)
+  }, [isInView, numericValue])
+
+  return (
+    <span ref={ref}>
+      {isNaN(numericValue) ? value : count.toLocaleString()}
+      {suffix}
+    </span>
+  )
+}
+
+// Copy to clipboard button
+function CopyButton({ text, className = '' }: { text: string; className?: string }) {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (err) {
+      console.error('Failed to copy:', err)
+    }
+  }
+
+  return (
+    <button
+      onClick={handleCopy}
+      className={`p-1.5 rounded-md hover:bg-gray-700/50 transition-colors cursor-pointer ${className}`}
+      title={copied ? 'Copied!' : 'Copy to clipboard'}
+    >
+      {copied ? (
+        <Check className="w-4 h-4 text-green-400" />
+      ) : (
+        <Copy className="w-4 h-4 text-gray-400 hover:text-white" />
+      )}
+    </button>
+  )
+}
+
+// ============================================================================
 // Main Component
 // ============================================================================
 
@@ -96,18 +167,18 @@ export function SolanaPrivacyContent({ founderData }: SolanaPrivacyContentProps)
       <div className="border-b border-gray-800/50 bg-gray-950/50 backdrop-blur-sm sticky top-0 z-40">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Breadcrumb */}
-          <div className="py-4">
+          <div className="py-3 sm:py-4">
             <Link
               href="/showcase"
-              className="text-gray-500 hover:text-gray-300 transition-colors flex items-center gap-2 text-sm"
+              className="text-gray-500 hover:text-gray-300 transition-colors flex items-center gap-2 text-xs sm:text-sm cursor-pointer"
             >
-              <ArrowRight className="w-4 h-4 rotate-180" />
+              <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 rotate-180" />
               Back to Showcase
             </Link>
           </div>
 
           {/* Tab Navigation */}
-          <nav className="-mb-px flex overflow-x-auto scrollbar-hide gap-1 pb-px">
+          <nav className="-mb-px flex overflow-x-auto scrollbar-hide gap-0.5 sm:gap-1 pb-px">
             {tabs.map((tab) => {
               const Icon = tab.icon
               const isActive = activeTab === tab.id
@@ -115,13 +186,13 @@ export function SolanaPrivacyContent({ founderData }: SolanaPrivacyContentProps)
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+                  className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-medium whitespace-nowrap border-b-2 transition-colors cursor-pointer ${
                     isActive
                       ? 'border-green-400 text-green-400'
                       : 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-600'
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
+                  <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   {tab.label}
                 </button>
               )
@@ -210,22 +281,34 @@ function OverviewSection() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
-                className="mt-8 flex flex-wrap gap-4"
+                className="mt-8 flex flex-wrap gap-3 sm:gap-4"
               >
-                <div className="px-4 py-2 rounded-lg bg-green-500/10 border border-green-500/20">
-                  <div className="text-2xl font-bold text-green-400">Mainnet</div>
+                <div className="px-3 sm:px-4 py-2 rounded-lg bg-green-500/10 border border-green-500/20 hover:border-green-500/40 transition-colors">
+                  <div className="text-xl sm:text-2xl font-bold text-green-400 flex items-center gap-2">
+                    Mainnet
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                  </div>
                   <div className="text-xs text-gray-500">Live on Solana</div>
                 </div>
-                <div className="px-4 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                  <div className="text-2xl font-bold text-emerald-400">6,850+</div>
+                <div className="px-3 sm:px-4 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 hover:border-emerald-500/40 transition-colors">
+                  <div className="text-xl sm:text-2xl font-bold text-emerald-400">
+                    <AnimatedCounter value={6850} suffix="+" />
+                  </div>
                   <div className="text-xs text-gray-500">Tests Passing</div>
                 </div>
-                <div className="px-4 py-2 rounded-lg bg-teal-500/10 border border-teal-500/20">
-                  <div className="text-2xl font-bold text-teal-400">1,457</div>
+                <div className="px-3 sm:px-4 py-2 rounded-lg bg-teal-500/10 border border-teal-500/20 hover:border-teal-500/40 transition-colors">
+                  <div className="text-xl sm:text-2xl font-bold text-teal-400">
+                    <AnimatedCounter value={1457} />
+                  </div>
                   <div className="text-xs text-gray-500">Total Commits</div>
                 </div>
-                <div className="px-4 py-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
-                  <div className="text-2xl font-bold text-cyan-400">8</div>
+                <div className="px-3 sm:px-4 py-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20 hover:border-cyan-500/40 transition-colors">
+                  <div className="text-xl sm:text-2xl font-bold text-cyan-400">
+                    <AnimatedCounter value={8} />
+                  </div>
                   <div className="text-xs text-gray-500">Repositories</div>
                 </div>
               </motion.div>
@@ -235,13 +318,13 @@ function OverviewSection() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
-                className="mt-8 flex flex-wrap gap-4"
+                className="mt-8 flex flex-wrap gap-3 sm:gap-4"
               >
                 <a
                   href="https://github.com/sip-protocol/sip-mobile/releases/tag/v0.1.6"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-6 py-3 text-white bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all font-medium flex items-center gap-2"
+                  className="px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base text-white bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all font-medium flex items-center gap-2 cursor-pointer hover:scale-105 active:scale-100"
                 >
                   <Download className="w-4 h-4" />
                   Download APK v0.1.6
@@ -250,7 +333,7 @@ function OverviewSection() {
                   href="https://github.com/sip-protocol"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-6 py-3 text-gray-300 border border-gray-700 rounded-lg hover:text-white hover:border-gray-600 transition-all font-medium flex items-center gap-2"
+                  className="px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base text-gray-300 border border-gray-700 rounded-lg hover:text-white hover:border-gray-600 transition-all font-medium flex items-center gap-2 cursor-pointer hover:scale-105 active:scale-100"
                 >
                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                     <path
@@ -347,7 +430,7 @@ function OverviewSection() {
             </motion.h2>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {features.map((feature, index) => {
               const Icon = iconMap[feature.icon] || Shield
               return (
@@ -357,13 +440,14 @@ function OverviewSection() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
-                  className="p-6 rounded-2xl bg-gray-900/50 border border-gray-800 hover:border-green-500/50 transition-colors"
+                  whileHover={{ scale: 1.02, y: -4 }}
+                  className="p-5 sm:p-6 rounded-2xl bg-gray-900/50 border border-gray-800 hover:border-green-500/50 transition-colors cursor-default"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center mb-4">
-                    <Icon className="w-6 h-6 text-green-400" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-green-500/10 flex items-center justify-center mb-4">
+                    <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-green-400" />
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-sm text-gray-400">{feature.description}</p>
+                  <h3 className="text-base sm:text-lg font-semibold mb-2">{feature.title}</h3>
+                  <p className="text-xs sm:text-sm text-gray-400">{feature.description}</p>
                 </motion.div>
               )
             })}
@@ -410,7 +494,7 @@ function VideoGallerySection() {
               {category === 'Compliance' && <Lock className="w-5 h-5 text-white" />}
               {category}
             </h3>
-            <div className="flex flex-wrap gap-8 justify-center">
+            <div className="flex flex-wrap gap-4 sm:gap-8 justify-center">
               {videos
                 .filter((v) => v.category === category)
                 .map((video, index) => (
@@ -422,7 +506,7 @@ function VideoGallerySection() {
                     className="flex flex-col items-center"
                   >
                     {/* Phone mockup frame */}
-                    <div className="relative w-[200px]">
+                    <div className="relative w-[160px] sm:w-[200px]">
                       <div className="relative rounded-[2rem] p-2 bg-gradient-to-b from-gray-700 via-gray-800 to-gray-900 shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_10px_30px_-10px_rgba(0,0,0,0.5)]">
                         <div className="relative rounded-[1.5rem] bg-black p-0.5 overflow-hidden">
                           <div className="relative rounded-[1.25rem] overflow-hidden bg-gray-950">
@@ -509,19 +593,23 @@ function SmartContractsSection() {
             </div>
 
             {/* Program ID */}
-            <div className="mb-6 p-4 rounded-xl bg-gray-800/50 border border-gray-700">
-              <div className="flex items-center justify-between">
+            <div className="mb-6 p-3 sm:p-4 rounded-xl bg-gray-800/50 border border-gray-700">
+              <div className="flex items-center justify-between mb-1">
                 <span className="text-xs text-gray-500">Program ID</span>
-                <a
-                  href={`https://solscan.io/account/${SIP_NATIVE_PROGRAM.programId}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-green-400 hover:text-green-300 transition-colors"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                </a>
+                <div className="flex items-center gap-1">
+                  <CopyButton text={SIP_NATIVE_PROGRAM.programId} />
+                  <a
+                    href={`https://solscan.io/account/${SIP_NATIVE_PROGRAM.programId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-1.5 rounded-md hover:bg-gray-700/50 text-green-400 hover:text-green-300 transition-colors cursor-pointer"
+                    title="View on Solscan"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                </div>
               </div>
-              <code className="text-sm text-green-400 font-mono break-all">
+              <code className="text-xs sm:text-sm text-green-400 font-mono break-all">
                 {SIP_NATIVE_PROGRAM.programId}
               </code>
             </div>
@@ -529,23 +617,23 @@ function SmartContractsSection() {
             {/* Architecture Flow */}
             <div className="mb-6">
               <h4 className="text-sm font-medium text-gray-400 mb-3">Transaction Flow</h4>
-              <div className="flex items-center justify-between text-sm text-gray-300 bg-gray-800/30 rounded-lg p-3">
-                <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-green-400" />
+              <div className="flex items-center justify-between text-xs sm:text-sm text-gray-300 bg-gray-800/30 rounded-lg p-2 sm:p-3 overflow-x-auto">
+                <span className="flex items-center gap-1 flex-shrink-0">
+                  <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
                   Send
                 </span>
-                <ChevronRight className="w-4 h-4 text-gray-600" />
-                <span className="flex items-center gap-1">
+                <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-gray-600 flex-shrink-0 mx-1" />
+                <span className="flex items-center gap-1 flex-shrink-0">
                   <span className="w-2 h-2 rounded-full bg-cyan-400" />
                   Commit
                 </span>
-                <ChevronRight className="w-4 h-4 text-gray-600" />
-                <span className="flex items-center gap-1">
+                <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-gray-600 flex-shrink-0 mx-1" />
+                <span className="flex items-center gap-1 flex-shrink-0">
                   <span className="w-2 h-2 rounded-full bg-purple-400" />
                   Verify
                 </span>
-                <ChevronRight className="w-4 h-4 text-gray-600" />
-                <span className="flex items-center gap-1">
+                <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-gray-600 flex-shrink-0 mx-1" />
+                <span className="flex items-center gap-1 flex-shrink-0">
                   <span className="w-2 h-2 rounded-full bg-amber-400" />
                   Claim
                 </span>
@@ -621,19 +709,23 @@ function SmartContractsSection() {
             </div>
 
             {/* Program ID */}
-            <div className="mb-6 p-4 rounded-xl bg-gray-800/50 border border-gray-700">
-              <div className="flex items-center justify-between">
+            <div className="mb-6 p-3 sm:p-4 rounded-xl bg-gray-800/50 border border-gray-700">
+              <div className="flex items-center justify-between mb-1">
                 <span className="text-xs text-gray-500">Program ID</span>
-                <a
-                  href={`https://solscan.io/account/${ARCIUM_PROGRAM.programId}?cluster=devnet`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-amber-400 hover:text-amber-300 transition-colors"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                </a>
+                <div className="flex items-center gap-1">
+                  <CopyButton text={ARCIUM_PROGRAM.programId} />
+                  <a
+                    href={`https://solscan.io/account/${ARCIUM_PROGRAM.programId}?cluster=devnet`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-1.5 rounded-md hover:bg-gray-700/50 text-amber-400 hover:text-amber-300 transition-colors cursor-pointer"
+                    title="View on Solscan"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                </div>
               </div>
-              <code className="text-sm text-amber-400 font-mono break-all">
+              <code className="text-xs sm:text-sm text-amber-400 font-mono break-all">
                 {ARCIUM_PROGRAM.programId}
               </code>
             </div>
@@ -741,18 +833,18 @@ function TimelineSection() {
               <span className="text-sm text-gray-500">{TIMELINE_DATA.preHackathon.period}</span>
             </div>
 
-            <div className="flex items-center gap-6 mb-6">
+            <div className="flex items-center gap-4 sm:gap-6 mb-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-purple-400 flex items-center gap-1">
-                  <GitCommit className="w-6 h-6" />
-                  {TIMELINE_DATA.preHackathon.commits}
+                <div className="text-2xl sm:text-3xl font-bold text-purple-400 flex items-center gap-1">
+                  <GitCommit className="w-5 h-5 sm:w-6 sm:h-6" />
+                  <AnimatedCounter value={TIMELINE_DATA.preHackathon.commits} />
                 </div>
                 <div className="text-xs text-gray-500">Commits</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-purple-400 flex items-center gap-1">
-                  <FolderGit2 className="w-6 h-6" />
-                  {TIMELINE_DATA.preHackathon.repoCount}
+                <div className="text-2xl sm:text-3xl font-bold text-purple-400 flex items-center gap-1">
+                  <FolderGit2 className="w-5 h-5 sm:w-6 sm:h-6" />
+                  <AnimatedCounter value={TIMELINE_DATA.preHackathon.repoCount} />
                 </div>
                 <div className="text-xs text-gray-500">Repos</div>
               </div>
@@ -785,18 +877,18 @@ function TimelineSection() {
               <span className="text-sm text-gray-500">{TIMELINE_DATA.duringHackathon.period}</span>
             </div>
 
-            <div className="flex items-center gap-6 mb-6">
+            <div className="flex items-center gap-4 sm:gap-6 mb-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-green-400 flex items-center gap-1">
-                  <GitCommit className="w-6 h-6" />
-                  {TIMELINE_DATA.duringHackathon.commits}
+                <div className="text-2xl sm:text-3xl font-bold text-green-400 flex items-center gap-1">
+                  <GitCommit className="w-5 h-5 sm:w-6 sm:h-6" />
+                  <AnimatedCounter value={TIMELINE_DATA.duringHackathon.commits} />
                 </div>
                 <div className="text-xs text-gray-500">Commits</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-green-400 flex items-center gap-1">
-                  <FolderGit2 className="w-6 h-6" />
-                  {TIMELINE_DATA.duringHackathon.repoCount}
+                <div className="text-2xl sm:text-3xl font-bold text-green-400 flex items-center gap-1">
+                  <FolderGit2 className="w-5 h-5 sm:w-6 sm:h-6" />
+                  <AnimatedCounter value={TIMELINE_DATA.duringHackathon.repoCount} />
                 </div>
                 <div className="text-xs text-gray-500">Repos</div>
               </div>
@@ -823,9 +915,9 @@ function TimelineSection() {
           transition={{ delay: 0.3 }}
           className="mt-8 text-center"
         >
-          <div className="inline-flex items-center gap-4 px-8 py-4 rounded-2xl bg-gradient-to-r from-purple-500/10 to-green-500/10 border border-purple-500/20">
-            <div className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-green-400 bg-clip-text text-transparent">
-              {totalCommits.toLocaleString()}
+          <div className="inline-flex items-center gap-3 sm:gap-4 px-6 sm:px-8 py-3 sm:py-4 rounded-2xl bg-gradient-to-r from-purple-500/10 to-green-500/10 border border-purple-500/20 hover:border-purple-500/40 transition-colors">
+            <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-400 to-green-400 bg-clip-text text-transparent">
+              <AnimatedCounter value={totalCommits} />
             </div>
             <div className="text-left">
               <div className="text-sm font-medium text-white">Total Commits</div>
@@ -930,7 +1022,7 @@ function ResourcesSection() {
         </div>
 
         {/* Links Grid */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto mb-12">
+        <div className="grid gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto mb-12">
           {resources.map((resource, index) => {
             const Icon = iconMap[resource.icon] || Globe
             return (
@@ -942,17 +1034,18 @@ function ResourcesSection() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="flex items-center gap-4 p-4 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-green-500/50 transition-colors group"
+                whileHover={{ scale: 1.02 }}
+                className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-green-500/50 transition-colors group cursor-pointer"
               >
-                <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0">
-                  <Icon className="w-5 h-5 text-green-400" />
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0">
+                  <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-green-400" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-medium group-hover:text-green-400 transition-colors flex items-center gap-1">
+                  <div className="text-sm sm:text-base font-medium group-hover:text-green-400 transition-colors flex items-center gap-1">
                     {resource.title}
                     {resource.external && <ExternalLink className="w-3 h-3" />}
                   </div>
-                  <div className="text-sm text-gray-500 truncate">{resource.description}</div>
+                  <div className="text-xs sm:text-sm text-gray-500 truncate">{resource.description}</div>
                 </div>
               </motion.a>
             )

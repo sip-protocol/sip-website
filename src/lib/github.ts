@@ -142,7 +142,10 @@ async function fetchRepo(owner: string, repo: string): Promise<GitHubRepoStats |
     })
 
     if (!res.ok) {
-      console.error(`GitHub API error (repo ${owner}/${repo}): ${res.status} ${res.statusText}`)
+      // Only warn for unexpected errors, 403 (rate limit) and 404 (private/deleted) are expected
+      if (res.status !== 403 && res.status !== 404) {
+        console.error(`GitHub API error (repo ${owner}/${repo}): ${res.status} ${res.statusText}`)
+      }
       return null
     }
 

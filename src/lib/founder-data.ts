@@ -124,44 +124,40 @@ const STATIC_CONFIG = {
 }
 
 // Projects with GitHub references for dynamic star counts
+// Note: Only fetch stars for repos with significant star counts (>10)
+// Hackathon projects show prize money instead of stars (more impressive)
 const PROJECTS_CONFIG: NotableProject[] = [
   {
+    // Main project - no stars fetch needed, the test count is the flex
     name: 'SIP Protocol',
     description: 'Winner Zypherpunk Hackathon 3 Tracks — Privacy layer with {testCount}+ tests ($6,500)',
     url: 'https://github.com/sip-protocol/sip-protocol',
     language: 'TypeScript',
     tags: ['Winner', 'Privacy', 'ZK'],
-    githubOwner: 'sip-protocol',
-    githubRepo: 'sip-protocol',
   },
   {
     name: 'Web3 Deal Discovery',
     description: '1st Place MonkeDAO/Superteam — NFT coupons on Solana with escrow marketplace ($5,000 + Gen3 NFT)',
-    url: 'https://github.com/rz1989s/web3-deal-discovery',
+    url: 'https://github.com/RECTOR-LABS/web3-deal-discovery-nft-coupons',
     language: 'TypeScript',
     tags: ['1st Place', 'Solana', 'NFT'],
-    githubOwner: 'rz1989s',
-    githubRepo: 'web3-deal-discovery',
   },
   {
     name: 'OpenBudget.ID',
     description: '2nd Place Garuda Spark/Superteam Indonesia — On-chain government spending transparency ($1,500)',
-    url: 'https://github.com/rz1989s/openbudget-id',
+    url: 'https://github.com/RECTOR-LABS/openbudget-id',
     language: 'TypeScript',
     tags: ['2nd Place', 'Solana', 'Gov'],
-    githubOwner: 'rz1989s',
-    githubRepo: 'openbudget-id',
   },
   {
-    name: 'Saros SDK Docs',
+    name: 'Saros Docs',
     description: '1st Place Documentation Bounty — Interactive API Explorer for Saros DEX ($300)',
-    url: 'https://github.com/rz1989s/saros-sdk-docs',
+    url: 'https://github.com/rz1989s/saros-docs',
     language: 'TypeScript',
     tags: ['1st Place', 'Docs'],
-    githubOwner: 'rz1989s',
-    githubRepo: 'saros-sdk-docs',
   },
   {
+    // Only repo with significant stars - fetch dynamically
     name: 'claude-code-statusline',
     description: 'Terminal statusline with cost tracking — {stars} stars, {forks} forks (community favorite)',
     url: 'https://github.com/rz1989s/claude-code-statusline',
@@ -182,12 +178,9 @@ const FALLBACK_STATS: FounderStats = {
   badge: '6,850+ Tests',
 }
 
+// Only claude-code-statusline fetches stars dynamically
 const FALLBACK_PROJECT_STATS: Record<string, { stars: number; forks: number }> = {
-  'sip-protocol/sip-protocol': { stars: 1, forks: 0 },
-  'rz1989s/web3-deal-discovery': { stars: 1, forks: 0 },
-  'rz1989s/openbudget-id': { stars: 1, forks: 0 },
-  'rz1989s/saros-sdk-docs': { stars: 1, forks: 0 },
-  'rz1989s/claude-code-statusline': { stars: 240, forks: 17 },
+  'rz1989s/claude-code-statusline': { stars: 318, forks: 21 },
 }
 
 // Current test count (update this when test count changes significantly)
