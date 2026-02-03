@@ -201,6 +201,62 @@ export const TIMELINE_DATA = {
 }
 
 // ============================================================================
+// Transaction Flow Steps (for Simulator)
+// ============================================================================
+
+export interface FlowStep {
+  id: string
+  title: string
+  description: string
+  detail: string
+  icon: string
+  color: 'green' | 'cyan' | 'purple' | 'amber' | 'emerald'
+}
+
+export const TRANSACTION_FLOW_STEPS: FlowStep[] = [
+  {
+    id: 'send',
+    title: 'Initiate Transfer',
+    description: 'User sends 0.5 SOL privately',
+    detail: 'Amount and recipient are prepared for shielding',
+    icon: 'Send',
+    color: 'green',
+  },
+  {
+    id: 'commit',
+    title: 'Pedersen Commitment',
+    description: 'Amount hidden: C = vG + rH',
+    detail: 'Commitment: 0x7f3a...8c2d (hides 0.5 SOL)',
+    icon: 'Lock',
+    color: 'cyan',
+  },
+  {
+    id: 'stealth',
+    title: 'Stealth Address',
+    description: 'One-time address generated',
+    detail: 'S1Pxyz...abc (unlinkable to recipient)',
+    icon: 'Eye',
+    color: 'purple',
+  },
+  {
+    id: 'verify',
+    title: 'ZK Proof Verified',
+    description: 'On-chain validation passed',
+    detail: 'Funding proof + validity proof ✓',
+    icon: 'CheckCircle2',
+    color: 'amber',
+  },
+  {
+    id: 'claim',
+    title: 'Claim Complete',
+    description: 'Recipient claims with nullifier',
+    detail: 'Nullifier: 0x9e4b...1f7a (prevents double-spend)',
+    icon: 'Wallet',
+    color: 'emerald',
+  },
+]
+
+// ============================================================================
 // Features
 // ============================================================================
 

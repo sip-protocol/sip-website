@@ -28,6 +28,10 @@ import {
   ChevronRight,
   Copy,
   Check,
+  Pause,
+  RotateCcw,
+  Send,
+  Wallet,
 } from 'lucide-react'
 import { PhoneMockup, PhoneScreen } from '@/components/ui/PhoneMockup'
 import { FounderProfile } from '@/components/founder-profile'
@@ -40,6 +44,8 @@ import {
   SIP_NATIVE_PROGRAM,
   ARCIUM_PROGRAM,
   TIMELINE_DATA,
+  TRANSACTION_FLOW_STEPS,
+  type FlowStep,
 } from './data'
 
 // ============================================================================
@@ -79,6 +85,43 @@ const iconMap: Record<string, React.ElementType> = {
   Blocks,
   BookOpen,
   Download,
+  Send,
+  Wallet,
+  CheckCircle2,
+}
+
+// Color classes for transaction flow steps
+const stepColorClasses = {
+  green: {
+    bg: 'bg-green-500/10',
+    border: 'border-green-400',
+    text: 'text-green-400',
+    icon: 'text-green-400',
+  },
+  cyan: {
+    bg: 'bg-cyan-500/10',
+    border: 'border-cyan-400',
+    text: 'text-cyan-400',
+    icon: 'text-cyan-400',
+  },
+  purple: {
+    bg: 'bg-purple-500/10',
+    border: 'border-purple-400',
+    text: 'text-purple-400',
+    icon: 'text-purple-400',
+  },
+  amber: {
+    bg: 'bg-amber-500/10',
+    border: 'border-amber-400',
+    text: 'text-amber-400',
+    icon: 'text-amber-400',
+  },
+  emerald: {
+    bg: 'bg-emerald-500/10',
+    border: 'border-emerald-400',
+    text: 'text-emerald-400',
+    icon: 'text-emerald-400',
+  },
 }
 
 // ============================================================================
@@ -785,8 +828,217 @@ function SmartContractsSection() {
             </div>
           </motion.div>
         </div>
+
+        {/* Transaction Flow Simulator */}
+        <TransactionFlowSimulator />
       </div>
     </section>
+  )
+}
+
+// ============================================================================
+// Transaction Flow Simulator
+// ============================================================================
+
+function TransactionFlowSimulator() {
+  const [currentStep, setCurrentStep] = useState(0)
+  const [isPlaying, setIsPlaying] = useState(false)
+
+  // Auto-advance when playing
+  useEffect(() => {
+    if (!isPlaying) return
+    if (currentStep >= TRANSACTION_FLOW_STEPS.length - 1) {
+      setIsPlaying(false)
+      return
+    }
+    const timer = setTimeout(() => setCurrentStep((s) => s + 1), 2000)
+    return () => clearTimeout(timer)
+  }, [isPlaying, currentStep])
+
+  const handleNext = () => {
+    if (currentStep < TRANSACTION_FLOW_STEPS.length - 1) {
+      setCurrentStep((s) => s + 1)
+    }
+  }
+
+  const handlePrev = () => {
+    if (currentStep > 0) {
+      setCurrentStep((s) => s - 1)
+    }
+  }
+
+  const handleReset = () => {
+    setCurrentStep(0)
+    setIsPlaying(false)
+  }
+
+  const handlePlayPause = () => {
+    if (currentStep >= TRANSACTION_FLOW_STEPS.length - 1) {
+      setCurrentStep(0)
+    }
+    setIsPlaying(!isPlaying)
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.3 }}
+      className="mt-12 p-6 sm:p-8 rounded-2xl bg-gray-900/50 border border-gray-800"
+    >
+      {/* Header with controls */}
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+            <Zap className="w-5 h-5 text-cyan-400" />
+            Transaction Flow Simulator
+          </h3>
+          <p className="text-sm text-gray-500 mt-1">
+            Click through to see how privacy transactions work
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={handlePlayPause}
+            className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors text-gray-400 hover:text-white cursor-pointer"
+            aria-label={isPlaying ? 'Pause' : 'Play'}
+          >
+            {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
+          </button>
+          <button
+            onClick={handleReset}
+            className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors text-gray-400 hover:text-white cursor-pointer"
+            aria-label="Reset"
+          >
+            <RotateCcw className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+
+      {/* Step indicators */}
+      <div className="flex items-center justify-between mb-8 overflow-x-auto pb-2">
+        {TRANSACTION_FLOW_STEPS.map((step, index) => (
+          <FlowStepIndicator
+            key={step.id}
+            step={step}
+            index={index}
+            currentStep={currentStep}
+            isLast={index === TRANSACTION_FLOW_STEPS.length - 1}
+          />
+        ))}
+      </div>
+
+      {/* Current step detail */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentStep}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.2 }}
+          className="p-6 rounded-xl bg-gray-800/50"
+        >
+          <FlowStepDetail step={TRANSACTION_FLOW_STEPS[currentStep]} />
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Navigation */}
+      <div className="flex justify-between mt-6">
+        <button
+          onClick={handlePrev}
+          disabled={currentStep === 0}
+          className="px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 cursor-pointer"
+        >
+          <ArrowRight className="w-4 h-4 rotate-180" />
+          Previous
+        </button>
+        <button
+          onClick={handleNext}
+          disabled={currentStep === TRANSACTION_FLOW_STEPS.length - 1}
+          className="px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 cursor-pointer"
+        >
+          Next
+          <ArrowRight className="w-4 h-4" />
+        </button>
+      </div>
+    </motion.div>
+  )
+}
+
+function FlowStepIndicator({
+  step,
+  index,
+  currentStep,
+  isLast,
+}: {
+  step: FlowStep
+  index: number
+  currentStep: number
+  isLast: boolean
+}) {
+  const isComplete = index < currentStep
+  const isActive = index === currentStep
+  const Icon = iconMap[step.icon] || Shield
+  const colors = stepColorClasses[step.color]
+
+  return (
+    <>
+      <div className="flex flex-col items-center min-w-[70px] sm:min-w-[80px]">
+        <motion.div
+          animate={{ scale: isActive ? 1.1 : 1 }}
+          className={`relative w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center border-2 transition-colors ${
+            isComplete
+              ? 'bg-green-500/20 border-green-500'
+              : isActive
+                ? `${colors.bg} ${colors.border}`
+                : 'bg-gray-800 border-gray-700'
+          }`}
+        >
+          {isComplete ? (
+            <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-400" />
+          ) : (
+            <Icon className={`w-4 h-4 sm:w-5 sm:h-5 ${isActive ? colors.icon : 'text-gray-500'}`} />
+          )}
+          {isActive && (
+            <span className={`absolute inset-0 rounded-full animate-ping ${colors.bg} opacity-50`} />
+          )}
+        </motion.div>
+        <span
+          className={`text-[10px] sm:text-xs mt-2 text-center whitespace-nowrap ${
+            isActive ? 'text-white font-medium' : 'text-gray-500'
+          }`}
+        >
+          {step.title}
+        </span>
+      </div>
+
+      {/* Connector line */}
+      {!isLast && (
+        <div
+          className={`flex-1 h-0.5 mx-1 sm:mx-2 min-w-[15px] sm:min-w-[20px] transition-colors ${
+            isComplete ? 'bg-green-500' : 'bg-gray-700'
+          }`}
+        />
+      )}
+    </>
+  )
+}
+
+function FlowStepDetail({ step }: { step: FlowStep }) {
+  const Icon = iconMap[step.icon] || Shield
+  const colors = stepColorClasses[step.color]
+
+  return (
+    <div className="text-center">
+      <div className={`inline-flex p-4 rounded-xl ${colors.bg} mb-4 border ${colors.border}/30`}>
+        <Icon className={`w-8 h-8 ${colors.icon}`} />
+      </div>
+      <h4 className="text-xl font-semibold mb-2 text-white">{step.title}</h4>
+      <p className="text-gray-400 mb-4">{step.description}</p>
+      <code className="text-sm bg-gray-900 px-4 py-2 rounded-lg text-green-400 font-mono inline-block">
+        {step.detail}
+      </code>
+    </div>
   )
 }
 
