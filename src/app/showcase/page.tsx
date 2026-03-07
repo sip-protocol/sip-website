@@ -14,6 +14,21 @@ import {
 
 const showcases = [
   {
+    id: 'monolith-2026',
+    title: 'MONOLITH Hackathon',
+    subtitle: 'March 2026',
+    description: 'THE Privacy Wallet for Seeker. Private swaps via Jupiter, multi-wallet, SPL token privacy. Mainnet verified.',
+    status: 'active',
+    prize: null,
+    tags: ['Seeker', 'Private Swaps', 'Jupiter', 'Mainnet'],
+    href: '/showcase/monolith-2026',
+    color: 'from-purple-500 to-green-500',
+    borderColor: 'border-purple-500/20 hover:border-purple-500/50',
+    bgColor: 'bg-purple-500/10',
+    textColor: 'text-purple-400',
+    icon: Smartphone,
+  },
+  {
     id: 'solana-privacy-2026',
     title: 'Solana Privacy Hackathon',
     subtitle: 'January 2026',
@@ -176,9 +191,9 @@ function ShowcaseCardsSection() {
 
 function StatsSection() {
   const stats = [
-    { value: '2', label: 'Hackathons', icon: Trophy },
+    { value: '3', label: 'Hackathons', icon: Trophy },
     { value: '$6,500', label: 'Prize Won', icon: Zap },
-    { value: '6,800+', label: 'Tests Passing', icon: Shield },
+    { value: '7,500+', label: 'Tests Passing', icon: Shield },
   ]
 
   return (
