@@ -327,10 +327,6 @@ function OverviewSection() {
                   </div>
                   <div className="text-xs text-gray-500">Mobile Tests</div>
                 </div>
-                <div className="px-3 sm:px-4 py-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20 hover:border-cyan-500/40 transition-colors">
-                  <div className="text-xl sm:text-2xl font-bold text-cyan-400">{stats.grantAmount}</div>
-                  <div className="text-xs text-gray-500">Grant Approved</div>
-                </div>
               </motion.div>
 
               {/* CTAs */}
