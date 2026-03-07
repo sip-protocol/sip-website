@@ -31,7 +31,7 @@ export const videos: Video[] = [
     description: 'Swap with privacy toggle — output routed to stealth ATA',
     src: `${CDN_BASE}/01-private-swap.mp4`,
     category: 'DeFi Privacy',
-    isPlaceholder: true,
+    isPlaceholder: false,
   },
   {
     id: '02-send-shielded',
@@ -39,7 +39,7 @@ export const videos: Video[] = [
     description: 'Private SOL/SPL transfer with Pedersen commitment',
     src: `${CDN_BASE}/02-send-shielded.mp4`,
     category: 'Core Privacy',
-    isPlaceholder: true,
+    isPlaceholder: false,
   },
   {
     id: '03-receive-claim',
@@ -47,7 +47,7 @@ export const videos: Video[] = [
     description: 'Generate stealth address, scan, and claim funds',
     src: `${CDN_BASE}/03-receive-claim.mp4`,
     category: 'Core Privacy',
-    isPlaceholder: true,
+    isPlaceholder: false,
   },
   {
     id: '04-multi-wallet',
@@ -55,7 +55,7 @@ export const videos: Video[] = [
     description: 'Create, switch, and manage multiple accounts',
     src: `${CDN_BASE}/04-multi-wallet.mp4`,
     category: 'Wallet Management',
-    isPlaceholder: true,
+    isPlaceholder: false,
   },
   {
     id: '05-settings-sidebar',
@@ -63,7 +63,7 @@ export const videos: Video[] = [
     description: 'Full settings hub, sidebar navigation, display preferences',
     src: `${CDN_BASE}/05-settings-sidebar.mp4`,
     category: 'Wallet Management',
-    isPlaceholder: true,
+    isPlaceholder: false,
   },
   {
     id: '06-e2e-flow',
@@ -71,7 +71,7 @@ export const videos: Video[] = [
     description: 'Send, receive, swap, and claim in one continuous demo',
     src: `${CDN_BASE}/06-e2e-flow.mp4`,
     category: 'Core Privacy',
-    isPlaceholder: true,
+    isPlaceholder: false,
   },
 ]
 
