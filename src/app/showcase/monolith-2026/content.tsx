@@ -272,7 +272,7 @@ function OverviewSection() {
               >
                 <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
                   <Smartphone className="w-4 h-4" />
-                  MONOLITH 2026 | 2nd Solana Mobile Hackathon
+                  MONOLITH 2026
                 </span>
               </motion.div>
 
