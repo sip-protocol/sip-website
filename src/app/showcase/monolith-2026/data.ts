@@ -282,7 +282,7 @@ export const resources = [
   {
     title: 'Download APK',
     description: 'v0.2.0 (Android/Seeker)',
-    href: 'https://github.com/sip-protocol/sip-mobile/releases/download/v0.2.0/sip-privacy-v0.2.0.apk',
+    href: 'https://github.com/sip-protocol/sip-mobile/releases/tag/v0.2.0',
     icon: 'Download',
     external: true,
   },

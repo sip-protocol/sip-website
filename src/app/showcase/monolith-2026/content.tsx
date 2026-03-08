@@ -337,7 +337,7 @@ function OverviewSection() {
                 className="mt-8 flex flex-wrap gap-3 sm:gap-4"
               >
                 <a
-                  href="https://github.com/sip-protocol/sip-mobile/releases/download/v0.2.0/sip-privacy-v0.2.0.apk"
+                  href="https://github.com/sip-protocol/sip-mobile/releases/tag/v0.2.0"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base text-white bg-gradient-to-r from-purple-500 to-green-500 rounded-lg hover:from-purple-600 hover:to-green-600 transition-all font-medium flex items-center gap-2 cursor-pointer hover:scale-105 active:scale-100"
