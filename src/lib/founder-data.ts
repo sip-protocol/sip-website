@@ -89,7 +89,7 @@ const STATIC_CONFIG = {
   name: 'RECTOR',
   username: '@rz1989s',
   role: 'Solo Founder, SIP Protocol  •  🇮🇩 Indonesia',
-  bio: 'Full-stack builder building for eternity. 7 wins across hackathons and bounties (2024-2026) — Zypherpunk Winner (3 tracks), MonkeDAO 1st, Solana Privacy Hack, and more. Building the privacy standard for Web3 with stealth addresses, Pedersen commitments, and viewing keys. Privacy is a right, not a feature.',
+  bio: 'Indonesian developer building the privacy standard for Web3. Blockchain architect with $24,300+ across 6 wins (2024-2026) including $10K Superteam grant, MonkeDAO 1st, Zypherpunk Winner (3 tracks), and more. Focused on cryptographic privacy, cross-chain infrastructure, and high-performance systems. Privacy is a right, not a feature.',
   github: 'https://github.com/rz1989s',
   twitter: 'https://x.com/rz1989s',
   twitterProject: 'https://x.com/sipprotocol',
@@ -123,24 +123,24 @@ const STATIC_CONFIG = {
   },
 }
 
-// Projects: 7 competition wins + 1 community project
+// Projects: 6 competition wins + 1 community project
 // Ordered by date (newest first), matching rectorspace.com/achievements
 const PROJECTS_CONFIG: NotableProject[] = [
   {
-    // Hackathon - Jan 2026 (Solana Privacy Hack)
-    name: 'SIP Mobile',
-    description: 'Solana Privacy Hackathon — Privacy wallet with mainnet stealth transfers, Jupiter swaps, viewing keys',
-    url: 'https://github.com/sip-protocol/sip-mobile',
+    // Grant - biggest win
+    name: 'SIP Protocol',
+    description: '✅ Grant Approved Superteam Indonesia — Privacy layer for cross-chain transactions ($10,000)',
+    url: 'https://github.com/sip-protocol/sip-protocol',
     language: 'TypeScript',
-    tags: ['Hackathon', 'Mobile', 'Privacy'],
+    tags: ['Grant', 'Privacy', 'Solana'],
   },
   {
     // Bounty - Feb 2026
     name: 'pNode Pulse',
-    description: '1st Place Xandeum pNodes Analytics — Real-time analytics for decentralized storage ($1,000)',
+    description: '3rd Place Xandeum pNodes Analytics — Real-time analytics for decentralized storage ($1,000)',
     url: 'https://github.com/RECTOR-LABS/pnode-pulse',
     language: 'TypeScript',
-    tags: ['1st Place', 'Analytics', 'Infra'],
+    tags: ['3rd Place', 'Analytics', 'Infra'],
   },
   {
     // Hackathon - Dec 2025
@@ -161,10 +161,10 @@ const PROJECTS_CONFIG: NotableProject[] = [
   {
     // Hackathon - Oct 2025
     name: 'OpenBudget.ID',
-    description: '1st Place Garuda Spark — On-chain government spending transparency ($1,500)',
+    description: '2nd Place Garuda Spark — On-chain government spending transparency ($1,500)',
     url: 'https://github.com/RECTOR-LABS/openbudget-id',
     language: 'TypeScript',
-    tags: ['1st Place', 'Solana', 'Gov'],
+    tags: ['2nd Place', 'Solana', 'Gov'],
   },
   {
     // Bounty - Dec 2024
@@ -188,12 +188,12 @@ const PROJECTS_CONFIG: NotableProject[] = [
 
 // Fallback values when GitHub API fails
 const FALLBACK_STATS: FounderStats = {
-  repositories: 30,
-  stars: 379,
-  followers: 31,
-  commits: 10243,
+  repositories: 33,
+  stars: 246,
+  followers: 27,
+  commits: 4500,
   prs: 146,
-  badge: '8,700+ Tests',
+  badge: '6,850+ Tests',
 }
 
 // Only claude-code-statusline fetches stars dynamically
@@ -202,7 +202,7 @@ const FALLBACK_PROJECT_STATS: Record<string, { stars: number; forks: number }> =
 }
 
 // Current test count (update this when test count changes significantly)
-const CURRENT_TEST_COUNT = '8,700'
+const CURRENT_TEST_COUNT = '6,850'
 
 /**
  * Get static founder data (no GitHub API calls)
