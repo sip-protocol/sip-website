@@ -89,7 +89,7 @@ const STATIC_CONFIG = {
   name: 'RECTOR',
   username: '@rz1989s',
   role: 'Solo Founder, SIP Protocol  •  🇮🇩 Indonesia',
-  bio: 'Indonesian developer building the privacy standard for Web3. Blockchain architect with $24,300+ across 6 wins (2024-2026) including $10K Superteam grant, MonkeDAO 1st, Zypherpunk Winner (3 tracks), and more. Focused on cryptographic privacy, cross-chain infrastructure, and high-performance systems. Privacy is a right, not a feature.',
+  bio: 'Full-stack builder building for eternity. Multiple hackathon wins and grant approvals across the Solana ecosystem. Building the privacy standard for Web3 — stealth addresses, Pedersen commitments, and viewing keys for compliant privacy. Privacy is a right, not a feature.',
   github: 'https://github.com/rz1989s',
   twitter: 'https://x.com/rz1989s',
   twitterProject: 'https://x.com/sipprotocol',
@@ -123,11 +123,19 @@ const STATIC_CONFIG = {
   },
 }
 
-// Projects: 6 competition wins + 1 community project
-// Ordered by date (newest first), matching rectorspace.com/achievements
+// Projects: 7 competition wins + 1 community project
+// Ordered by date (newest first), matching core/config/achievements.yml
 const PROJECTS_CONFIG: NotableProject[] = [
   {
-    // Grant - biggest win
+    // Grant - Feb 2026 (Audit Subsidy)
+    name: 'SIP Protocol',
+    description: '✅ Solana Audit Subsidy Cohort V — 30% coverage for professional smart contract audit ($6,000)',
+    url: 'https://github.com/sip-protocol/sip-protocol',
+    language: 'TypeScript',
+    tags: ['Grant', 'Security', 'Solana'],
+  },
+  {
+    // Grant - Jan 2026 (Superteam)
     name: 'SIP Protocol',
     description: '✅ Grant Approved Superteam Indonesia — Privacy layer for cross-chain transactions ($10,000)',
     url: 'https://github.com/sip-protocol/sip-protocol',
@@ -188,12 +196,12 @@ const PROJECTS_CONFIG: NotableProject[] = [
 
 // Fallback values when GitHub API fails
 const FALLBACK_STATS: FounderStats = {
-  repositories: 33,
-  stars: 246,
-  followers: 27,
-  commits: 4500,
+  repositories: 30,
+  stars: 379,
+  followers: 31,
+  commits: 10243,
   prs: 146,
-  badge: '6,850+ Tests',
+  badge: '8,700+ Tests',
 }
 
 // Only claude-code-statusline fetches stars dynamically
@@ -202,7 +210,7 @@ const FALLBACK_PROJECT_STATS: Record<string, { stars: number; forks: number }> =
 }
 
 // Current test count (update this when test count changes significantly)
-const CURRENT_TEST_COUNT = '6,850'
+const CURRENT_TEST_COUNT = '8,700'
 
 /**
  * Get static founder data (no GitHub API calls)
