@@ -154,7 +154,7 @@ export const PRIVATE_SWAP_FLOW = [
     step: 1,
     title: 'Announce',
     description: 'Register stealth address on-chain',
-    detail: 'shielded_transfer with ephemeral pubkey + commitment',
+    detail: 'create_transfer_announcement with ephemeral pubkey + stealth ATA',
     color: 'green' as const,
   },
   {
@@ -175,7 +175,7 @@ export const PRIVATE_SWAP_FLOW = [
     step: 4,
     title: 'Claim',
     description: 'Derive key and claim to main wallet',
-    detail: 'Nullifier prevents double-spend',
+    detail: 'claim_transfer / claim_token_transfer to main wallet',
     color: 'amber' as const,
   },
 ]
@@ -190,11 +190,16 @@ export const SIP_PROGRAM = {
   programId: 'S1PMFspo4W6BYKHWkHNF7kZ3fnqibEXg3LQjxepS9at',
   deployDate: 'Jan 31, 2026',
   instructions: [
+    'initialize',
     'shielded_transfer',
     'shielded_token_transfer',
+    'create_transfer_announcement',
     'claim_transfer',
+    'claim_token_transfer',
     'verify_commitment',
     'verify_zk_proof',
+    'set_paused',
+    'update_fee',
   ],
 }
 
@@ -203,9 +208,9 @@ export const SIP_PROGRAM = {
 // ============================================================================
 
 export const MAINNET_PROOF = {
-  privateSwapTx: '3QCoHcJdnMcPHVyaEzSTRqFauKfbpHM4VAcEkYECgp6FfyY9cSaafMqpEXjxnqsDcBJNnNTHBEYmrcmMG8LkHm1a',
-  claimTx: '4Hc3vQBwg3ysqF4aPHPxmrMVp7dNXiMxVwrPkqUNgJsejgNeDjRfj5kBxAY9S8hGjJ8LRkXbqwK6y2EaUvMGBxzB',
-  stealthAddress: 'BMBaoNZnw3ZxGTzBTAjV3WnPSrQfaaT7jxCDpwzd8P9p',
+  privateSwapTx: '2j6fbT7aAywVx4sM6srx7PgnAzc6iN1HiN6VmBAvyjz294EtCrr959mdsYJYdcebuj5L5cJGDrcivGpeS72G39qa',
+  announcementTx: '2xmxfFGvKdk3ZTJxvbf8vNu7jinvJUmSJJmAxdBCsy4PVvNg7e5StRExKZa2MGhea3KZjP4wEFg85tkf4KqiEc7f',
+  stealthAddress: '9DfMb5JD58mCQujYBpPRL6Xe8RtQTpwDxtch4Z5YXhyX',
 }
 
 // ============================================================================

@@ -627,11 +627,11 @@ function OverviewSection() {
 
                 <div className="p-4 rounded-xl bg-gray-900/50 border border-gray-800">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-cyan-400">Stealth Claim TX</span>
+                    <span className="text-sm font-medium text-cyan-400">Announcement TX</span>
                     <div className="flex items-center gap-1">
-                      <CopyButton text={MAINNET_PROOF.claimTx} />
+                      <CopyButton text={MAINNET_PROOF.announcementTx} />
                       <a
-                        href={`https://solscan.io/tx/${MAINNET_PROOF.claimTx}`}
+                        href={`https://solscan.io/tx/${MAINNET_PROOF.announcementTx}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-1.5 rounded-md hover:bg-gray-700/50 text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer"
@@ -641,7 +641,7 @@ function OverviewSection() {
                     </div>
                   </div>
                   <code className="text-xs text-gray-400 font-mono break-all">
-                    {MAINNET_PROOF.claimTx}
+                    {MAINNET_PROOF.announcementTx}
                   </code>
                 </div>
 
