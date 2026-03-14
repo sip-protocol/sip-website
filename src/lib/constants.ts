@@ -31,14 +31,14 @@ export const SDK_VERSION = {
   npmUrl: 'https://www.npmjs.com/package/@sip-protocol/sdk',
 }
 
-// Test counts - updated 2026-01-22
+// Test counts - updated 2026-03-14
 export const TEST_COUNTS = {
-  sdk: 6604,
-  react: 82,
-  cli: 10,
-  api: 18,
+  sdk: 6751,
+  react: 543,
+  cli: 62,
+  api: 198,
   reactNative: 10,
-  website: 126,
+  website: 157,
   get total() {
     return this.sdk + this.react + this.cli + this.api + this.reactNative + this.website
   },
@@ -61,9 +61,9 @@ export const TEST_COUNTS = {
 export const PROJECT_METRICS = {
   testsTotal: TEST_COUNTS.totalDisplay,
   testsDetail: TEST_COUNTS.detailDisplay,
-  chains: '15+',
+  chains: '17+',
   packages: '7',
-  milestones: 'M16',
+  milestones: 'M18',
   proofTime: '<5s',
   proofSize: '~2KB',
 }
@@ -72,9 +72,9 @@ export const PROJECT_METRICS = {
 export const PROJECT_STATUS = {
   currentPhase: 4,
   currentPhaseName: 'Same-Chain Expansion',
-  currentMilestone: 'M17',
-  currentMilestoneName: 'Solana Same-Chain Privacy',
-  completedMilestones: 16,
+  currentMilestone: 'M18',
+  currentMilestoneName: 'Ethereum Same-Chain Privacy',
+  completedMilestones: 17,
   totalMilestones: 22,
   phasesComplete: 3,
   totalPhases: 5,
@@ -82,6 +82,16 @@ export const PROJECT_STATUS = {
 
 // Achievements and awards
 export const ACHIEVEMENTS = [
+  {
+    id: 'graveyard-2026',
+    title: 'Solana Graveyard Hackathon',
+    track: 'Torque Sponsor Track',
+    prize: '$750',
+    ranking: '1st Place',
+    date: 'March 2026',
+    link: 'https://solana.com/graveyard-hack',
+    badge: '1st Place',
+  },
   {
     id: 'zypherpunk-2025',
     title: 'Zypherpunk Hackathon Winner',

@@ -359,12 +359,33 @@ const nextConfig = {
       '@trezor/connect-web': path.resolve(__dirname, 'node_modules/@trezor/connect-web'),
     }
 
+    // SDK v0.9.0 bundles @triton-one/yellowstone-grpc which uses WASM and Node-only modules.
+    // Mark it as external on server (not used by website routes) and stub on client.
+    if (isServer) {
+      config.externals = config.externals || []
+      config.externals.push({
+        '@triton-one/yellowstone-grpc': 'commonjs @triton-one/yellowstone-grpc',
+      })
+    }
+
     // Handle WASM loading for @aztec/bb.js and similar packages
     if (!isServer) {
       config.experiments = {
         ...config.experiments,
         asyncWebAssembly: true,
         topLevelAwait: true,
+      }
+
+      // Node.js module fallbacks for browser
+      // SDK v0.9.0 pulls in @triton-one/yellowstone-grpc which requires Node-only modules
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        net: false,
+        tls: false,
+        http2: false,
+        dns: false,
+        child_process: false,
+        fs: false,
       }
 
       // Suppress bb.js topLevelAwait warning (we explicitly enable it above)
