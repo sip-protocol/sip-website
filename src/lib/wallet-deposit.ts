@@ -17,10 +17,11 @@ import {
 const loadSDK = () => import('@sip-protocol/sdk')
 
 // Solana RPC endpoints
-// Use env var for custom RPC, fallback to Helius
+// Use env var for custom RPC, fallback to Helius with dedicated API key
+const HELIUS_API_KEY = process.env.NEXT_PUBLIC_SIP_WEBSITE_HELIUS_API_KEY
 const SOLANA_RPC = {
   devnet: 'https://api.devnet.solana.com',
-  mainnet: process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://mainnet.helius-rpc.com/?api-key=142fb48a-aa24-4083-99c8-249df5400b30',
+  mainnet: process.env.NEXT_PUBLIC_SOLANA_RPC_URL || (HELIUS_API_KEY ? `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}` : ''),
 }
 
 export interface DepositParams {
