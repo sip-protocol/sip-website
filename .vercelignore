@@ -1,0 +1,22 @@
+# Vercel CLI ignores .gitignore, so mirror the build-artifact + secret exclusions here.
+# Vercel rebuilds from source — never upload these.
+.next
+out
+node_modules
+.vercel
+
+# Local env files (never upload secrets; Vercel env is set in project settings)
+.env
+.env.local
+.env*.local
+
+# Tests / reports / caches
+coverage
+test-results
+playwright-report
+playwright/.cache
+
+# Misc
+.git
+*.log
+.DS_Store
