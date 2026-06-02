@@ -1,9 +1,11 @@
 name: Deploy
 
+# VPS deploy disabled — sip-protocol.org is served from Vercel as of 2026-06-02.
+# The VPS container on reclabs3 (port 5000) is intentionally kept running until
+# the 7-day stability buffer elapses (~2026-06-09) as a rollback target.
+# Re-enable by restoring the `push: branches: [main]` trigger below if a
+# VPS-side rollback becomes necessary.
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 env:
