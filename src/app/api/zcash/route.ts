@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { ZcashRPCClient } from '@sip-protocol/sdk'
+import type { ZcashRPCClient } from '@sip-protocol/sdk'
 import { zcashRateLimiter, getClientIp } from '@/lib/rate-limiter'
 
 /**
@@ -33,7 +33,7 @@ interface ZcashRPCRequestBody {
 // Lazy-initialized client (created on first request)
 let rpcClient: ZcashRPCClient | null = null
 
-function getClient(): ZcashRPCClient | null {
+async function getClient(): Promise<ZcashRPCClient | null> {
   // Check if already initialized
   if (rpcClient) return rpcClient
 
@@ -45,6 +45,13 @@ function getClient(): ZcashRPCClient | null {
   if (!host || !username || !password) {
     return null
   }
+
+  // Load the SDK lazily, only once Zcash is actually configured. A top-level import pulls in
+  // @sip-protocol/sdk's full module graph (incl. @triton-one/yellowstone-grpc, externalized as
+  // commonjs by next.config.js). Dependency tracing drops that package from packaged builds
+  // (Vercel serverless + Next standalone) → MODULE_NOT_FOUND 500 on every request. Deferring the
+  // import keeps the default (unconfigured) path SDK-free so it returns 200 as intended.
+  const { ZcashRPCClient } = await import('@sip-protocol/sdk')
 
   const port = process.env.ZCASH_RPC_PORT ? parseInt(process.env.ZCASH_RPC_PORT, 10) : undefined
   const testnet = process.env.ZCASH_RPC_TESTNET === 'true'
@@ -85,7 +92,7 @@ export async function GET(request: NextRequest) {
     )
   }
 
-  const client = getClient()
+  const client = await getClient()
 
   if (!client) {
     return NextResponse.json({
@@ -138,7 +145,7 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  const client = getClient()
+  const client = await getClient()
 
   if (!client) {
     return NextResponse.json(
