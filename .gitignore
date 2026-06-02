@@ -44,3 +44,4 @@ playwright/.cache/
 test-results/
 .strategy/
 package-lock.json
+.vercel
