@@ -11,7 +11,8 @@ try {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  // On Vercel use the platform's native output; keep 'standalone' for the VPS Docker rollback image.
+  output: process.env.VERCEL ? undefined : 'standalone',
   eslint: {
     // Use flat config file
     ignoreDuringBuilds: false,
@@ -29,8 +30,12 @@ const nextConfig = {
     ],
   },
   env: {
-    NEXT_PUBLIC_GIT_COMMIT: process.env.GIT_COMMIT || 'dev',
-    NEXT_PUBLIC_GIT_BRANCH: process.env.GIT_BRANCH || 'local',
+    // The VPS Docker image bakes GIT_COMMIT/GIT_BRANCH via build-args; on Vercel those are absent,
+    // so fall back to Vercel's built-in git vars to keep the footer build link resolving to a real commit.
+    NEXT_PUBLIC_GIT_COMMIT:
+      process.env.GIT_COMMIT ||
+      (process.env.VERCEL_GIT_COMMIT_SHA ? process.env.VERCEL_GIT_COMMIT_SHA.slice(0, 7) : 'dev'),
+    NEXT_PUBLIC_GIT_BRANCH: process.env.GIT_BRANCH || process.env.VERCEL_GIT_COMMIT_REF || 'local',
   },
   async redirects() {
     return [
