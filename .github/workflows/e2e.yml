@@ -56,7 +56,7 @@ jobs:
         run: pnpm test:e2e:chromium
 
       - name: Upload test results
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-report
