@@ -175,9 +175,13 @@ export function StealthAddressDisplay({
 
   // Generate stealth address using real SDK when chain changes
   useEffect(() => {
-    if (!hasPrivacy) {
+    const clearStealth = () => {
       setStealthAddress(null)
       setEphemeralKey(null)
+    }
+
+    if (!hasPrivacy) {
+      clearStealth()
       return
     }
 
@@ -191,8 +195,7 @@ export function StealthAddressDisplay({
       .catch((err) => {
         // Expected failure: SDK not loaded or unsupported chain - clear state for retry
         console.debug('[Stealth Address] Generation failed:', err instanceof Error ? err.message : 'Unknown error')
-        setStealthAddress(null)
-        setEphemeralKey(null)
+        clearStealth()
       })
   }, [toChain, hasPrivacy])
 

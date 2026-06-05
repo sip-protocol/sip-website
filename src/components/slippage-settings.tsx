@@ -19,10 +19,13 @@ export function SlippageSettings({ onClose }: SlippageSettingsProps) {
 
   // Initialize custom value if not a preset
   useEffect(() => {
-    if (!isPreset) {
-      setCustomValue(slippage.toString())
-      setIsCustom(true)
+    const initCustomValue = () => {
+      if (!isPreset) {
+        setCustomValue(slippage.toString())
+        setIsCustom(true)
+      }
     }
+    initCustomValue()
   }, [slippage, isPreset])
 
   const handlePresetClick = (preset: number) => {

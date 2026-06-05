@@ -345,9 +345,10 @@ function FeatureCell({
     if (animated) {
       const timer = setTimeout(() => setShow(true), delay)
       return () => clearTimeout(timer)
-    } else {
-      setShow(false)
     }
+
+    const reset = () => setShow(false)
+    reset()
   }, [animated, delay])
 
   return (

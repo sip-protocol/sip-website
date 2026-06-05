@@ -95,12 +95,16 @@ export function ViewingKeyDisplay({
 
   // Generate viewing key using real SDK when component mounts in compliant mode
   useEffect(() => {
-    if (!isCompliant) {
+    const resetKeyState = () => {
       setViewingKey(null)
       setKeyHash(null)
       setKeyPath(null)
       setGeneratedAt(null)
       setConfirmed(false)
+    }
+
+    if (!isCompliant) {
+      resetKeyState()
       return
     }
 

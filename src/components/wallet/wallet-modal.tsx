@@ -52,8 +52,11 @@ export function WalletModal() {
   useEffect(() => {
     if (isModalOpen) {
       // Check for wallet conflicts first
-      const conflicts = detectWalletConflicts()
-      setWalletConflict(conflicts.hasConflict ? conflicts : null)
+      const checkConflicts = () => {
+        const conflicts = detectWalletConflicts()
+        setWalletConflict(conflicts.hasConflict ? conflicts : null)
+      }
+      checkConflicts()
 
       loadSDK().then((sdk) => {
         const solanaWallets = sdk.detectSolanaWallets()

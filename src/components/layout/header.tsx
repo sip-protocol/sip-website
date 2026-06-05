@@ -37,7 +37,8 @@ export function Header() {
 
   // Close mobile menu on route change
   useEffect(() => {
-    setIsMobileMenuOpen(false)
+    const closeMenu = () => setIsMobileMenuOpen(false)
+    closeMenu()
   }, [pathname])
 
   return (

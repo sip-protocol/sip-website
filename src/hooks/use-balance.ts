@@ -67,7 +67,10 @@ export function useBalance(options?: UseBalanceOptions): UseBalanceResult {
 
   // Fetch balance on mount and when wallet/token changes
   useEffect(() => {
-    fetchBalance()
+    const loadBalance = () => {
+      fetchBalance()
+    }
+    loadBalance()
   }, [fetchBalance])
 
   // Auto-refresh balance every 30 seconds when connected

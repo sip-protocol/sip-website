@@ -175,7 +175,7 @@ export function TransactionTimeline({
 }: TransactionTimelineProps) {
   // Track completion times for each step
   const [stepTimes, setStepTimes] = useState<Record<string, number>>({})
-  const [currentTime, setCurrentTime] = useState(Date.now())
+  const [currentTime, setCurrentTime] = useState(() => Date.now())
 
   // Get the appropriate steps based on mode
   const steps = isProduction
@@ -188,18 +188,21 @@ export function TransactionTimeline({
 
   // Record completion time when step changes
   useEffect(() => {
-    if (currentStepIndex > 0) {
-      setStepTimes((prev) => {
-        const newTimes = { ...prev }
-        // Mark all previous steps as completed at current time
-        for (let i = 0; i < currentStepIndex; i++) {
-          if (!newTimes[steps[i].id]) {
-            newTimes[steps[i].id] = Date.now()
+    const recordStepTimes = () => {
+      if (currentStepIndex > 0) {
+        setStepTimes((prev) => {
+          const newTimes = { ...prev }
+          // Mark all previous steps as completed at current time
+          for (let i = 0; i < currentStepIndex; i++) {
+            if (!newTimes[steps[i].id]) {
+              newTimes[steps[i].id] = Date.now()
+            }
           }
-        }
-        return newTimes
-      })
+          return newTimes
+        })
+      }
     }
+    recordStepTimes()
   }, [currentStepIndex, steps])
 
   // Update current time for elapsed display
