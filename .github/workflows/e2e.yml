@@ -27,9 +27,17 @@ jobs:
           node-version: '20'
           cache: 'pnpm'
 
+      - name: Install dependencies
+        run: pnpm install
+
+      # Resolve the version AFTER install so the cache key reflects the
+      # actual Playwright version. Running this before `pnpm install` leaves
+      # node_modules absent, yields an empty version, and freezes the browser
+      # cache under a constant key — which silently serves a stale browser
+      # whenever @playwright/test is bumped.
       - name: Get Playwright version
         id: playwright-version
-        run: echo "version=$(pnpm list @playwright/test --json | jq -r '.[0].dependencies["@playwright/test"].version')" >> $GITHUB_OUTPUT
+        run: echo "version=$(pnpm list @playwright/test --json | jq -r '.[0].devDependencies["@playwright/test"].version')" >> $GITHUB_OUTPUT
 
       - name: Cache Playwright browsers
         uses: actions/cache@v5
@@ -37,9 +45,6 @@ jobs:
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
-
-      - name: Install dependencies
-        run: pnpm install
 
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
