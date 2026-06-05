@@ -997,15 +997,18 @@ function TokenSelector({
 
   // Reset highlight when opening, set to current selection
   useEffect(() => {
-    if (open) {
-      setHighlightedIndex(currentTokenIndex >= 0 ? currentTokenIndex : 0)
-      // Focus first option after opening
-      setTimeout(() => {
-        optionRefs.current[currentTokenIndex >= 0 ? currentTokenIndex : 0]?.focus()
-      }, 0)
-    } else {
-      setHighlightedIndex(-1)
+    const syncHighlight = () => {
+      if (open) {
+        setHighlightedIndex(currentTokenIndex >= 0 ? currentTokenIndex : 0)
+        // Focus first option after opening
+        setTimeout(() => {
+          optionRefs.current[currentTokenIndex >= 0 ? currentTokenIndex : 0]?.focus()
+        }, 0)
+      } else {
+        setHighlightedIndex(-1)
+      }
     }
+    syncHighlight()
   }, [open, currentTokenIndex])
 
   const handleButtonKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {

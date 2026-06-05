@@ -197,10 +197,14 @@ export function PedersenCommitmentDisplay({
 
   // Generate commitment using real SDK when amount changes
   useEffect(() => {
-    if (!hasPrivacy || !amount || parseFloat(amount) <= 0) {
+    const clearCommitment = () => {
       setCommitment(null)
       setBlinding(null)
       setAmountHex(null)
+    }
+
+    if (!hasPrivacy || !amount || parseFloat(amount) <= 0) {
+      clearCommitment()
       return
     }
 
@@ -213,9 +217,7 @@ export function PedersenCommitmentDisplay({
       .catch((err) => {
         // Expected failure: SDK not loaded or invalid amount - clear state for retry
         console.debug('[Commitment] Generation failed:', err instanceof Error ? err.message : 'Unknown error')
-        setCommitment(null)
-        setBlinding(null)
-        setAmountHex(null)
+        clearCommitment()
       })
   }, [amount, hasPrivacy])
 

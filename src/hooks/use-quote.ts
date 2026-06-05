@@ -380,9 +380,13 @@ export function useQuote(params: QuoteParams | null): QuoteResult {
 
   // Freshness tracking effect
   useEffect(() => {
-    if (!fetchedAt || !quote) {
+    const markNoQuote = () => {
       setFreshness('expired')
       setExpiresIn(null)
+    }
+
+    if (!fetchedAt || !quote) {
+      markNoQuote()
       return
     }
 

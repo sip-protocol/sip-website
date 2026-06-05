@@ -847,12 +847,16 @@ function TransactionFlowSimulator() {
   // Auto-advance when playing
   useEffect(() => {
     if (!isPlaying) return
-    if (currentStep >= TRANSACTION_FLOW_STEPS.length - 1) {
-      setIsPlaying(false)
-      return
+
+    function advance() {
+      if (currentStep >= TRANSACTION_FLOW_STEPS.length - 1) {
+        setIsPlaying(false)
+        return undefined
+      }
+      const timer = setTimeout(() => setCurrentStep((s) => s + 1), 2000)
+      return () => clearTimeout(timer)
     }
-    const timer = setTimeout(() => setCurrentStep((s) => s + 1), 2000)
-    return () => clearTimeout(timer)
+    return advance()
   }, [isPlaying, currentStep])
 
   const handleNext = () => {

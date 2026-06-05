@@ -270,7 +270,10 @@ export function TransactionProof() {
 
   // Auto-generate on mount
   useEffect(() => {
-    handleGenerateProof()
+    const run = () => {
+      handleGenerateProof()
+    }
+    run()
   }, [handleGenerateProof])
 
   return (

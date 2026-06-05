@@ -244,24 +244,24 @@ function CurrentPhaseSection() {
   )
 }
 
-function PhaseSection({ phase }: { phase: Phase }) {
-  const getPhaseIcon = (id: number) => {
-    switch (id) {
-      case 1:
-        return Sparkles
-      case 2:
-        return Layers
-      case 3:
-        return Users
-      case 4:
-        return TrendingUp
-      case 5:
-        return Building
-      default:
-        return Globe
-    }
+function PhaseIcon({ id, className }: { id: number; className?: string }) {
+  switch (id) {
+    case 1:
+      return <Sparkles className={className} />
+    case 2:
+      return <Layers className={className} />
+    case 3:
+      return <Users className={className} />
+    case 4:
+      return <TrendingUp className={className} />
+    case 5:
+      return <Building className={className} />
+    default:
+      return <Globe className={className} />
   }
+}
 
+function PhaseSection({ phase }: { phase: Phase }) {
   const getPhaseColors = (status: Phase['status']) => {
     switch (status) {
       case 'complete':
@@ -288,7 +288,6 @@ function PhaseSection({ phase }: { phase: Phase }) {
     }
   }
 
-  const PhaseIcon = getPhaseIcon(phase.id)
   const colors = getPhaseColors(phase.status)
 
   return (
@@ -304,7 +303,7 @@ function PhaseSection({ phase }: { phase: Phase }) {
             <span
               className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium border ${colors.badge}`}
             >
-              <PhaseIcon className="w-4 h-4" />
+              <PhaseIcon id={phase.id} className="w-4 h-4" />
               Phase {phase.id}: {phase.name}
             </span>
             {phase.status === 'complete' && (

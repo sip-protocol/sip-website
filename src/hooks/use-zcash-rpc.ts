@@ -140,7 +140,10 @@ export function useZcashRpc(): UseZcashRpcReturn {
 
   // Initial connection check on mount
   useEffect(() => {
-    refreshAll()
+    const init = () => {
+      refreshAll()
+    }
+    init()
   }, [refreshAll])
 
   // Computed values
