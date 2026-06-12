@@ -23,7 +23,7 @@ const sections: DeepDiveSection[] = [
     summary: 'One-time recipient addresses prevent transaction linkability',
     icon: <ShieldIcon />,
     standard: 'EIP-5564',
-    formula: 'A = Q + hash(r · P) · G',
+    formula: 'A = P + hash(r · Q) · G',
     properties: [
       'Unlinkable: Each transaction uses unique address',
       'Non-interactive: Sender derives without recipient online',
@@ -38,23 +38,29 @@ const { metaAddress, spendingPrivateKey, viewingPrivateKey } =
 // - viewingKey (Q): for scanning transactions
 
 // Sender generates stealth address for recipient
-const { stealthAddress, ephemeralPublicKey } =
-  generateStealthAddress(recipientMetaAddress)
+const { stealthAddress } = generateStealthAddress(recipientMetaAddress)
 
-// Recipient scans and recovers
-const recovered = recoverStealthAddress(
-  ephemeralPublicKey,
+// Recipient scans view-only (spending key stays cold)
+const isMine = checkStealthAddress(
+  stealthAddress,
   viewingPrivateKey,
-  spendingPrivateKey
+  metaAddress.spendingKey
+)
+
+// Only to spend: derive the stealth private key
+const { privateKey } = deriveStealthPrivateKey(
+  stealthAddress,
+  spendingPrivateKey,
+  viewingPrivateKey
 )`,
     codeFile: 'packages/sdk/src/stealth.ts',
     githubUrl: 'https://github.com/sip-protocol/sip-protocol/blob/main/packages/sdk/src/stealth.ts',
     explanation: [
       'Recipient publishes meta-address (P, Q) - spending and viewing public keys',
       'Sender generates random ephemeral keypair (r, R = r·G)',
-      'Sender computes shared secret: S = r · P',
-      'Sender derives stealth address: A = Q + hash(S) · G',
-      'Recipient scans: for each R, compute S = p · R, check if A matches',
+      'Sender computes shared secret: S = r · Q',
+      'Sender derives stealth address: A = P + hash(S) · G',
+      'Recipient scans view-only: for each R, compute S = q · R, check if A matches',
     ],
   },
   {

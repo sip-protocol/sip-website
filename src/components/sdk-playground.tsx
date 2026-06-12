@@ -33,32 +33,33 @@ const CODE_EXAMPLES: CodeExample[] = [
 } from '@sip-protocol/sdk'
 
 // Step 1: Recipient generates their meta-address (do once, share publicly)
-const meta = generateStealthMetaAddress()
+const { metaAddress, spendingPrivateKey, viewingPrivateKey } =
+  generateStealthMetaAddress('solana')
 console.log('Meta-address (share this):', {
-  spendingKey: meta.spendingKey.slice(0, 20) + '...',
-  viewingKey: meta.viewingKey.slice(0, 20) + '...'
+  spendingKey: metaAddress.spendingKey.slice(0, 20) + '...',
+  viewingKey: metaAddress.viewingKey.slice(0, 20) + '...'
 })
 
 // Step 2: Sender creates a one-time stealth address
-const stealth = generateStealthAddress(meta.spendingKey, meta.viewingKey)
-console.log('Stealth address:', stealth.address.slice(0, 20) + '...')
-console.log('Ephemeral public key:', stealth.ephemeralPublicKey.slice(0, 20) + '...')
+const { stealthAddress } = generateStealthAddress(metaAddress)
+console.log('Stealth address:', stealthAddress.address.slice(0, 20) + '...')
+console.log('Ephemeral public key:', stealthAddress.ephemeralPublicKey.slice(0, 20) + '...')
 
-// Step 3: Recipient checks if address belongs to them
+// Step 3: Recipient detects ownership — view-only (EIP-5564 canonical:
+// the viewing key alone scans; the spending key stays cold)
 const isForMe = checkStealthAddress(
-  stealth.address,
-  stealth.ephemeralPublicKey,
-  meta.viewingKey,
-  meta.spendingKey
+  stealthAddress,
+  viewingPrivateKey,
+  metaAddress.spendingKey
 )
 console.log('Address belongs to recipient:', isForMe)
 
-// Step 4: Recipient derives private key to spend
+// Step 4: Recipient derives the private key to spend
 if (isForMe) {
-  const privateKey = deriveStealthPrivateKey(
-    stealth.ephemeralPublicKey,
-    meta.viewingPrivateKey!,
-    meta.spendingPrivateKey!
+  const { privateKey } = deriveStealthPrivateKey(
+    stealthAddress,
+    spendingPrivateKey,
+    viewingPrivateKey
   )
   console.log('Can spend from stealth address!')
 }`,
