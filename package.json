@@ -38,7 +38,23 @@
   },
   "pnpm": {
     "overrides": {
-      "axios": ">=1.16.1"
+      "@grpc/grpc-js@1": ">=1.14.4 <2",
+      "@protobufjs/utf8@1": ">=1.1.1 <2",
+      "axios": ">=1.16.1",
+      "bigint-buffer": "npm:bigint-buffer-fixed@^1.1.6",
+      "bn.js@4": ">=4.12.3 <5",
+      "bn.js@5": ">=5.2.3 <6",
+      "bs58@4": ">=4.0.1 <5",
+      "flatted@3": ">=3.4.2 <4",
+      "ip-address@10": ">=10.1.1 <11",
+      "langsmith": ">=0.6.0 <0.7.0",
+      "minimatch@3": ">=3.1.3 <4",
+      "postcss@8": ">=8.5.10 <9",
+      "protobufjs@7": ">=7.5.8 <8",
+      "uuid@11": ">=11.1.1 <12",
+      "uuid@13": ">=13.0.1 <14",
+      "vite": ">=7.3.2 <8",
+      "ws@8": ">=8.20.1 <9"
     }
   },
   "devDependencies": {
@@ -63,6 +79,7 @@
     "postcss": "^8.5.15",
     "tailwindcss": "^4.3.0",
     "typescript": "^5.9.3",
+    "vite": "^7.3.2",
     "vitest": "^4.1.8"
   }
 }
