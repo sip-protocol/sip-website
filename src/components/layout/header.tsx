@@ -5,7 +5,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
-import { Menu, X, Github, ExternalLink } from 'lucide-react'
+import { Menu, X, ExternalLink } from 'lucide-react'
+import { Github } from '@/components/icons/brand-icons'
 
 // Dynamic import to avoid SSR issues with SDK's WASM dependencies
 const WalletButton = dynamic(

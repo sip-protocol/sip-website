@@ -7,13 +7,13 @@ import {
   Zap,
   Target,
   Users,
-  Github,
   ExternalLink,
   Check,
   ArrowRight,
   BookOpen,
   Package
 } from 'lucide-react'
+import { Github } from '@/components/icons/brand-icons'
 import Link from 'next/link'
 import { TEST_COUNTS, PROJECT_STATUS } from '@/lib/constants'
 import { FounderProfile } from '@/components/founder-profile'

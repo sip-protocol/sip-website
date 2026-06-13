@@ -4,10 +4,10 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import {
   ArrowLeft,
-  Github,
   Globe,
   ChevronDown,
 } from 'lucide-react'
+import { Github } from '@/components/icons/brand-icons'
 import { TEST_COUNTS, SDK_VERSION } from '@/lib/constants'
 
 export function HeroSection() {

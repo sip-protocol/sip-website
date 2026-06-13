@@ -22,7 +22,6 @@ import {
   Lock,
   Network,
   ArrowRight,
-  Github,
   ExternalLink,
   Sparkles,
   Trophy,
@@ -34,6 +33,7 @@ import {
   Check,
   X,
 } from 'lucide-react'
+import { Github } from '@/components/icons/brand-icons'
 
 export default function RoadmapPage() {
   return (
