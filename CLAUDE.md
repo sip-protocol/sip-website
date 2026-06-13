@@ -49,7 +49,7 @@
 
 ## Quick Reference
 
-**Tech Stack:** Next.js 15, React 19, Tailwind CSS 4, Zustand, Vitest
+**Tech Stack:** Next.js 16 (Turbopack), React 19, Tailwind CSS 4, Zustand, Vitest
 **Deployment:** sip-protocol.org (Vercel — Git auto-deploy; migrated off VPS 2026-06-02). Docker/GHCR retained as VPS rollback only.
 
 **Key Commands:**
