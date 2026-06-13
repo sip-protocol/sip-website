@@ -23,12 +23,14 @@
 **Keep in sip-website (marketing):**
 - `/` - Landing page
 - `/sdk` - SDK showcase
-- `/grants/*` - Grant pitch pages
-- `/pitch-deck` - Investor deck
+- `/grants/*` - Grant pitch pages (superteam, superteam/t2, solana-foundation, audit-subsidy)
+- `/showcase/*` - Hackathon showcases (zypherpunk-2025, solana-privacy-2026, monolith-2026)
 - `/about` - Team page
 - `/features` - Feature comparison
 - `/roadmap` - Public roadmap
 - `/privacy`, `/terms`, `/license`, `/security` - Legal pages
+
+> `/pitch-deck` now 301-redirects to `/showcase/zypherpunk-2025` (see `next.config.js`).
 
 ---
 
@@ -47,8 +49,8 @@
 
 ## Quick Reference
 
-**Tech Stack:** Next.js 15, React 19, Tailwind CSS 4, Zustand, Vitest
-**Deployment:** sip-protocol.org (Docker + GHCR, port 5000)
+**Tech Stack:** Next.js 16 (Turbopack), React 19, Tailwind CSS 4, Zustand, Vitest
+**Deployment:** sip-protocol.org (Vercel — Git auto-deploy; migrated off VPS 2026-06-02). Docker/GHCR retained as VPS rollback only.
 
 **Key Commands:**
 ```bash
@@ -79,7 +81,7 @@ pnpm typecheck            # Type check
 | `src/lib/constants.ts` | Test counts, SDK version constants |
 | `src/app/about/page.tsx` | About page with team section |
 | `src/components/video-demo.tsx` | YouTube demo video embed |
-| `tests/` | Test suites (126 tests) |
+| `tests/` | Test suites (157 tests) |
 
 ---
 
@@ -120,11 +122,16 @@ pnpm typecheck            # Type check
 | Suite | Count | Location |
 |-------|-------|----------|
 | Toast store | 14 | `tests/stores/toast-store.test.ts` |
-| Wallet store | 21 | `tests/stores/wallet-store.test.ts` |
+| Wallet store | 25 | `tests/stores/wallet-store.test.ts` |
 | useQuote hook | 12 | `tests/hooks/use-quote.test.tsx` |
-| useSwap hook | 24 | `tests/hooks/use-swap.test.tsx` |
+| useSwap hook | 26 | `tests/hooks/use-swap.test.tsx` |
+| useBalance hook | 10 | `tests/hooks/use-balance.test.tsx` |
 | TransactionStatus | 21 | `tests/components/transaction-status.test.tsx` |
-| SwapCard | 31 | `tests/components/swap-card.test.tsx` |
+| ErrorBoundary | 12 | `tests/components/error-boundary.test.tsx` |
+| Prices lib | 18 | `tests/lib/prices.test.ts` |
+| Health API | 19 | `tests/api/health.test.ts` |
+
+**Total: 157 tests**
 
 ---
 
@@ -150,4 +157,4 @@ pnpm typecheck            # Type check
 
 ---
 
-**Last Updated:** 2026-01-25
+**Last Updated:** 2026-06-12
