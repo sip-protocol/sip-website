@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Github, Twitter, ExternalLink } from 'lucide-react'
+import { ExternalLink } from 'lucide-react'
+import { Github, XLogo } from '@/components/icons/brand-icons'
 
 interface FooterLink {
   href: string
@@ -42,7 +43,7 @@ const footerLinks: Record<string, FooterSection> = {
     title: 'Community',
     links: [
       { href: 'https://github.com/sip-protocol/sip-protocol', label: 'GitHub', external: true },
-      { href: 'https://x.com/sipprotocol', label: 'Twitter', external: true },
+      { href: 'https://x.com/sipprotocol', label: 'X', external: true },
       { href: 'https://discord.gg/gXRsWkKq9E', label: 'Discord', external: true },
     ],
   },
@@ -96,9 +97,9 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-white transition-colors"
-                  aria-label="Twitter"
+                  aria-label="X"
                 >
-                  <Twitter className="h-5 w-5" />
+                  <XLogo className="h-5 w-5" />
                 </a>
                 <a
                   href="https://discord.gg/gXRsWkKq9E"

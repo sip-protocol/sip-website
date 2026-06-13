@@ -20,7 +20,6 @@ import {
   AlertTriangle,
   Eye,
   Lock,
-  Github,
   ExternalLink,
   Target,
   Code,
@@ -31,6 +30,7 @@ import {
   Calendar,
   Award,
 } from 'lucide-react'
+import { Github } from '@/components/icons/brand-icons'
 import { TEST_COUNTS, SDK_VERSION } from '@/lib/constants'
 import { FounderProfile } from '@/components/founder-profile'
 import type { FounderData } from '@/lib/founder-data'

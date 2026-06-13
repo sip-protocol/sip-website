@@ -10,10 +10,10 @@ import {
   FileText,
   DollarSign,
   Users,
-  Github,
   ExternalLink,
   Sparkles,
 } from 'lucide-react'
+import { Github } from '@/components/icons/brand-icons'
 import { TEST_COUNTS, SDK_VERSION, ACHIEVEMENTS, PROJECT_STATUS } from '@/lib/constants'
 
 export default function GrantsPage() {
