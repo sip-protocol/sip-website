@@ -1,4 +1,5 @@
-import { Scale, Github, ExternalLink } from 'lucide-react'
+import { Scale, ExternalLink } from 'lucide-react'
+import { Github } from '@/components/icons/brand-icons'
 import Link from 'next/link'
 
 export default function LicensePage() {

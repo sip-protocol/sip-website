@@ -21,10 +21,10 @@ import {
   Layers,
   Globe,
   FileText,
-  Github,
   ChevronDown,
   ExternalLink
 } from 'lucide-react'
+import { Github } from '@/components/icons/brand-icons'
 import { TEST_COUNTS, SDK_VERSION, PROJECT_STATUS } from '@/lib/constants'
 import { FounderProfile } from '@/components/founder-profile'
 import { ArchitectureDiagram } from '@/components/architecture-diagram'

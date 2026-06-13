@@ -1,6 +1,7 @@
 'use client'
 
-import { Github, ArrowRight } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
+import { Github } from '@/components/icons/brand-icons'
 import { FounderProfile } from '@/components/founder-profile'
 import type { FounderData } from '@/lib/founder-data'
 

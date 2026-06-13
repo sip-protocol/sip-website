@@ -19,7 +19,6 @@ import {
   Blocks,
   DollarSign,
   FileText,
-  Github,
   ExternalLink,
   Wallet,
   TrendingUp,
@@ -42,6 +41,7 @@ import {
   Database,
   FileCode,
 } from 'lucide-react'
+import { Github } from '@/components/icons/brand-icons'
 import { TEST_COUNTS, SDK_VERSION } from '@/lib/constants'
 import { VideoDemo } from '@/components/video-demo'
 import { FounderProfile } from '@/components/founder-profile'
