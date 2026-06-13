@@ -1,5 +1,3 @@
-const path = require('path')
-
 // Conditionally require Sentry only if installed
 let withSentryConfig
 try {
@@ -13,10 +11,6 @@ try {
 const nextConfig = {
   // On Vercel use the platform's native output; keep 'standalone' for the VPS Docker rollback image.
   output: process.env.VERCEL ? undefined : 'standalone',
-  eslint: {
-    // Use flat config file
-    ignoreDuringBuilds: false,
-  },
   images: {
     remotePatterns: [
       {
@@ -353,57 +347,27 @@ const nextConfig = {
     '@ledgerhq/hw-app-eth',
     '@ledgerhq/hw-app-solana',
   ],
-  webpack: (config, { isServer }) => {
-    // Resolve Ledger packages from website's node_modules for linked SDK
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@ledgerhq/hw-transport-webusb': path.resolve(__dirname, 'node_modules/@ledgerhq/hw-transport-webusb'),
-      '@ledgerhq/hw-transport-webhid': path.resolve(__dirname, 'node_modules/@ledgerhq/hw-transport-webhid'),
-      '@ledgerhq/hw-app-eth': path.resolve(__dirname, 'node_modules/@ledgerhq/hw-app-eth'),
-      '@ledgerhq/hw-app-solana': path.resolve(__dirname, 'node_modules/@ledgerhq/hw-app-solana'),
-      '@trezor/connect-web': path.resolve(__dirname, 'node_modules/@trezor/connect-web'),
-    }
-
-    // SDK v0.9.0 bundles @triton-one/yellowstone-grpc which uses WASM and Node-only modules.
-    // Mark it as external on server (not used by website routes) and stub on client.
-    if (isServer) {
-      config.externals = config.externals || []
-      config.externals.push({
-        '@triton-one/yellowstone-grpc': 'commonjs @triton-one/yellowstone-grpc',
-      })
-    }
-
-    // Handle WASM loading for @aztec/bb.js and similar packages
-    if (!isServer) {
-      config.experiments = {
-        ...config.experiments,
-        asyncWebAssembly: true,
-        topLevelAwait: true,
-      }
-
-      // Node.js module fallbacks for browser
-      // SDK v0.9.0 pulls in @triton-one/yellowstone-grpc which requires Node-only modules
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        net: false,
-        tls: false,
-        http2: false,
-        dns: false,
-        child_process: false,
-        fs: false,
-      }
-
-      // Suppress bb.js topLevelAwait warning (we explicitly enable it above)
-      config.ignoreWarnings = [
-        ...(config.ignoreWarnings || []),
-        {
-          module: /@aztec\/bb\.js/,
-          message: /topLevelAwait/,
-        },
-      ]
-    }
-
-    return config
+  // @sip-protocol/sdk pulls in @triton-one/yellowstone-grpc (Node-only + WASM), reachable only via
+  // the server-side /api/zcash route — keep it out of the server bundle. Turbopack covers the rest
+  // natively: bb.js WASM + top-level await need no config, and the SDK is imported only via dynamic
+  // import() in client components, so its server-only deps stay out of the browser graph. Ledger/
+  // Trezor resolve via transpilePackages (above) + their direct deps in this package.
+  serverExternalPackages: ['@triton-one/yellowstone-grpc'],
+  turbopack: {
+    // @sip-protocol/sdk re-exports @triton-one/yellowstone-grpc (→ @grpc/grpc-js, Node-only) from
+    // its main entry for the server-side Zcash provider. The browser never uses it — client code
+    // only calls SDK crypto — but client components import the SDK, dragging grpc and its Node
+    // builtins (net/tls/fs/http2/dns) into the browser graph. Stubbing the individual builtins to an
+    // empty module silenced the build but left grpc-js executing `http2.constants.*` at load
+    // (browser unhandledRejection). So stub the whole grpc package to empty for the browser instead:
+    // grpc-js never loads client-side at all. The server keeps the real package via
+    // serverExternalPackages, so the /api/zcash route is unaffected.
+    resolveAlias: {
+      '@triton-one/yellowstone-grpc': { browser: './turbopack-node-stub.js' },
+      // The SDK's optional file-based cache (Node-only, guarded at runtime) imports fs/promises;
+      // it reaches the browser via client components that import the SDK but is never used there.
+      'fs/promises': { browser: './turbopack-node-stub.js' },
+    },
   },
 }
 
